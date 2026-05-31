@@ -1,0 +1,187 @@
+import React from "react";
+import SectionHeader from "@/components/ui/SectionHeader";
+import { WHY_CHOOSE_US } from "@/constants";
+
+const InternationalStandardsIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <path
+      d="M24 6 L40 14 L40 30 Q40 40 24 44 Q8 40 8 30 L8 14 Z"
+      fill="#dcfce7"
+      stroke="#22c55e"
+      strokeWidth="1.5"
+    />
+    <polygon
+      points="24,14 27,22 36,22 29,27 32,35 24,30 16,35 19,27 12,22 21,22"
+      fill="#22c55e"
+      opacity={0.85}
+    />
+  </svg>
+);
+
+const EmergencyCareIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <circle
+      cx="24"
+      cy="24"
+      r="14"
+      fill="#dcfce7"
+      stroke="#22c55e"
+      strokeWidth="1.5"
+    />
+    <line
+      x1="24"
+      y1="24"
+      x2="24"
+      y2="12"
+      stroke="#86efac"
+      strokeWidth={2.2}
+      strokeLinecap="round"
+    />
+    <line
+      x1="24"
+      y1="24"
+      x2="34"
+      y2="30"
+      stroke="#86efac"
+      strokeWidth={2.2}
+      strokeLinecap="round"
+    />
+    <rect x="30" y="8" width="14" height="14" rx="4" fill="#16a34a" />
+    <rect x="36" y="10" width="3" height="10" fill="#f0fdf4" />
+    <rect x="31" y="14" width="12" height="3" fill="#f0fdf4" />
+  </svg>
+);
+
+const NABLLabIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <path
+      d="M18 6 L18 22 L6 38 Q4 42 8 44 L40 44 Q44 42 42 38 L30 22 L30 6 Z"
+      fill="#dcfce7"
+      stroke="#22c55e"
+      strokeWidth="1.5"
+    />
+    <line x1="18" y1="6" x2="30" y2="6" stroke="#22c55e" strokeWidth="1.5" />
+    <path
+      d="M10 36 Q16 32 24 34 Q32 32 38 36 L42 42 Q44 44 40 44 L8 44 Q4 44 6 42 Z"
+      fill="#22c55e"
+      opacity={0.45}
+    />
+  </svg>
+);
+
+const HomeSampleIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <polygon
+      points="24,4 4,20 10,20 10,44 38,44 38,20 44,20"
+      fill="#dcfce7"
+      stroke="#22c55e"
+      strokeWidth="1.5"
+    />
+    <rect
+      x="20"
+      y="28"
+      width="8"
+      height="16"
+      rx="1"
+      fill="#dcfce7"
+      stroke="#22c55e"
+      strokeWidth="1.5"
+    />
+    <path
+      d="M24 14 Q30 20 30 25 Q30 30 24 30 Q18 30 18 25 Q18 20 24 14Z"
+      fill="#22c55e"
+      opacity={0.75}
+    />
+  </svg>
+);
+
+const OnlineReportsIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <path
+      d="M12 4 L12 44 L36 44 L36 14 L26 4 Z"
+      fill="#dcfce7"
+      stroke="#22c55e"
+      strokeWidth="1.5"
+    />
+    <path d="M26 4 L26 14 L36 14" stroke="#22c55e" strokeWidth="1.5" />
+    <rect x="18" y="30" width="5" height="10" fill="#22c55e" />
+    <rect x="25" y="24" width="5" height="16" fill="#22c55e" opacity={0.75} />
+  </svg>
+);
+
+const ExpertSpecialistsIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <circle
+      cx="24"
+      cy="36"
+      r="9"
+      fill="#dcfce7"
+      stroke="#22c55e"
+      strokeWidth="1.5"
+    />
+    <circle cx="24" cy="36" r="4" fill="#22c55e" opacity={0.55} />
+    <path d="M24 27 Q24 18 14 14" stroke="#22c55e" strokeWidth="1.5" />
+    <path d="M24 27 Q24 18 34 14" stroke="#22c55e" strokeWidth="1.5" />
+    <circle cx="14" cy="12" r="4" fill="#22c55e" />
+    <circle cx="34" cy="12" r="4" fill="#22c55e" />
+  </svg>
+);
+
+const ICONS = {
+  globe: InternationalStandardsIcon,
+  alarm: EmergencyCareIcon,
+  shield: NABLLabIcon,
+  home: HomeSampleIcon,
+  document: OnlineReportsIcon,
+  users: ExpertSpecialistsIcon,
+};
+
+export default function WhyChooseUs() {
+  return (
+    <section className="pt-2 pb-10 bg-white">
+      <div className="container mx-auto px-4">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* Left visual */}
+          <div className="relative hidden lg:block">
+            <div className="rounded-2xl overflow-hidden h-96">
+              <img
+                src="/clinic-image.jpg"
+                alt="Everest Polyclinic"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+
+          {/* Right features */}
+          <div>
+            <SectionHeader
+              badge="Why Choose Us"
+              badgeVariant="secondary"
+              title="Nepal's Most Trusted  PolyClinic"
+              subtitle="We combine international medical standards with local expertise to deliver exceptional healthcare."
+              centered={false}
+            />
+
+            <div className="grid sm:grid-cols-2 gap-5">
+              {WHY_CHOOSE_US.map((item) => (
+                <div key={item.title} className="flex gap-4">
+                  <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
+                    {React.createElement(ICONS[item.icon])}
+                  </div>
+                  <div>
+                    <h4 className="font-heading font-semibold text-slate-800 mb-1">
+                      {item.title}
+                    </h4>
+                    <p className="text-slate-500 text-sm leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
