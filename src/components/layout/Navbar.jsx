@@ -302,18 +302,17 @@ export default function Navbar() {
                             onMouseEnter={openServicesMenu}
                             onMouseLeave={scheduleCloseServicesMenu}
                           >
-                            <Link
-                              href={link.href}
+                            <button
+                              type="button"
                               className={cn(
                                 "relative flex items-center gap-1 px-4 py-2 text-xs font-semibold uppercase tracking-tight text-white transition-colors hover:text-secondary-200",
-                                pathname === link.href && "text-secondary-300",
                                 servicesOpen &&
                                   "text-secondary-200 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-0.5 after:rounded-full after:bg-secondary-400",
                               )}
                             >
                               {link.label}
                               <ChevronDown size={12} />
-                            </Link>
+                            </button>
                           </div>
                         ) : (
                           <Link
