@@ -1,8 +1,10 @@
+import { headers } from "next/headers";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { SITE } from "@/constants";
+import SmoothScroll from "@/components/providers/SmoothScroll";
+import { getSiteSettings } from "@/lib/data/site";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,27 +19,48 @@ const poppins = Poppins({
   display: "swap",
 });
 
-export const metadata = {
-  title: {
-    default: SITE.name,
-    template: `%s | ${SITE.name}`,
-  },
-  description: SITE.description,
-  keywords: ["polyclinic", "hospital", "Nepal", "Kathmandu", "healthcare", "doctors", "lab tests"],
-  openGraph: {
-    title: SITE.name,
-    description: SITE.description,
-    type: "website",
-  },
-};
+export async function generateMetadata() {
+  const site = await getSiteSettings();
 
-export default function RootLayout({ children }) {
+  return {
+    title: {
+      default: site.name,
+      template: `%s | ${site.name}`,
+    },
+    description: site.description,
+    keywords: [
+      "polyclinic",
+      "hospital",
+      "Nepal",
+      "Kathmandu",
+      "healthcare",
+      "doctors",
+      "lab tests",
+    ],
+    openGraph: {
+      title: site.name,
+      description: site.description,
+      type: "website",
+    },
+  };
+}
+
+export default async function RootLayout({ children }) {
+  const pathname = (await headers()).get("x-pathname") || "";
+  const isAdmin = pathname.startsWith("/admin");
+
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <body className="font-sans antialiased bg-white text-slate-800">
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        {isAdmin ? (
+          children
+        ) : (
+          <SmoothScroll>
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+          </SmoothScroll>
+        )}
       </body>
     </html>
   );

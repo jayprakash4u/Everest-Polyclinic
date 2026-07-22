@@ -1,41 +1,41 @@
 "use client";
 
-import React from "react";
 import {
+  ArrowRight,
   Download,
+  Fingerprint,
+  MessageSquare,
   PhoneCall,
   ShieldCheck,
   User,
-  MessageSquare,
-  Fingerprint,
 } from "lucide-react";
 
 export default function DownloadReportBookVisit() {
   return (
-    <section className="py-20 bg-[#f8fafc] relative overflow-hidden">
-      {/* Subtle Background Decorative Elements */}
-      <div className="absolute top-0 left-0 w-64 h-64 bg-[#f0f7fa] rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl opacity-50" />
+    <section className="relative overflow-hidden bg-background-light py-12 sm:py-16 md:py-20">
+      <div className="pointer-events-none absolute left-0 top-0 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-50 opacity-50 blur-3xl" />
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="grid lg:grid-cols-12 gap-8 items-stretch">
-          {/* LEFT - Download Report (Modern Glass Card) */}
-          <div className="lg:col-span-3 group">
-            <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 h-full overflow-hidden transition-all duration-500 hover:shadow-2xl">
-              <div className="bg-[#1E5FA8] p-6 text-white relative">
-                <div className="absolute top-4 right-4 opacity-20">
-                  <Download size={40} />
-                </div>
-                <h3 className="text-lg font-bold uppercase tracking-wider">
+      <div className="container relative z-10 mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-12">
+          {/* Download Report */}
+          <div className="lg:col-span-3">
+            <div className="h-full overflow-hidden rounded-[1.5rem] border border-slate-100 bg-white shadow-xl shadow-slate-200/50 transition-all duration-500 hover:shadow-2xl sm:rounded-[2rem]">
+              <div className="relative bg-primary-600 p-5 text-white sm:p-6">
+                <Download
+                  size={36}
+                  className="absolute right-4 top-4 opacity-20 sm:size-10"
+                />
+                <h3 className="text-base font-bold uppercase tracking-wider sm:text-lg">
                   Reports
                 </h3>
-                <p className="text-[10px] text-sky-100 font-medium opacity-80">
+                <p className="text-[10px] font-medium text-primary-100 opacity-80">
                   Access your digital results
                 </p>
               </div>
 
-              <div className="p-7 space-y-5">
-                <div className="relative">
-                  <label className="text-[10px] font-bold text-[#1E5FA8] uppercase tracking-widest ml-1 mb-1.5 block">
+              <div className="space-y-4 p-5 sm:space-y-5 sm:p-7">
+                <div>
+                  <label className="mb-1.5 ml-1 block text-[10px] font-bold uppercase tracking-widest text-primary-600">
                     Lab Number
                   </label>
                   <div className="relative">
@@ -45,14 +45,14 @@ export default function DownloadReportBookVisit() {
                     />
                     <input
                       type="text"
-                      placeholder="e.g. CPL-9921"
-                      className="w-full bg-slate-50 border-none pl-10 pr-4 py-3 rounded-xl text-sm focus:ring-2 focus:ring-[#1E5FA8]/20 transition-all placeholder:text-slate-300"
+                      placeholder="e.g. EPL-9921"
+                      className="w-full rounded-xl border-none bg-slate-50 py-3 pl-10 pr-4 text-sm transition-all placeholder:text-slate-300 focus:ring-2 focus:ring-primary-600/20"
                     />
                   </div>
                 </div>
 
-                <div className="relative">
-                  <label className="text-[10px] font-bold text-[#1E5FA8] uppercase tracking-widest ml-1 mb-1.5 block">
+                <div>
+                  <label className="mb-1.5 ml-1 block text-[10px] font-bold uppercase tracking-widest text-primary-600">
                     Access Key
                   </label>
                   <div className="relative">
@@ -63,109 +63,109 @@ export default function DownloadReportBookVisit() {
                     <input
                       type="password"
                       placeholder="••••••••"
-                      className="w-full bg-slate-50 border-none pl-10 pr-4 py-3 rounded-xl text-sm focus:ring-2 focus:ring-[#1E5FA8]/20 transition-all placeholder:text-slate-300"
+                      className="w-full rounded-xl border-none bg-slate-50 py-3 pl-10 pr-4 text-sm transition-all placeholder:text-slate-300 focus:ring-2 focus:ring-primary-600/20"
                     />
                   </div>
                 </div>
 
-                {/* Minimalist Captcha */}
-                <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                <div className="flex items-center gap-3 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-3">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 rounded border-slate-300 text-[#1E5FA8] focus:ring-[#1E5FA8]"
+                    className="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-600"
                   />
                   <span className="text-[11px] font-semibold text-slate-500">
                     Security Check
                   </span>
                 </div>
 
-                <button className="w-full bg-[#1E5FA8] text-white py-4 rounded-xl font-bold text-xs uppercase tracking-[0.2em] shadow-lg shadow-sky-200 hover:bg-[#0a2342] transition-all active:scale-95 flex items-center justify-center gap-2">
+                <button
+                  type="button"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-white shadow-lg shadow-primary-200 transition-all hover:bg-primary-800 active:scale-95 sm:py-4"
+                >
                   View Report <ArrowRight size={14} />
                 </button>
               </div>
             </div>
           </div>
 
-          {/* MIDDLE - Visual Branding */}
-          <div className="lg:col-span-6 h-full flex flex-col gap-6">
-            <div className="relative h-full rounded-[2.5rem] overflow-hidden group shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0a2342]/80 via-transparent to-transparent z-10" />
+          {/* Visual — full width on tablet, centre on desktop */}
+          <div className="md:col-span-2 lg:col-span-6">
+            <div className="group relative min-h-[240px] overflow-hidden rounded-[1.5rem] shadow-2xl sm:min-h-[300px] sm:rounded-[2.5rem] md:min-h-[360px] lg:h-full lg:min-h-0">
+              <div className="absolute inset-0 z-10 bg-gradient-to-t from-primary-900/80 via-transparent to-transparent" />
               <img
                 src="https://images.unsplash.com/photo-1579152276503-34e891040316?q=80&w=1200&auto=format&fit=crop"
                 alt="Laboratory Facility"
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
               />
-              <div className="absolute bottom-10 left-10 z-20">
-                <span className="bg-[#2FA84F] text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.3em]">
+              <div className="absolute bottom-6 left-6 z-20 sm:bottom-10 sm:left-10">
+                <span className="rounded-full bg-secondary-600 px-3 py-1 text-[9px] font-black uppercase tracking-[0.3em] text-white sm:px-4 sm:py-1.5">
                   NABL Accredited
                 </span>
-                <h2 className="text-white text-3xl font-bold mt-4 leading-tight">
+                <h2 className="mt-3 text-xl font-bold leading-tight text-white sm:mt-4 sm:text-3xl">
                   Precision in Every <br />
-                  <span className="text-[#2FA84F]">Diagnostic Detail.</span>
+                  <span className="text-secondary-400">Diagnostic Detail.</span>
                 </h2>
               </div>
             </div>
           </div>
 
-          {/* RIGHT - Request Callback */}
-          <div className="lg:col-span-3 group">
-            <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 h-full overflow-hidden transition-all duration-500 hover:shadow-2xl">
-              <div className="bg-[#2FA84F] p-6 text-white relative">
-                <div className="absolute top-4 right-4 opacity-20">
-                  <PhoneCall size={40} />
-                </div>
-                <h3 className="text-lg font-bold uppercase tracking-wider">
+          {/* Callback */}
+          <div className="lg:col-span-3">
+            <div className="h-full overflow-hidden rounded-[1.5rem] border border-slate-100 bg-white shadow-xl shadow-slate-200/50 transition-all duration-500 hover:shadow-2xl sm:rounded-[2rem]">
+              <div className="relative bg-secondary-600 p-5 text-white sm:p-6">
+                <PhoneCall
+                  size={36}
+                  className="absolute right-4 top-4 opacity-20 sm:size-10"
+                />
+                <h3 className="text-base font-bold uppercase tracking-wider sm:text-lg">
                   Expert Help
                 </h3>
-                <p className="text-[10px] text-emerald-100 font-medium opacity-80">
+                <p className="text-[10px] font-medium text-secondary-100 opacity-80">
                   Free medical consultation
                 </p>
               </div>
 
-              <div className="p-7 space-y-5">
+              <div className="space-y-4 p-5 sm:space-y-5 sm:p-7">
                 <div className="relative">
-                  <div className="relative">
-                    <User
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                      size={16}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Your Full Name"
-                      className="w-full bg-slate-50 border-none pl-10 pr-4 py-3 rounded-xl text-sm focus:ring-2 focus:ring-[#2FA84F]/20 transition-all"
-                    />
-                  </div>
+                  <User
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                    size={16}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Your Full Name"
+                    className="w-full rounded-xl border-none bg-slate-50 py-3 pl-10 pr-4 text-sm transition-all focus:ring-2 focus:ring-secondary-600/20"
+                  />
                 </div>
 
                 <div className="relative">
-                  <div className="relative">
-                    <PhoneCall
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                      size={16}
-                    />
-                    <input
-                      type="tel"
-                      placeholder="Mobile Number"
-                      className="w-full bg-slate-50 border-none pl-10 pr-4 py-3 rounded-xl text-sm focus:ring-2 focus:ring-[#2FA84F]/20 transition-all"
-                    />
-                  </div>
+                  <PhoneCall
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                    size={16}
+                  />
+                  <input
+                    type="tel"
+                    placeholder="Mobile Number"
+                    className="w-full rounded-xl border-none bg-slate-50 py-3 pl-10 pr-4 text-sm transition-all focus:ring-2 focus:ring-secondary-600/20"
+                  />
                 </div>
 
                 <div className="relative">
-                  <div className="relative">
-                    <MessageSquare
-                      className="absolute left-3 top-3 text-slate-400"
-                      size={16}
-                    />
-                    <textarea
-                      placeholder="How can we help?"
-                      rows={3}
-                      className="w-full bg-slate-50 border-none pl-10 pr-4 py-3 rounded-xl text-sm focus:ring-2 focus:ring-[#2FA84F]/20 transition-all resize-none"
-                    />
-                  </div>
+                  <MessageSquare
+                    className="absolute left-3 top-3 text-slate-400"
+                    size={16}
+                  />
+                  <textarea
+                    placeholder="How can we help?"
+                    rows={3}
+                    className="w-full resize-none rounded-xl border-none bg-slate-50 py-3 pl-10 pr-4 text-sm transition-all focus:ring-2 focus:ring-secondary-600/20"
+                  />
                 </div>
 
-                <button className="w-full bg-[#2FA84F] text-white py-4 rounded-xl font-bold text-xs uppercase tracking-[0.2em] shadow-lg shadow-emerald-200 hover:bg-[#1a6e32] transition-all active:scale-95">
+                <button
+                  type="button"
+                  className="w-full rounded-xl bg-secondary-600 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-white shadow-lg shadow-secondary-200 transition-all hover:bg-secondary-700 active:scale-95 sm:py-4"
+                >
                   Confirm Callback
                 </button>
               </div>
@@ -174,23 +174,5 @@ export default function DownloadReportBookVisit() {
         </div>
       </div>
     </section>
-  );
-}
-
-// Sub-component for arrow icon
-function ArrowRight({ size }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M5 12h14M12 5l7 7-7 7" />
-    </svg>
   );
 }

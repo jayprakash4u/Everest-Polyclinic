@@ -1,0 +1,58 @@
+import {
+  Activity,
+  AlertTriangle,
+  Ambulance,
+  Baby,
+  Bone,
+  Brain,
+  ClipboardCheck,
+  Droplet,
+  Ear,
+  Heart,
+  HeartPulse,
+  Home,
+  Microscope,
+  Pill,
+  Scan,
+  Scissors,
+  Smile,
+  Sparkles,
+  Stethoscope,
+  Syringe,
+  Users,
+  Video,
+} from "lucide-react";
+
+/** Lucide icon map — every `service.icon` value must exist here. */
+export const SERVICE_ICONS = {
+  stethoscope: Stethoscope,
+  users: Users,
+  baby: Baby,
+  maternity: Baby,
+  bone: Bone,
+  heart: Heart,
+  sparkles: Sparkles,
+  ear: Ear,
+  tooth: Smile,
+  activity: Activity,
+  microscope: Microscope,
+  scan: Scan,
+  syringe: Syringe,
+  clipboardcheck: ClipboardCheck,
+  pill: Pill,
+  homecare: Home,
+  telemedicine: Video,
+  emergency: AlertTriangle,
+  ambulance: Ambulance,
+  icu: HeartPulse,
+  surgery: Scissors,
+  diagnostic: Scan,
+  bloodbank: Droplet,
+  dialysis: Droplet,
+  cardiaccare: Heart,
+  mentalhealth: Brain,
+};
+
+export function getServiceIcon(iconKey) {
+  return SERVICE_ICONS[iconKey] || Stethoscope;
+}

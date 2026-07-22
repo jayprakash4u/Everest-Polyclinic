@@ -12,35 +12,17 @@ export const SITE = {
 };
 
 export const NAV_LINKS = [
-  { label: "Home",          href: "/" },
-  { label: "Services",      href: "/services" },
-  { label: "Departments",   href: "/departments" },
-  { label: "Doctors",       href: "/doctors" },
-  { label: "Health Package",href: "/health-packages" },
-  { label: "Blog",          href: "/blog" },
-  { label: "About",         href: "/about" },
-  { label: "Contact",       href: "/contact" },
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Doctors", href: "/doctors" },
+  { label: "Health Packages", href: "/health-packages" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
 ];
 
-export const SERVICES = [
-  { id: 1, title: "Emergency (ER)", description: "24/7 emergency services with rapid response teams.", icon: "emergency", color: "secondary" },
-  { id: 2, title: "Outpatient (OPD)", description: "Comprehensive outpatient services.", icon: "opd", color: "primary" },
-  { id: 3, title: "Inpatient (IPD)", description: "Quality inpatient care.", icon: "ipd", color: "accent" },
-  { id: 4, title: "General Medicine", description: "Comprehensive primary care.", icon: "stethoscope", color: "primary" },
-  { id: 5, title: "General Surgery", description: "Advanced surgical procedures.", icon: "surgery", color: "secondary" },
-  { id: 6, title: "Cardiology", description: "Advanced heart care.", icon: "heart", color: "secondary" },
-  { id: 7, title: "Orthopedics", description: "Bone, joint and muscle care.", icon: "bone", color: "accent" },
-  { id: 8, title: "Gynecology", description: "Complete women's health services.", icon: "baby", color: "secondary" },
-  { id: 9, title: "Pediatrics", description: "Expert pediatric care.", icon: "pediatrics", color: "primary" },
-  { id: 10, title: "Neurology", description: "Comprehensive neurological services.", icon: "neurology", color: "accent" },
-  { id: 11, title: "Dermatology", description: "Skin, hair and nail treatments.", icon: "sparkles", color: "primary" },
-  { id: 12, title: "ENT", description: "Ear, Nose and Throat specialist.", icon: "ear", color: "secondary" },
-  { id: 13, title: "Ophthalmology", description: "Complete eye care services.", icon: "ophthalmology", color: "primary" },
-  { id: 14, title: "Oncology (Cancer)", description: "Comprehensive cancer care.", icon: "oncology", color: "accent" },
-  { id: 15, title: "Radiology", description: "Digital imaging services.", icon: "scan", color: "primary" },
-  { id: 16, title: "Pathology & Lab", description: "NABL-accredited laboratory.", icon: "flask", color: "accent" },
-  { id: 17, title: "Pharmacy", description: "24/7 pharmacy services.", icon: "pharmacy", color: "secondary" },
-];
+export { SERVICES } from "@/constants/services/catalog";
 
 export const STATS = [
   { value: "25,000+", label: "Patients Treated" },
@@ -77,7 +59,7 @@ export const WHY_CHOOSE_US = [
   },
   {
     title: "Expert Specialists",
-    description: "50+ specialists across 20+ departments with decades of experience.",
+    description: "50+ specialists across medical specialties with decades of experience.",
     icon: "users",
   },
 ];
@@ -112,54 +94,11 @@ export const TESTIMONIALS = [
   },
 ];
 
-export const DOCTORS = [
-  {
-    id: 1,
-    name: "Dr. Anand Shrestha",
-    specialty: "Cardiologist",
-    qualification: "MBBS, MD, DM (Cardiology)",
-    experience: "18 Years",
-    image: "/doctors/doctor1.jpg",
-  },
-  {
-    id: 2,
-    name: "Dr. Sunita Rai",
-    specialty: "Gynecologist",
-    qualification: "MBBS, MS (OBG)",
-    experience: "14 Years",
-    image: "/doctors/doctor2.jpg",
-  },
-  {
-    id: 3,
-    name: "Dr. Bikram Poudel",
-    specialty: "Orthopedic Surgeon",
-    qualification: "MBBS, MS (Ortho)",
-    experience: "12 Years",
-    image: "/doctors/doctor3.jpg",
-  },
-  {
-    id: 4,
-    name: "Dr. Priya Maharjan",
-    specialty: "Dermatologist",
-    qualification: "MBBS, MD (Dermatology)",
-    experience: "10 Years",
-    image: "/doctors/doctor4.jpg",
-  },
-];
-
 export const FOOTER_LINKS = {
   quickLinks: [
-    { label: "About Us",     href: "/about" },
-    { label: "Services",     href: "/services" },
-    { label: "Our Doctors",  href: "/doctors" },
-    { label: "Lab Tests",    href: "/services#lab" },
-    { label: "Contact Us",   href: "/contact" },
-  ],
-  services: [
-    { id: "gen-med", label: "General Medicine",  href: "/services" },
-    { id: "cardio", label: "Cardiology",        href: "/services" },
-    { id: "path-lab", label: "Pathology & Lab",   href: "/services" },
-    { id: "radio", label: "Radiology",         href: "/services" },
-    { id: "gyno", label: "Gynecology",        href: "/services" },
+    { label: "About Us", href: "/about" },
+    { label: "Our Doctors", href: "/doctors" },
+    { label: "Gallery", href: "/gallery" },
+    { label: "Contact Us", href: "/contact" },
   ],
 };

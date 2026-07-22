@@ -138,31 +138,30 @@ const ICONS = {
 
 export default function WhyChooseUs() {
   return (
-    <section className="pt-2 pb-10 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left visual */}
-          <div className="relative hidden lg:block">
-            <div className="rounded-2xl overflow-hidden h-96">
+    <section className="bg-white py-10 sm:py-12 md:py-14">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="grid items-center gap-8 md:grid-cols-2 md:gap-10 lg:gap-16">
+          <div className="relative order-1 md:order-none">
+            <div className="mx-auto h-56 max-w-md overflow-hidden rounded-2xl sm:h-72 md:mx-0 md:h-80 lg:h-96 lg:max-w-none">
               <img
                 src="/clinic-image.jpg"
                 alt="Everest Polyclinic"
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
               />
             </div>
           </div>
 
-          {/* Right features */}
-          <div>
+          <div className="order-2 md:order-none">
             <SectionHeader
               badge="Why Choose Us"
               badgeVariant="secondary"
-              title="Nepal's Most Trusted  PolyClinic"
+              title="Nepal's Most Trusted PolyClinic"
               subtitle="We combine international medical standards with local expertise to deliver exceptional healthcare."
               centered={false}
+              className="mb-8 sm:mb-10"
             />
 
-            <div className="grid sm:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               {WHY_CHOOSE_US.map((item) => (
                 <div key={item.title} className="flex gap-4">
                   <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">

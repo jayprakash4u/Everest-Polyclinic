@@ -24,6 +24,26 @@ body {
   font-family: "Inter", system-ui, sans-serif;
 }
 
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 /* Hide scrollbar for horizontal scroll containers */
 .hide-scrollbar {
   -ms-overflow-style: none;
@@ -31,4 +51,24 @@ body {
 }
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* Health package card test list scrollbar */
+.package-test-list {
+  max-height: 240px;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+.package-test-list::-webkit-scrollbar {
+  width: 4px;
+}
+.package-test-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.package-test-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+.package-test-list::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

@@ -1,0 +1,209 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model SiteSetting {
+  id               Int      @id @default(1)
+  name             String   @db.NVarChar(200)
+  shortName        String   @db.NVarChar(100)
+  tagline          String   @db.NVarChar(300)
+  description      String   @db.NVarChar(Max)
+  phone            String   @db.NVarChar(50)
+  email            String   @db.NVarChar(200)
+  address          String   @db.NVarChar(500)
+  workingHours     String   @db.NVarChar(200)
+  emergencyHotline String   @db.NVarChar(50)
+  updatedAt        DateTime @updatedAt
+}
+
+model AdminUser {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.NVarChar(150)
+  email        String   @unique @db.NVarChar(200)
+  passwordHash String   @db.NVarChar(500)
+  role         String   @default("admin") @db.NVarChar(50)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model DoctorCategory {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.NVarChar(150)
+  slug      String   @unique @db.NVarChar(150)
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  doctors   Doctor[]
+}
+
+model Doctor {
+  id         Int            @id @default(autoincrement())
+  categoryId Int
+  name       String         @db.NVarChar(200)
+  education  String         @db.NVarChar(300)
+  experience String         @db.NVarChar(100)
+  image      String         @db.NVarChar(500)
+  phone      String?        @db.NVarChar(50)
+  timing     String?        @db.NVarChar(200)
+  showOnHomepage Boolean    @default(false)
+  sortOrder  Int            @default(0)
+  isActive   Boolean        @default(true)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  category   DoctorCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
+
+model Department {
+  id          Int     @id @default(autoincrement())
+  legacyId    Int?    @unique
+  title       String  @db.NVarChar(200)
+  description String  @db.NVarChar(Max)
+  icon        String  @db.NVarChar(100)
+  color       String  @db.NVarChar(50)
+  sortOrder   Int     @default(0)
+  isActive    Boolean @default(true)
+}
+
+model SpecialtyService {
+  id          Int            @id @default(autoincrement())
+  legacyId    Int?           @unique
+  slug        String?        @unique @db.NVarChar(150)
+  title       String         @db.NVarChar(200)
+  icon        String         @db.NVarChar(100)
+  sortOrder   Int            @default(0)
+  isActive    Boolean        @default(true)
+  detail      ServiceDetail?
+}
+
+model ServiceDetail {
+  id                 Int              @id @default(autoincrement())
+  specialtyServiceId Int              @unique
+  title              String           @db.NVarChar(200)
+  description        String           @db.NVarChar(Max)
+  headerImage        String?          @db.NVarChar(500)
+  color              String?          @db.NVarChar(50)
+  contentJson        String?          @db.NVarChar(Max)
+  specialtyService   SpecialtyService @relation(fields: [specialtyServiceId], references: [id], onDelete: Cascade)
+}
+
+model HealthPackageSection {
+  id        Int             @id @default(autoincrement())
+  section   String          @db.NVarChar(200)
+  icon      String          @db.NVarChar(100)
+  sortOrder Int             @default(0)
+  packages  HealthPackage[]
+}
+
+model HealthPackage {
+  id            Int                  @id @default(autoincrement())
+  sectionId     Int
+  legacyId      Int?
+  name          String               @db.NVarChar(200)
+  price         Int
+  originalPrice Int?
+  badge         String?              @db.NVarChar(100)
+  testsJson     String               @db.NVarChar(Max)
+  sortOrder     Int                  @default(0)
+  isActive      Boolean              @default(true)
+  section       HealthPackageSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+}
+
+model BlogCategory {
+  id    Int        @id @default(autoincrement())
+  name  String     @unique @db.NVarChar(150)
+  slug  String     @unique @db.NVarChar(150)
+  posts BlogPost[]
+}
+
+model BlogPost {
+  id              Int          @id @default(autoincrement())
+  title           String       @db.NVarChar(300)
+  slug            String       @unique @db.NVarChar(300)
+  excerpt         String       @db.NVarChar(Max)
+  body            String?      @db.NVarChar(Max)
+  image           String       @db.NVarChar(500)
+  categoryId      Int
+  readTimeMinutes Int          @default(5)
+  featured        Boolean      @default(false)
+  isPublished     Boolean      @default(true)
+  publishedAt     DateTime     @default(now())
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  category        BlogCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
+
+model Testimonial {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.NVarChar(150)
+  location  String   @db.NVarChar(150)
+  rating    Int      @default(5)
+  review    String   @db.NVarChar(Max)
+  avatar    String?  @db.NVarChar(500)
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Faq {
+  id        Int     @id @default(autoincrement())
+  question  String  @db.NVarChar(500)
+  answer    String  @db.NVarChar(Max)
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
+}
+
+model Statistic {
+  id        Int     @id @default(autoincrement())
+  value     String  @db.NVarChar(50)
+  label     String  @db.NVarChar(200)
+  context   String  @default("site") @db.NVarChar(50)
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
+}
+
+model ContactSubmission {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.NVarChar(200)
+  email     String   @db.NVarChar(200)
+  phone     String?  @db.NVarChar(50)
+  subject   String?  @db.NVarChar(300)
+  message   String   @db.NVarChar(Max)
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model AppointmentRequest {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.NVarChar(200)
+  phone        String   @db.NVarChar(50)
+  email        String?  @db.NVarChar(200)
+  department   String?  @db.NVarChar(200)
+  preferredDate DateTime?
+  timeSlot     String?  @db.NVarChar(50)
+  packageName  String?  @db.NVarChar(200)
+  packagePrice String?  @db.NVarChar(50)
+  message      String?  @db.NVarChar(Max)
+  status       String   @default("pending") @db.NVarChar(50)
+  createdAt    DateTime @default(now())
+}
+
+model NewsletterSubscriber {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique @db.NVarChar(200)
+  createdAt DateTime @default(now())
+}
+
+model MediaAsset {
+  id        Int      @id @default(autoincrement())
+  filename  String   @db.NVarChar(300)
+  url       String   @db.NVarChar(500)
+  alt       String?  @db.NVarChar(300)
+  mimeType  String?  @db.NVarChar(100)
+  sizeBytes Int?
+  createdAt DateTime @default(now())
+}
