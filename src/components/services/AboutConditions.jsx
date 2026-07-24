@@ -43,7 +43,7 @@ export default function AboutConditions({ page }) {
                   key={benefit.title}
                   className="rounded-2xl border border-slate-200/80 bg-[#f8fafc] p-5 transition hover:border-primary-200 hover:shadow-md"
                 >
-                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-primary-200 bg-white text-primary-600 md:h-[4.5rem] md:w-[4.5rem]">
+                  <div className="relative mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-primary-200 bg-white text-primary-600 md:h-[4.5rem] md:w-[4.5rem]">
                     <ServicePageIcon
                       icon={benefit.icon}
                       iconSet={benefit.iconSet ?? "health"}

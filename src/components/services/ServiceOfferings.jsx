@@ -8,74 +8,72 @@ export default function ServiceOfferings({ page }) {
 
   const gridClass =
     offerings.length >= 5
-      ? "sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
-      : "sm:grid-cols-2 lg:grid-cols-3";
+      ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+      : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
 
   return (
-    <section className="bg-[#f8fafc] py-20 md:py-24">
+    <section className="bg-white py-20 md:py-28">
       <div className="container mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="mx-auto max-w-2xl text-center">
+        <div className="mx-auto max-w-3xl text-center">
           {meta.eyebrow ? (
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary-600">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-primary-600">
               {meta.eyebrow}
             </p>
           ) : null}
           <h2
-            className={`font-heading text-3xl font-bold tracking-tight text-[#1a3a5c] md:text-4xl ${meta.eyebrow ? "mt-3" : ""}`}
+            className={`font-heading text-3xl font-bold tracking-tight text-slate-900 md:text-4xl lg:text-[2.75rem] ${meta.eyebrow ? "mt-3.5" : "mt-2"}`}
           >
             {meta.title}
           </h2>
           {meta.subtitle ? (
-            <p className="mt-4 text-base leading-relaxed text-slate-600 md:text-lg">
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-500 md:text-lg">
               {meta.subtitle}
             </p>
           ) : null}
         </div>
 
-        <div className={`mt-14 grid grid-cols-1 gap-5 ${gridClass}`}>
-          {offerings.map((offering) => (
+        <div className={`mt-16 grid gap-5 ${gridClass}`}>
+          {offerings.map((offering, index) => (
             <article
               key={offering.title}
-              className={`relative rounded-2xl border bg-white p-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md md:p-7 ${
-                offering.badge
-                  ? "border-primary-300 ring-1 ring-primary-200"
-                  : "border-slate-200/80"
-              }`}
+              className="group relative rounded-2xl border border-slate-200/70 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary-300 hover:shadow-[0_12px_40px_rgba(15,23,42,0.08)] md:p-8"
             >
-              {offering.badge ? (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary-600 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white">
-                  {offering.badge}
-                </span>
-              ) : null}
-              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-50 text-primary-600 md:h-[4.5rem] md:w-[4.5rem]">
+              <div className="absolute left-0 top-8 h-8 w-1 rounded-r-full bg-primary-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+              <div className="relative mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-slate-50 md:h-16 md:w-16">
                 <ServicePageIcon
                   icon={offering.icon}
                   iconSet={offering.iconSet ?? "lucide"}
-                  size={34}
+                  size={32}
                 />
               </div>
-              <h3 className="font-heading text-lg font-bold text-[#1a3a5c]">
+
+              <h3 className="font-heading text-lg font-bold leading-snug text-slate-900 md:text-xl">
                 {offering.title}
               </h3>
+
               {offering.price ? (
-                <p className="mt-2 text-base font-bold text-primary-600">
+                <p className="mt-2 text-sm font-semibold text-primary-600">
                   {offering.price}
                 </p>
               ) : null}
-              {offering.features?.length ? (
-                <ul className="mt-4 space-y-2 text-left text-sm leading-relaxed text-slate-600">
-                  {offering.features.map((feature) => (
-                    <li key={feature} className="flex gap-2">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-500" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : offering.description ? (
-                <p className="mt-2 text-sm leading-relaxed text-slate-600 md:text-base">
-                  {offering.description}
-                </p>
-              ) : null}
+
+              <div className="mt-4">
+                {offering.features?.length ? (
+                  <ul className="space-y-2.5 text-sm leading-relaxed text-slate-600">
+                    {offering.features.map((feature) => (
+                      <li key={feature} className="flex gap-3">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-500" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : offering.description ? (
+                  <p className="text-sm leading-relaxed text-slate-600 md:text-base">
+                    {offering.description}
+                  </p>
+                ) : null}
+              </div>
             </article>
           ))}
         </div>

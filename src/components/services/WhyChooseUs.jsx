@@ -53,7 +53,7 @@ export default function WhyChooseUs({ page }) {
                 key={item.title}
                 className="rounded-2xl border border-slate-200/80 bg-white p-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md"
               >
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-50 to-secondary-50 text-primary-600 md:h-[4.5rem] md:w-[4.5rem]">
+                <div className="relative mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-50 to-secondary-50 text-primary-600 md:h-[4.5rem] md:w-[4.5rem]">
                   {item.icon ? (
                     <ServicePageIcon
                       icon={item.icon}

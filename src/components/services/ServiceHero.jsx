@@ -39,24 +39,24 @@ export default function ServiceHero({ page }) {
               {hero.description}
             </p>
 
-            {hero.features.length ? (
-              <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-                {hero.features.map((feature) => (
-                  <div key={feature.label} className="text-center sm:text-left">
-                    <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-50 text-primary-600 sm:mx-0 md:h-16 md:w-16">
-                      <ServicePageIcon
-                        icon={feature.icon}
-                        iconSet={feature.iconSet ?? "lucide"}
-                        size={28}
-                      />
-                    </div>
-                    <p className="text-xs font-semibold leading-snug text-slate-700 md:text-sm">
-                      {feature.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            ) : (
+             {hero.features.length ? (
+               <div className="mt-8 grid grid-cols-2 gap-5 sm:grid-cols-4">
+                 {hero.features.map((feature) => (
+                   <div key={feature.label} className="text-center sm:text-left">
+                     <div className="relative mx-auto mb-4 flex h-[4.25rem] w-[4.25rem] items-center justify-center rounded-2xl bg-white shadow-[0_2px_12px_rgba(15,23,42,0.06)] ring-1 ring-slate-200/80 sm:mx-0 md:h-[5rem] md:w-[5rem]">
+                       <ServicePageIcon
+                         icon={feature.icon}
+                         iconSet={feature.iconSet ?? "lucide"}
+                         size={38}
+                       />
+                     </div>
+                     <p className="text-[13px] font-semibold leading-snug text-slate-700 md:text-sm">
+                       {feature.label}
+                     </p>
+                   </div>
+                 ))}
+               </div>
+             ) : (
               <ul className="mt-8 space-y-3">
                 {hero.highlights.map((item) => (
                   <li key={item} className="flex items-center gap-3 text-slate-700">

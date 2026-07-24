@@ -22,9 +22,9 @@ export const SERVICE_PAGE_CONTENT = {
       eyebrow: "General Medicine",
       features: [
         { icon: "users", iconSet: "lucide", label: "Expert Physicians" },
-        { icon: "ShieldCheck", iconSet: "lucide", label: "Accurate Diagnosis" },
-        { icon: "HeartPulse", iconSet: "lucide", label: "Preventive Care" },
-        {icon:"HandHeart", iconSet: "lucide", label: "Compassionate support"}
+        { icon: "shieldCheck", iconSet: "lucide", label: "Accurate Diagnosis" },
+        { icon: "heartPulse", iconSet: "lucide", label: "Preventive Care" },
+        { icon: "heartHandshake", iconSet: "lucide", label: "Compassionate Support" },
       ],
       highlights: [
         "Experienced Physicians",
@@ -36,32 +36,32 @@ export const SERVICE_PAGE_CONTENT = {
     "General Medicine is the Foundation of Primary Healthcare. We  focused on preventing, diagnosing, and treating common illnesses and chronic conditions in adults. \n\nOur team is dedicated to helping patients of all ages maintain optimal health and improve their quality of life .",
     aboutBenefits: [
       {
-        icon: "UserRound",
+        icon: "users",
         iconSet: "lucide",
         title: "Comprehensive Care",
         description:
           "Complete care for acute illnesses, injuries, preventive care, and chronic conditions.",
       },
       {
-        icon: "ShieldCheck",
+        icon: "shieldCheck",
         iconSet: "lucide",
         title: "Accurate Diagnosis",
         description:
           "Complete care for acute illnesses, injuries, preventive care, and chronic conditions.",
       },
       {
-        icon: "Heart",
+        icon: "heart",
         iconSet: "lucide",
         title: "preventive Focus",
         description:
           "Regular check-ups, screenings, and lifestyle guidance to prevent disease and detect issues early.",
       },
       {
-        icon: "HandHeart",
+        icon: "heart",
         iconSet: "lucide",
-        title: "Patient-Centered ",
+        title: "Patient-Centered",
         description:
-          "We listen,care and create personalized treatment plans for each patient.",
+          "We listen, care, and create personalized treatment plans for each patient.",
       },
     ],
     sections: {
@@ -89,24 +89,27 @@ export const SERVICE_PAGE_CONTENT = {
     serviceOfferings: [
       {
         icon: "stethoscope",
+        iconSet: "lucide",
         title: "General Consultation",
         description:
           "Thorough evaluation of symptoms with a clear diagnosis and treatment plan.",
       },
       {
         icon: "clipboardcheck",
+        iconSet: "lucide",
         title: "Health Checkups",
         description:
           "Preventive screenings and wellness assessments to catch issues early.",
       },
       {
         icon: "heart",
+        iconSet: "lucide",
         title: "Chronic Disease Management",
         description:
           "Ongoing care for diabetes, hypertension, and other long-term conditions.",
       },
       {
-        icon: "flaskConical",
+        icon: "microscope",
         iconSet: "health",
         title: "Diagnostic Services",
         description:
@@ -121,6 +124,7 @@ export const SERVICE_PAGE_CONTENT = {
       },
       {
         icon: "stethoscope",
+        iconSet: "lucide",
         title: "Follow-up Care",
         description:
           "Regular reviews to track progress and adjust treatment as needed.",
@@ -128,8 +132,8 @@ export const SERVICE_PAGE_CONTENT = {
     ],
     whyChooseUs: [
       {
-        icon: "doctor-outline",
-        iconSet: "health",
+        icon: "users",
+        iconSet: "lucide",
         title: "Experienced Doctors",
         description:
           "Skilled and experienced doctors who provide comprehensive care for a wide range of medical conditions.",
@@ -156,11 +160,17 @@ export const SERVICE_PAGE_CONTENT = {
           "Regular screenings and preventive measures to maintain health.",
       },
       {
-        icon: "handHeart",
+        icon: "heart",
         iconSet: "lucide",
         title: "Compassionate Support",
         description:
           "We listen, care, and create personalized treatment plans for each patient.",
+      },
+      {
+        icon: "activity",
+        iconSet: "lucide",
+        title: "Same-Day Appointments",
+        description: "Convenient scheduling with minimal waiting time for your visit.",
       },
     ],
     conditions: [
