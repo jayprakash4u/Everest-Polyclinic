@@ -25,6 +25,7 @@ CREATE TABLE [dbo].[SiteSetting] (
 CREATE TABLE [dbo].[AdminUser] (
     [id] INT NOT NULL IDENTITY(1,1),
     [name] NVARCHAR(150) NOT NULL,
+    [username] NVARCHAR(100) NOT NULL,
     [email] NVARCHAR(200) NOT NULL,
     [passwordHash] NVARCHAR(500) NOT NULL,
     [role] NVARCHAR(50) NOT NULL CONSTRAINT [AdminUser_role_df] DEFAULT 'admin',
@@ -32,6 +33,7 @@ CREATE TABLE [dbo].[AdminUser] (
     [createdAt] DATETIME2 NOT NULL CONSTRAINT [AdminUser_createdAt_df] DEFAULT CURRENT_TIMESTAMP,
     [updatedAt] DATETIME2 NOT NULL,
     CONSTRAINT [AdminUser_pkey] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [AdminUser_username_key] UNIQUE NONCLUSTERED ([username]),
     CONSTRAINT [AdminUser_email_key] UNIQUE NONCLUSTERED ([email])
 );
 

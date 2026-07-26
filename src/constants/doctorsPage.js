@@ -157,6 +157,7 @@ export const HOMEPAGE_SPECIALISTS = DOCTOR_SPECIALISTS.flatMap((group) =>
     id: doctor.id,
     name: doctor.name,
     degree: doctor.education,
+    experience: doctor.experience,
     specialist: group.category,
     timing: "10:00 AM - 04:00 PM",
     phone: "+977 9800000000",

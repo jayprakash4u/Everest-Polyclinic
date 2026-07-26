@@ -26,6 +26,7 @@ async function main() {
   const { HEALTH_PACKAGES } = await import(
     "../src/constants/healthPackages.js"
   );
+  const { GALLERY_IMAGES } = await import("../src/constants/galleryImages.js");
 
   console.log("Seeding Everest Polyclinic database...");
 
@@ -56,19 +57,22 @@ async function main() {
     },
   });
 
+  const adminUsername = (process.env.ADMIN_USERNAME ?? "admin").toLowerCase();
   const adminEmail = process.env.ADMIN_EMAIL ?? "admin@everestpolyclinic.com";
-  const adminPassword = process.env.ADMIN_PASSWORD ?? "ChangeMe123!";
+  const adminPassword = process.env.ADMIN_PASSWORD ?? "Admin123";
 
   await prisma.adminUser.upsert({
-    where: { email: adminEmail },
+    where: { username: adminUsername },
     update: {
       name: "Site Administrator",
+      email: adminEmail,
       passwordHash: hashPassword(adminPassword),
       role: "super_admin",
       isActive: true,
     },
     create: {
       name: "Site Administrator",
+      username: adminUsername,
       email: adminEmail,
       passwordHash: hashPassword(adminPassword),
       role: "super_admin",
@@ -225,6 +229,7 @@ async function main() {
         testsJson: JSON.stringify(pkg.tests),
         sortOrder: pkgIndex,
         isActive: true,
+        showOnHomepage: Boolean(pkg.badge),
       };
 
       if (existing) {
@@ -331,6 +336,20 @@ async function main() {
         value: item.value,
         label: item.label,
         context: "doctors",
+        sortOrder: index,
+        isActive: true,
+      },
+    });
+  }
+
+  await prisma.galleryImage.deleteMany();
+
+  for (const [index, item] of GALLERY_IMAGES.entries()) {
+    await prisma.galleryImage.create({
+      data: {
+        src: item.src,
+        alt: item.alt,
+        caption: item.caption ?? null,
         sortOrder: index,
         isActive: true,
       },

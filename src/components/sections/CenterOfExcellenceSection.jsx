@@ -1,93 +1,87 @@
-import React from "react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import SectionHeader from "@/components/ui/SectionHeader";
+import Button from "@/components/ui/Button";
+import BrandIconImage from "@/components/ui/BrandIconImage";
+import { CENTERS_OF_EXCELLENCE } from "@/constants/centerOfExcellence";
 
-const departments = [
-  {
-    title: "Orthopaedics",
-    desc: "Expert diagnosis and treatment of bone and joint disorders.",
-    svg: <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z" />,
-  },
-  {
-    title: "Oncology",
-    desc: "Comprehensive care and advanced treatment for cancer patients.",
-    svg: (
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
-    ),
-  },
-  {
-    title: "Pediatrics",
-    desc: "Specialized medical care for infants, children, and adolescents.",
-    svg: (
-      <path d="M12 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 10c2.7 0 5.8 1.29 6 2H6c.23-.71 3.31-2 6-2z" />
-    ),
-  },
-  {
-    title: "Dermatology",
-    desc: "Advanced treatment for all types of skin and hair conditions.",
-    svg: (
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-    ),
-  },
-  {
-    title: "Physiotherapy",
-    desc: "Rehabilitation and physical therapy for optimal recovery.",
-    svg: (
-      <path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7" />
-    ),
-  },
-  {
-    title: "Anaesthesia",
-    desc: "Expert pain management and surgical anesthesia services.",
-    svg: (
-      <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z" />
-    ),
-  },
-];
+function ExcellenceItem({ item }) {
+  const href = item.slug ? `/services/${item.slug}` : "/contact";
+
+  return (
+    <Link
+      href={href}
+      className="group flex items-start gap-4 rounded-xl border border-transparent p-4 transition-colors hover:border-slate-200 hover:bg-slate-50/80 sm:gap-5 sm:p-5"
+    >
+      <BrandIconImage
+        src={item.image}
+        alt={item.title}
+        size={72}
+        rounded="full"
+        variant="brand"
+        className="shadow-md ring-4 ring-primary-100/80"
+      />
+
+      <div className="min-w-0 flex-1 pt-1">
+        <h3 className="font-heading text-base font-bold text-slate-900 sm:text-[17px]">
+          {item.title}
+        </h3>
+        <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
+          {item.description}
+        </p>
+        <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-primary-600 opacity-0 transition group-hover:opacity-100 sm:text-[13px]">
+          {item.slug ? "View service" : "Contact us"}
+          <ArrowRight size={14} />
+        </span>
+      </div>
+    </Link>
+  );
+}
 
 export default function CenterOfExcellenceSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-[#061d2e] via-[#0c3347] to-[#0a2342] px-4 py-12 sm:px-6 sm:py-16 md:py-20">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-60"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle, rgba(30,95,168,0.08) 1px, transparent 1px)",
-          backgroundSize: "36px 36px",
-        }}
-      />
+    <section className="bg-white py-16 md:py-20">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,380px)_1fr] lg:gap-16 xl:gap-20">
+          <div className="lg:sticky lg:top-24">
+            <SectionHeader
+              badge="Specialist departments"
+              badgeVariant="secondary"
+              title="Center of Excellence"
+              subtitle="Focused specialty care with experienced clinicians, modern diagnostics, and coordinated treatment under one roof."
+              centered={false}
+              className="mb-0"
+            />
 
-      <div className="container relative z-10 mx-auto">
-        <div className="mb-8 text-center sm:mb-12">
-          <h2 className="font-heading text-xl font-semibold text-primary-300 sm:text-2xl md:text-[28px]">
-            Center of Excellence
-          </h2>
-          <div className="mx-auto mt-2 h-0.5 w-10 bg-primary-400" />
-        </div>
+            <div className="mt-8 hidden lg:block">
+              <Button href="/services" variant="outline" size="md">
+                Browse all services
+                <ArrowRight size={16} className="ml-2" />
+              </Button>
+            </div>
+          </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
-          {departments.map((dept) => (
-            <div
-              key={dept.title}
-              className="flex items-center gap-3 rounded-lg border border-primary-500/20 bg-white/[0.02] p-4 transition-transform duration-200 hover:-translate-y-0.5 sm:gap-4 sm:p-5"
-            >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded border border-primary-400/30 bg-primary-500/10 sm:h-[60px] sm:w-[60px]">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="h-7 w-7 text-primary-400 sm:h-8 sm:w-8"
-                >
-                  {dept.svg}
-                </svg>
+          <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-2 sm:p-3">
+            <div className="grid grid-cols-1 divide-y divide-slate-200/70 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+              <div className="flex flex-col divide-y divide-slate-200/70">
+                {CENTERS_OF_EXCELLENCE.slice(0, 3).map((item) => (
+                  <ExcellenceItem key={item.title} item={item} />
+                ))}
               </div>
-              <div className="min-w-0 text-left">
-                <h3 className="text-sm font-semibold text-slate-50 sm:text-[15px]">
-                  {dept.title}
-                </h3>
-                <p className="mt-1 text-[11px] leading-relaxed text-slate-300/80 sm:max-w-none">
-                  {dept.desc}
-                </p>
+              <div className="flex flex-col divide-y divide-slate-200/70">
+                {CENTERS_OF_EXCELLENCE.slice(3).map((item) => (
+                  <ExcellenceItem key={item.title} item={item} />
+                ))}
               </div>
             </div>
-          ))}
+          </div>
+        </div>
+
+        <div className="mt-8 text-center lg:hidden">
+          <Button href="/services" variant="outline" size="md">
+            Browse all services
+            <ArrowRight size={16} className="ml-2" />
+          </Button>
         </div>
       </div>
     </section>

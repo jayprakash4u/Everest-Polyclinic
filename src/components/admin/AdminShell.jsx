@@ -7,6 +7,7 @@ import { useMemo, useState } from "react";
 import {
   BookOpen,
   HelpCircle,
+  ImageIcon,
   Inbox,
   LayoutDashboard,
   MessageSquareQuote,
@@ -23,8 +24,9 @@ const NAV_ITEMS = [
   { href: "/admin/doctors", label: "Doctors", icon: Stethoscope },
   { href: "/admin/homepage-specialists", label: "Homepage Specialists", icon: Users },
   { href: "/admin/health-packages", label: "Health Packages", icon: Package },
+  { href: "/admin/gallery", label: "Gallery", icon: ImageIcon },
   { href: "/admin/blog", label: "Blog Posts", icon: BookOpen },
-  { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
+  { href: "/admin/testimonials", label: "Patient Trust", icon: MessageSquareQuote },
   { href: "/admin/faqs", label: "FAQs", icon: HelpCircle },
   { href: "/admin/site-settings", label: "Site Settings", icon: Settings },
 ];
@@ -35,8 +37,9 @@ const PAGE_TITLES = {
   "/admin/doctors": "Doctors",
   "/admin/homepage-specialists": "Homepage Specialists",
   "/admin/health-packages": "Health Packages",
+  "/admin/gallery": "Gallery",
   "/admin/blog": "Blog Posts",
-  "/admin/testimonials": "Testimonials",
+  "/admin/testimonials": "Patient Trust",
   "/admin/faqs": "FAQs",
   "/admin/site-settings": "Site Settings",
 };

@@ -1,8 +1,6 @@
 import { getHealthIcon } from "@/lib/health-icons";
 import { getServiceIcon } from "@/lib/service-icons";
-import Image from "next/image";
 import { Stethoscope } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export default function ServicePageIcon({
   icon,
@@ -10,21 +8,10 @@ export default function ServicePageIcon({
   size = 28,
   className = "",
 }) {
-  if (iconSet === "image") {
-    return (
-      <Image
-        src={icon}
-        alt="Service icon"
-        fill
-        className="h-full w-full object-contain"
-      />
-    );
-  }
-
   if (iconSet === "health") {
     const HealthIcon = getHealthIcon(icon);
     if (HealthIcon) {
-      const healthSize = Math.round(size * 1.2);
+      const healthSize = Math.round(size * 1.15);
       return (
         <HealthIcon
           width={healthSize}

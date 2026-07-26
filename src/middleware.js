@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
-import {
-  ADMIN_SESSION_COOKIE,
-  isAdminDevBypassEnabled,
-} from "@/lib/auth-constants";
+import { ADMIN_SESSION_COOKIE } from "@/lib/auth-constants";
 
 function getSecretKey() {
   const secret =
@@ -24,26 +21,28 @@ export async function middleware(request) {
     return response;
   }
 
-  if (isAdminDevBypassEnabled()) {
-    return response;
-  }
-
   const token = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
 
   if (!token) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
+    const redirect = NextResponse.redirect(new URL("/admin/login", request.url));
+    redirect.headers.set("Cache-Control", "no-store");
+    return redirect;
   }
 
   try {
     await jwtVerify(token, getSecretKey());
+    const response = NextResponse.next();
+    response.headers.set("x-pathname", pathname);
+    response.headers.set("Cache-Control", "no-store");
     return response;
   } catch {
     const redirect = NextResponse.redirect(new URL("/admin/login", request.url));
-    redirect.cookies.delete(ADMIN_SESSION_COOKIE);
+    redirect.cookies.set(ADMIN_SESSION_COOKIE, "", { path: "/", maxAge: 0 });
+    redirect.headers.set("Cache-Control", "no-store");
     return redirect;
   }
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|images|api/health).*)"],
+  matcher: ["/admin", "/admin/:path*"],
 };

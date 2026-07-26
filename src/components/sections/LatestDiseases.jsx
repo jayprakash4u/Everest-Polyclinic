@@ -1,15 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import HealthPackageCard from "@/components/sections/HealthPackageCard";
 import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
 import { HOMEPAGE_HEALTH_PACKAGES } from "@/constants/healthPackages";
+import HorizontalSnapCarousel, {
+  CarouselItem,
+  scrollCarouselPage,
+} from "@/components/ui/HorizontalSnapCarousel";
 import { cn } from "@/lib/utils";
 
-export default function LatestDiseases() {
-  const scrollRef = useRef(null);
+export default function LatestDiseases({
+  packages = HOMEPAGE_HEALTH_PACKAGES,
+}) {
+  const carouselRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [bookingOpen, setBookingOpen] = useState(false);
@@ -25,28 +31,14 @@ export default function LatestDiseases() {
     setSelectedPackage(null);
   };
 
-  const checkScroll = () => {
-    if (!scrollRef.current) return;
-    setCanScrollLeft(scrollRef.current.scrollLeft > 0);
-    setCanScrollRight(
-      scrollRef.current.scrollLeft <
-        scrollRef.current.scrollWidth - scrollRef.current.clientWidth - 10,
-    );
+  const handleScrollState = ({ canScrollLeft: left, canScrollRight: right, el }) => {
+    carouselRef.current = el;
+    setCanScrollLeft(left);
+    setCanScrollRight(right);
   };
 
-  useEffect(() => {
-    checkScroll();
-    window.addEventListener("resize", checkScroll);
-    return () => window.removeEventListener("resize", checkScroll);
-  }, []);
-
   const scroll = (direction) => {
-    if (!scrollRef.current) return;
-    const amount = Math.min(scrollRef.current.clientWidth * 0.85, 320);
-    scrollRef.current.scrollBy({
-      left: direction === "left" ? -amount : amount,
-      behavior: "smooth",
-    });
+    scrollCarouselPage(carouselRef.current, direction);
   };
 
   return (
@@ -111,20 +103,16 @@ export default function LatestDiseases() {
           </div>
         </div>
 
-        <div
-          ref={scrollRef}
-          onScroll={checkScroll}
-          className="hide-scrollbar -mx-1 flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-2 pt-2"
+        <HorizontalSnapCarousel
+          showArrows={false}
+          onScrollStateChange={handleScrollState}
         >
-          {HOMEPAGE_HEALTH_PACKAGES.map((pkg) => (
-            <div
-              key={pkg.id}
-              className="w-[min(88vw,280px)] shrink-0 snap-center sm:w-[300px]"
-            >
+          {packages.map((pkg) => (
+            <CarouselItem key={pkg.id}>
               <HealthPackageCard pkg={pkg} onBookNow={handleBookPackage} />
-            </div>
+            </CarouselItem>
           ))}
-        </div>
+        </HorizontalSnapCarousel>
 
         <div className="mt-6 text-center md:hidden">
           <Link

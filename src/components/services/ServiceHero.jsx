@@ -1,8 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, Check, ChevronRight, Headphones, Phone } from "lucide-react";
+import {
+  Calendar,
+  Check,
+  ChevronRight,
+  Clock3,
+  Headphones,
+  Phone,
+  ShieldCheck,
+} from "lucide-react";
 import ServicePageIcon from "./ServicePageIcon";
 import Button from "@/components/ui/Button";
+import Badge from "@/components/ui/Badge";
 import { SITE } from "@/constants";
 
 export default function ServiceHero({ page }) {
@@ -10,8 +19,17 @@ export default function ServiceHero({ page }) {
   const displayTitle = hero.headline ?? hero.title;
 
   return (
-    <section className="border-b border-slate-100 bg-white">
-      <div className="container mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16 lg:py-20">
+    <section className="relative overflow-hidden border-b border-slate-100 bg-gradient-to-br from-slate-50 via-white to-primary-50/20">
+      <div
+        className="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-primary-100/30 blur-3xl"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-secondary-100/25 blur-3xl"
+        aria-hidden
+      />
+
+      <div className="container relative mx-auto max-w-6xl px-4 py-10 sm:px-6 md:py-14 lg:py-16">
         <nav
           aria-label="Breadcrumb"
           className="flex flex-wrap items-center gap-1.5 text-sm text-slate-500"
@@ -23,45 +41,45 @@ export default function ServiceHero({ page }) {
           <span className="font-medium text-slate-700">{title}</span>
         </nav>
 
-        <div className="mt-10 grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+        <div className="mt-8 grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
           <div>
             {hero.eyebrow ? (
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary-600">
+              <Badge variant="primary" className="mb-4">
                 {hero.eyebrow}
-              </p>
+              </Badge>
             ) : null}
-            <h1
-              className={`font-heading text-4xl font-bold leading-[1.08] tracking-tight text-[#1a3a5c] md:text-5xl lg:text-[3.25rem] ${hero.eyebrow ? "mt-3" : "mt-4"} ${hero.headline ? "" : "uppercase"}`}
-            >
+
+            <h1 className="font-heading text-4xl font-bold leading-[1.08] tracking-tight text-slate-900 md:text-5xl lg:text-[3.15rem]">
               {displayTitle}
             </h1>
+
             <p className="mt-5 max-w-xl text-base leading-relaxed text-slate-600 md:text-lg">
               {hero.description}
             </p>
 
-             {hero.features.length ? (
-               <div className="mt-8 grid grid-cols-2 gap-5 sm:grid-cols-4">
-                 {hero.features.map((feature) => (
-                   <div key={feature.label} className="text-center sm:text-left">
-                     <div className="relative mx-auto mb-4 flex h-[4.25rem] w-[4.25rem] items-center justify-center rounded-2xl bg-white shadow-[0_2px_12px_rgba(15,23,42,0.06)] ring-1 ring-slate-200/80 sm:mx-0 md:h-[5rem] md:w-[5rem]">
-                       <ServicePageIcon
-                         icon={feature.icon}
-                         iconSet={feature.iconSet ?? "lucide"}
-                         size={38}
-                       />
-                     </div>
-                     <p className="text-[13px] font-semibold leading-snug text-slate-700 md:text-sm">
-                       {feature.label}
-                     </p>
-                   </div>
-                 ))}
-               </div>
-             ) : (
-              <ul className="mt-8 space-y-3">
+            {hero.features.length ? (
+              <ul className="mt-7 flex flex-wrap gap-2.5">
+                {hero.features.map((feature) => (
+                  <li
+                    key={feature.label}
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm"
+                  >
+                    <ServicePageIcon
+                      icon={feature.icon}
+                      iconSet={feature.iconSet ?? "lucide"}
+                      size={16}
+                      className="text-primary-600"
+                    />
+                    {feature.label}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <ul className="mt-7 space-y-3">
                 {hero.highlights.map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-slate-700">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-secondary-100 text-secondary-600">
-                      <Check size={14} strokeWidth={2.5} />
+                  <li key={item} className="flex items-start gap-3 text-slate-700">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-secondary-100 text-secondary-600">
+                      <Check size={12} strokeWidth={2.5} />
                     </span>
                     <span className="text-sm font-medium md:text-base">{item}</span>
                   </li>
@@ -69,7 +87,7 @@ export default function ServiceHero({ page }) {
               </ul>
             )}
 
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link href="/contact">
                 <Button size="lg" className="w-full rounded-full sm:w-auto">
                   <Calendar size={18} />
@@ -80,11 +98,9 @@ export default function ServiceHero({ page }) {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="w-full rounded-full sm:w-auto"
+                  className="w-full rounded-full border-slate-200 bg-white sm:w-auto"
                 >
-                  {hero.secondaryCtaLabel === "Talk to Expert" ||
-                  hero.secondaryCtaLabel === "Talk to Our Expert" ||
-                  hero.secondaryCtaLabel === "Talk to Pharmacist" ? (
+                  {hero.secondaryCtaLabel?.toLowerCase().includes("talk") ? (
                     <Headphones size={18} />
                   ) : (
                     <Phone size={18} />
@@ -93,19 +109,37 @@ export default function ServiceHero({ page }) {
                 </Button>
               </a>
             </div>
+
+            <div className="mt-8 flex flex-wrap gap-4 border-t border-slate-100 pt-6 text-sm text-slate-600">
+              <span className="inline-flex items-center gap-2">
+                <ShieldCheck size={16} className="text-secondary-600" />
+                Licensed specialists
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <Clock3 size={16} className="text-secondary-600" />
+                {SITE.workingHours}
+              </span>
+            </div>
           </div>
 
-          <div className="relative mx-auto w-full max-w-lg lg:max-w-none">
-            <div className="absolute -right-4 -top-4 h-full w-full rounded-[2rem] border-2 border-primary-200/80" />
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-slate-200/80 bg-slate-50 shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
+          <div className="relative mx-auto w-full max-w-xl lg:mx-0 lg:max-w-none">
+            <div className="relative aspect-[5/4] overflow-hidden rounded-3xl bg-slate-100 shadow-[0_24px_64px_rgba(15,23,42,0.10)] ring-1 ring-slate-200/80">
               <Image
                 src={hero.image}
-                alt={`${title} consultation`}
+                alt={`${title} at Everest Polyclinic`}
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 520px"
                 priority
               />
+            </div>
+            <div className="absolute -bottom-4 -left-4 hidden rounded-2xl border border-white/80 bg-white/95 px-4 py-3 shadow-lg backdrop-blur sm:block">
+              <p className="text-xs font-semibold uppercase tracking-wide text-primary-600">
+                Everest Polyclinic
+              </p>
+              <p className="mt-0.5 text-sm font-medium text-slate-700">
+                Trusted care in Kathmandu
+              </p>
             </div>
           </div>
         </div>

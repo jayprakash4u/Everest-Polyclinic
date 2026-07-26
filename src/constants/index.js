@@ -92,6 +92,33 @@ export const TESTIMONIALS = [
       "The lab reports came on WhatsApp within hours. So convenient and the results were very accurate.",
     avatar: "/avatars/priya.jpg",
   },
+  {
+    id: 4,
+    name: "Anil Gurung",
+    location: "Bhaktapur",
+    rating: 5,
+    review:
+      "Booked a full health checkup for my parents. Everything was well organised — from registration to consultation and reports.",
+    avatar: "/avatars/anil.jpg",
+  },
+  {
+    id: 5,
+    name: "Mina Rai",
+    location: "Kathmandu",
+    rating: 5,
+    review:
+      "The pediatric team was patient and kind with my daughter. Clear explanation of treatment and follow-up care made us feel confident.",
+    avatar: "/avatars/mina.jpg",
+  },
+  {
+    id: 6,
+    name: "Bikash Shrestha",
+    location: "Chitwan",
+    rating: 5,
+    review:
+      "Used telemedicine for a follow-up after travel. Quick, professional, and the doctor reviewed my reports thoroughly online.",
+    avatar: "/avatars/bikash.jpg",
+  },
 ];
 
 export const FOOTER_LINKS = {

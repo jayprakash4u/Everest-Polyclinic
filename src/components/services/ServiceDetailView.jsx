@@ -10,7 +10,7 @@ export default function ServiceDetailView({ service }) {
   const page = normalizeServicePage(service);
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white text-slate-900">
       <ServiceHero page={page} />
       <AboutConditions page={page} />
       <ServiceOfferings page={page} />
