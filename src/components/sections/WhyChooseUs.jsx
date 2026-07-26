@@ -161,17 +161,20 @@ export default function WhyChooseUs() {
               className="mb-8 sm:mb-10"
             />
 
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div className="grid grid-cols-2 gap-3 sm:gap-5">
               {WHY_CHOOSE_US.map((item) => (
-                <div key={item.title} className="flex gap-4">
-                  <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
+                <div
+                  key={item.title}
+                  className="flex flex-col items-center gap-2 text-center sm:flex-row sm:items-start sm:gap-4 sm:text-left"
+                >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center sm:h-12 sm:w-12 [&_svg]:h-10 [&_svg]:w-10 sm:[&_svg]:h-12 sm:[&_svg]:w-12">
                     {React.createElement(ICONS[item.icon])}
                   </div>
-                  <div>
-                    <h4 className="font-heading font-semibold text-slate-800 mb-1">
+                  <div className="min-w-0">
+                    <h4 className="mb-1 font-heading text-xs font-semibold leading-snug text-slate-800 sm:text-base">
                       {item.title}
                     </h4>
-                    <p className="text-slate-500 text-sm leading-relaxed">
+                    <p className="text-[11px] leading-relaxed text-slate-500 line-clamp-3 sm:line-clamp-none sm:text-sm">
                       {item.description}
                     </p>
                   </div>

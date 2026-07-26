@@ -4,35 +4,56 @@ import SectionHeader from "@/components/ui/SectionHeader";
 import Button from "@/components/ui/Button";
 import BrandIconImage from "@/components/ui/BrandIconImage";
 import { CENTERS_OF_EXCELLENCE } from "@/constants/centerOfExcellence";
+import { cn } from "@/lib/utils";
 
-function ExcellenceItem({ item }) {
+function ExcellenceItem({ item, layout = "horizontal" }) {
   const href = item.slug ? `/services/${item.slug}` : "/contact";
+  const isCompact = layout === "compact";
 
   return (
     <Link
       href={href}
-      className="group flex items-start gap-4 rounded-xl border border-transparent p-4 transition-colors hover:border-slate-200 hover:bg-slate-50/80 sm:gap-5 sm:p-5"
+      className={cn(
+        "group flex h-full rounded-xl border border-transparent transition-colors hover:border-slate-200 hover:bg-slate-50/80",
+        isCompact
+          ? "flex-col items-center p-3 text-center"
+          : "items-start gap-4 p-4 sm:gap-5 sm:p-5",
+      )}
     >
       <BrandIconImage
         src={item.image}
         alt={item.title}
-        size={72}
+        size={isCompact ? 52 : 72}
         rounded="full"
         variant="brand"
-        className="shadow-md ring-4 ring-primary-100/80"
+        className="shrink-0 shadow-md ring-4 ring-primary-100/80"
       />
 
-      <div className="min-w-0 flex-1 pt-1">
-        <h3 className="font-heading text-base font-bold text-slate-900 sm:text-[17px]">
+      <div className={cn("min-w-0 flex-1", isCompact ? "mt-2" : "pt-1")}>
+        <h3
+          className={cn(
+            "font-heading font-bold leading-snug text-slate-900",
+            isCompact ? "text-sm" : "text-base sm:text-[17px]",
+          )}
+        >
           {item.title}
         </h3>
-        <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
+        <p
+          className={cn(
+            "leading-relaxed text-slate-600",
+            isCompact
+              ? "mt-1 line-clamp-2 text-[11px]"
+              : "mt-1.5 text-sm",
+          )}
+        >
           {item.description}
         </p>
-        <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-primary-600 opacity-0 transition group-hover:opacity-100 sm:text-[13px]">
-          {item.slug ? "View service" : "Contact us"}
-          <ArrowRight size={14} />
-        </span>
+        {!isCompact ? (
+          <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-primary-600 opacity-0 transition group-hover:opacity-100 sm:text-[13px]">
+            {item.slug ? "View service" : "Contact us"}
+            <ArrowRight size={14} />
+          </span>
+        ) : null}
       </div>
     </Link>
   );
@@ -42,7 +63,7 @@ export default function CenterOfExcellenceSection() {
   return (
     <section className="bg-white py-16 md:py-20">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,380px)_1fr] lg:gap-16 xl:gap-20">
+        <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,380px)_1fr] lg:gap-16 xl:gap-20">
           <div className="lg:sticky lg:top-24">
             <SectionHeader
               badge="Specialist departments"
@@ -62,7 +83,19 @@ export default function CenterOfExcellenceSection() {
           </div>
 
           <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-2 sm:p-3">
-            <div className="grid grid-cols-1 divide-y divide-slate-200/70 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+            {/* Mobile: 2 cards per row */}
+            <div className="grid grid-cols-2 gap-2 sm:hidden">
+              {CENTERS_OF_EXCELLENCE.map((item) => (
+                <ExcellenceItem
+                  key={item.title}
+                  item={item}
+                  layout="compact"
+                />
+              ))}
+            </div>
+
+            {/* Tablet+: two columns of three */}
+            <div className="hidden grid-cols-2 divide-x divide-slate-200/70 sm:grid">
               <div className="flex flex-col divide-y divide-slate-200/70">
                 {CENTERS_OF_EXCELLENCE.slice(0, 3).map((item) => (
                   <ExcellenceItem key={item.title} item={item} />
