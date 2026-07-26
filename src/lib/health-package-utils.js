@@ -56,6 +56,7 @@ export function mapPackageForClient(row) {
     testsJson: row.testsJson,
     sortOrder: row.sortOrder,
     isActive: row.isActive,
+    showOnHomepage: row.showOnHomepage ?? false,
     section: row.section
       ? {
           id: row.section.id,

@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import { ADMIN_SESSION_COOKIE, getDevAdminSession, isAdminDevBypassEnabled } from "@/lib/auth-constants";
+import { ADMIN_SESSION_COOKIE } from "@/lib/auth-constants";
 
 function getSessionSecret() {
   const secret = process.env.ADMIN_SESSION_SECRET;
@@ -64,10 +64,6 @@ export async function getAdminSession() {
     return session;
   }
 
-  if (isAdminDevBypassEnabled()) {
-    return getDevAdminSession();
-  }
-
   return null;
 }
 
@@ -84,5 +80,11 @@ export async function setAdminSessionCookie(token) {
 
 export async function clearAdminSessionCookie() {
   const cookieStore = await cookies();
-  cookieStore.delete(ADMIN_SESSION_COOKIE);
+  cookieStore.set(ADMIN_SESSION_COOKIE, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
 }

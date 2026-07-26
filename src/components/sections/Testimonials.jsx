@@ -1,8 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import Card from "@/components/ui/Card";
+import HorizontalSnapCarousel, {
+  CarouselItem,
+  getCarouselActiveIndex,
+  scrollCarouselPage,
+  scrollCarouselToIndex,
+} from "@/components/ui/HorizontalSnapCarousel";
 import { TESTIMONIALS } from "@/constants";
 import { cn } from "@/lib/utils";
 
@@ -64,157 +70,104 @@ function TestimonialCard({ testimonial, className }) {
 }
 
 export default function Testimonials({ testimonials = TESTIMONIALS }) {
-  const scrollRef = useRef(null);
+  const [carouselEl, setCarouselEl] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
-  const updateScrollState = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-
-    setCanScrollLeft(el.scrollLeft > 4);
-    setCanScrollRight(
-      el.scrollLeft < el.scrollWidth - el.clientWidth - 4,
-    );
-
-    const firstCard = el.querySelector("[data-testimonial-card]");
-    if (!firstCard) return;
-
-    const cardWidth = firstCard.getBoundingClientRect().width;
-    const gap = 16;
-    const index = Math.round(el.scrollLeft / (cardWidth + gap));
-    setActiveIndex(Math.min(index, testimonials.length - 1));
-  }, []);
-
-  useEffect(() => {
-    updateScrollState();
-    window.addEventListener("resize", updateScrollState);
-    return () => window.removeEventListener("resize", updateScrollState);
-  }, [updateScrollState]);
+  const handleScrollState = useCallback(
+    ({ canScrollLeft: left, canScrollRight: right, el }) => {
+      setCarouselEl(el);
+      setCanScrollLeft(left);
+      setCanScrollRight(right);
+      setActiveIndex(getCarouselActiveIndex(el));
+    },
+    [],
+  );
 
   const scroll = (direction) => {
-    const el = scrollRef.current;
-    if (!el) return;
-
-    const firstCard = el.querySelector("[data-testimonial-card]");
-    const cardWidth = firstCard?.getBoundingClientRect().width ?? el.clientWidth * 0.85;
-    el.scrollBy({
-      left: direction === "left" ? -(cardWidth + 16) : cardWidth + 16,
-      behavior: "smooth",
-    });
+    if (!carouselEl) return;
+    scrollCarouselPage(carouselEl, direction);
   };
 
   const scrollToIndex = (index) => {
-    const el = scrollRef.current;
-    if (!el) return;
-
-    const firstCard = el.querySelector("[data-testimonial-card]");
-    const cardWidth = firstCard?.getBoundingClientRect().width ?? el.clientWidth * 0.85;
-    el.scrollTo({
-      left: index * (cardWidth + 16),
-      behavior: "smooth",
-    });
+    scrollCarouselToIndex(carouselEl, index);
   };
 
   return (
-    <section className="relative overflow-hidden bg-[#fcfdfe] py-12 sm:py-16 md:py-20 lg:py-24">
-      <div className="pointer-events-none absolute left-1/2 top-0 h-full w-full max-w-7xl -translate-x-1/2">
+    <section className="relative bg-[#fcfdfe] py-12 sm:py-16 md:py-20 lg:py-24">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -left-20 top-24 h-64 w-64 rounded-full bg-primary-500/5 blur-3xl sm:h-96 sm:w-96" />
         <div className="absolute -right-20 bottom-24 h-64 w-64 rounded-full bg-secondary-500/5 blur-3xl sm:h-96 sm:w-96" />
       </div>
 
-      <div className="container relative z-10 mx-auto px-4 sm:px-6">
-        <div className="mb-6 sm:mb-8">
-          <h2 className="text-lg font-bold uppercase tracking-tight text-text-dark sm:text-xl">
-            Patient Trust
-          </h2>
-          <div className="mt-1 flex items-center gap-2">
-            <div className="h-0.5 w-8 bg-secondary-500" />
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-primary-400">
-              Voices of care
-            </p>
+      <div className="container relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 className="text-lg font-bold uppercase tracking-tight text-text-dark sm:text-xl">
+              Patient Trust
+            </h2>
+            <div className="mt-1 flex items-center gap-2">
+              <div className="h-0.5 w-8 bg-secondary-500" />
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-primary-400">
+                Voices of care
+              </p>
+            </div>
           </div>
-        </div>
 
-        {/* Mobile & tablet carousel */}
-        <div className="md:hidden">
-          <div className="relative">
+          <div className="flex shrink-0 gap-2 self-start sm:self-auto">
             <button
               type="button"
               onClick={() => scroll("left")}
               disabled={!canScrollLeft}
               aria-label="Previous testimonial"
               className={cn(
-                "absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full border p-2 shadow-md transition-all",
-                !canScrollLeft
-                  ? "cursor-not-allowed border-slate-100 bg-white/80 text-slate-300"
-                  : "border-primary-100 bg-white text-primary-600 hover:bg-primary-50",
+                "rounded-lg border border-slate-200 bg-white p-2.5 shadow-sm transition hover:border-primary-200 hover:bg-primary-50 disabled:cursor-not-allowed disabled:opacity-40",
               )}
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft className="h-5 w-5 text-primary-600" />
             </button>
-
-            <div
-              ref={scrollRef}
-              onScroll={updateScrollState}
-              className="hide-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto px-8 py-1"
-            >
-              {testimonials.map((testimonial) => (
-                <div
-                  key={testimonial.id}
-                  data-testimonial-card
-                  className="w-[min(82vw,320px)] shrink-0 snap-center"
-                >
-                  <TestimonialCard testimonial={testimonial} />
-                </div>
-              ))}
-            </div>
-
             <button
               type="button"
               onClick={() => scroll("right")}
               disabled={!canScrollRight}
               aria-label="Next testimonial"
               className={cn(
-                "absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full border p-2 shadow-md transition-all",
-                !canScrollRight
-                  ? "cursor-not-allowed border-slate-100 bg-white/80 text-slate-300"
-                  : "border-primary-100 bg-white text-primary-600 hover:bg-primary-50",
+                "rounded-lg border border-slate-200 bg-white p-2.5 shadow-sm transition hover:border-primary-200 hover:bg-primary-50 disabled:cursor-not-allowed disabled:opacity-40",
               )}
             >
-              <ChevronRight size={18} />
+              <ChevronRight className="h-5 w-5 text-primary-600" />
             </button>
           </div>
-
-          <div className="mt-5 flex items-center justify-center gap-2">
-            {testimonials.map((testimonial, index) => (
-              <button
-                key={testimonial.id}
-                type="button"
-                aria-label={`Go to review ${index + 1}`}
-                onClick={() => scrollToIndex(index)}
-                className={cn(
-                  "h-1.5 rounded-full transition-all duration-300",
-                  activeIndex === index
-                    ? "w-6 bg-primary-600"
-                    : "w-1.5 bg-slate-300 hover:bg-slate-400",
-                )}
-              />
-            ))}
-          </div>
-
-          <p className="mt-3 text-center text-[11px] font-medium text-slate-400">
-            Swipe to read more patient stories
-          </p>
         </div>
 
-        {/* Desktop masonry grid */}
-        <div className="hidden columns-1 gap-6 space-y-6 md:block md:columns-2 md:gap-8 md:space-y-8 lg:columns-3">
+        <HorizontalSnapCarousel
+          showArrows={false}
+          minCardWidth={280}
+          maxColumns={3}
+          onScrollStateChange={handleScrollState}
+        >
           {testimonials.map((testimonial) => (
-            <div key={testimonial.id} className="break-inside-avoid">
+            <CarouselItem key={testimonial.id}>
               <TestimonialCard testimonial={testimonial} />
-            </div>
+            </CarouselItem>
+          ))}
+        </HorizontalSnapCarousel>
+
+        <div className="mt-6 flex items-center justify-center gap-2">
+          {testimonials.map((testimonial, index) => (
+            <button
+              key={testimonial.id}
+              type="button"
+              aria-label={`Go to review ${index + 1}`}
+              onClick={() => scrollToIndex(index)}
+              className={cn(
+                "h-1.5 rounded-full transition-all duration-300",
+                activeIndex === index
+                  ? "w-6 bg-primary-600"
+                  : "w-1.5 bg-slate-300 hover:bg-slate-400",
+              )}
+            />
           ))}
         </div>
       </div>

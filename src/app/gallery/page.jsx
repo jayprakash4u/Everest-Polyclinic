@@ -1,4 +1,5 @@
 import TreatmentGallery from "@/components/sections/TreatmentGallery";
+import { getGalleryImages } from "@/lib/data/gallery";
 
 export const metadata = {
   title: "Gallery - Everest International Polyclinic",
@@ -6,7 +7,9 @@ export const metadata = {
     "View photos from Everest International Polyclinic — our facilities, emergency care, and patient services.",
 };
 
-export default function GalleryPage() {
+export default async function GalleryPage() {
+  const images = await getGalleryImages();
+
   return (
     <main className="min-h-screen bg-white">
       <section className="border-b border-slate-100 bg-primary-900 py-14 md:py-16">
@@ -23,7 +26,9 @@ export default function GalleryPage() {
           </p>
         </div>
       </section>
-      <TreatmentGallery />
+      <div className="container mx-auto max-w-6xl px-4 py-10 sm:px-6 md:py-14">
+        <TreatmentGallery images={images} />
+      </div>
     </main>
   );
 }

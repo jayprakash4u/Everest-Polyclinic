@@ -24,6 +24,7 @@ model SiteSetting {
 model AdminUser {
   id           Int      @id @default(autoincrement())
   name         String   @db.NVarChar(150)
+  username     String   @unique @db.NVarChar(100)
   email        String   @unique @db.NVarChar(200)
   passwordHash String   @db.NVarChar(500)
   role         String   @default("admin") @db.NVarChar(50)
@@ -108,6 +109,7 @@ model HealthPackage {
   originalPrice Int?
   badge         String?              @db.NVarChar(100)
   testsJson     String               @db.NVarChar(Max)
+  showOnHomepage Boolean             @default(false)
   sortOrder     Int                  @default(0)
   isActive      Boolean              @default(true)
   section       HealthPackageSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
@@ -205,5 +207,15 @@ model MediaAsset {
   alt       String?  @db.NVarChar(300)
   mimeType  String?  @db.NVarChar(100)
   sizeBytes Int?
+  createdAt DateTime @default(now())
+}
+
+model GalleryImage {
+  id        Int      @id @default(autoincrement())
+  src       String   @db.NVarChar(500)
+  alt       String   @db.NVarChar(300)
+  caption   String?  @db.NVarChar(300)
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 }

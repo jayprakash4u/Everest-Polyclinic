@@ -12,6 +12,7 @@ const EMPTY_STATS = {
   blogPosts: 0,
   testimonials: 0,
   homepageSpecialists: 0,
+  galleryImages: 0,
   latestItems: [],
 };
 
@@ -33,6 +34,7 @@ export async function getAdminDashboardStats() {
       blogPosts,
       testimonials,
       homepageSpecialists,
+      galleryImages,
       latestAppointments,
       latestContacts,
     ] = await Promise.all([
@@ -45,6 +47,7 @@ export async function getAdminDashboardStats() {
       prisma.blogPost.count({ where: { isPublished: true } }),
       prisma.testimonial.count({ where: { isActive: true } }),
       prisma.doctor.count({ where: { isActive: true, showOnHomepage: true } }),
+      prisma.galleryImage.count({ where: { isActive: true } }),
       prisma.appointmentRequest.findMany({
         orderBy: { createdAt: "desc" },
         take: 5,
@@ -87,6 +90,7 @@ export async function getAdminDashboardStats() {
       blogPosts,
       testimonials,
       homepageSpecialists,
+      galleryImages,
       latestItems,
     };
   } catch (error) {

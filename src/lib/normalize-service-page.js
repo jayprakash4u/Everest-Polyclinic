@@ -1,3 +1,5 @@
+import { getOfferingImage } from "@/constants/services/offeringImages";
+
 function splitAbout(text = "") {
   return String(text)
     .split(/\n\n+/)
@@ -11,16 +13,21 @@ function buildOfferingDescription(title) {
 }
 
 function normalizeOfferings(service) {
-  if (service.serviceOfferings?.length) {
-    return service.serviceOfferings;
-  }
+  const raw = service.serviceOfferings?.length
+    ? service.serviceOfferings
+    : (service.treatments ?? []).map((title) => ({
+        icon: service.icon,
+        iconSet: "lucide",
+        title,
+        description: buildOfferingDescription(title),
+      }));
 
-  const treatments = service.treatments ?? [];
-  return treatments.map((title) => ({
-    icon: service.icon,
-    iconSet: "lucide",
-    title,
-    description: buildOfferingDescription(title),
+  return raw.map((offering) => ({
+    ...offering,
+    image:
+      offering.image ??
+      getOfferingImage(service.slug, offering.title) ??
+      null,
   }));
 }
 

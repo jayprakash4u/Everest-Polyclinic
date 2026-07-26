@@ -49,6 +49,7 @@ export async function POST(request) {
       testsJson: JSON.stringify(tests),
       sortOrder: Number(body.sortOrder) || 0,
       isActive: body.isActive ?? true,
+      showOnHomepage: body.showOnHomepage ?? false,
     },
     include: { section: true },
   });
@@ -80,6 +81,7 @@ export async function PUT(request) {
       testsJson: JSON.stringify(tests),
       sortOrder: Number(body.sortOrder) || 0,
       isActive: body.isActive ?? true,
+      showOnHomepage: body.showOnHomepage ?? false,
     },
     include: { section: true },
   });

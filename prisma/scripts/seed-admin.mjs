@@ -10,20 +10,21 @@ function hashPassword(password) {
 }
 
 async function main() {
+  const adminUsername = (process.env.ADMIN_USERNAME ?? "admin").toLowerCase();
   const adminEmail = process.env.ADMIN_EMAIL ?? "admin@everestpolyclinic.com";
-  const adminPassword = process.env.ADMIN_PASSWORD ?? "ChangeMe123!";
+  const adminPassword = process.env.ADMIN_PASSWORD ?? "Admin123";
   const passwordHash = hashPassword(adminPassword);
 
   const connection = await odbc.connect(connectionString);
 
   await connection.query(`
-    IF NOT EXISTS (SELECT 1 FROM AdminUser WHERE email = '${adminEmail.replace(/'/g, "''")}')
-    INSERT INTO AdminUser (name, email, passwordHash, role, isActive, createdAt, updatedAt)
-    VALUES ('Site Administrator', '${adminEmail.replace(/'/g, "''")}', '${passwordHash}', 'super_admin', 1, GETDATE(), GETDATE())
+    IF NOT EXISTS (SELECT 1 FROM AdminUser WHERE username = '${adminUsername.replace(/'/g, "''")}')
+    INSERT INTO AdminUser (name, username, email, passwordHash, role, isActive, createdAt, updatedAt)
+    VALUES ('Site Administrator', '${adminUsername.replace(/'/g, "''")}', '${adminEmail.replace(/'/g, "''")}', '${passwordHash}', 'super_admin', 1, GETDATE(), GETDATE())
   `);
 
   const rows = await connection.query(
-    `SELECT id, email, role FROM AdminUser WHERE email = '${adminEmail.replace(/'/g, "''")}'`,
+    `SELECT id, username, email, role FROM AdminUser WHERE username = '${adminUsername.replace(/'/g, "''")}'`,
   );
 
   console.log("Admin user ready:", rows[0]);

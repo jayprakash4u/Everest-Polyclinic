@@ -1,4 +1,63 @@
+import Link from "next/link";
+import { Check } from "lucide-react";
+import Image from "next/image";
 import ServicePageIcon from "./ServicePageIcon";
+import ServiceIconFrame from "./ServiceIconFrame";
+import ServiceSection from "./ServiceSection";
+import ServiceSectionHeader from "./ServiceSectionHeader";
+import { encodePublicPath } from "@/lib/encode-public-path";
+import { cn } from "@/lib/utils";
+
+function PackageOfferingCard({ offering }) {
+  return (
+    <article className="flex h-full flex-col rounded-2xl border border-slate-200/80 bg-white p-6 md:p-7">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h3 className="font-heading text-lg font-bold text-slate-900 md:text-xl">
+            {offering.title}
+          </h3>
+          {offering.price ? (
+            <p className="mt-2 font-heading text-2xl font-bold text-primary-600">
+              {offering.price}
+            </p>
+          ) : null}
+        </div>
+        {offering.badge ? (
+          <span className="shrink-0 rounded-md bg-secondary-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-secondary-700">
+            {offering.badge}
+          </span>
+        ) : null}
+      </div>
+
+      <div className="my-5 border-t border-slate-100" />
+
+      {offering.features?.length ? (
+        <ul className="flex-1 space-y-2.5">
+          {offering.features.map((feature) => (
+            <li
+              key={feature}
+              className="flex gap-2.5 text-sm leading-relaxed text-slate-600"
+            >
+              <Check
+                size={16}
+                className="mt-0.5 shrink-0 text-secondary-600"
+                strokeWidth={2}
+              />
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+
+      <Link
+        href={`/contact?package=${encodeURIComponent(offering.title)}`}
+        className="mt-6 inline-flex items-center justify-center rounded-lg border border-primary-200 bg-white px-4 py-2.5 text-sm font-semibold text-primary-700 transition hover:border-primary-300 hover:bg-primary-50"
+      >
+        Book appointment
+      </Link>
+    </article>
+  );
+}
 
 export default function ServiceOfferings({ page }) {
   const { offerings, sections } = page;
@@ -6,80 +65,81 @@ export default function ServiceOfferings({ page }) {
 
   if (!offerings.length) return null;
 
-  const gridClass =
-    offerings.length >= 5
-      ? "sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
-      : "sm:grid-cols-2 lg:grid-cols-3";
+  const isPackageSection = offerings.every(
+    (offering) => offering.price && offering.features?.length,
+  );
 
   return (
-    <section className="bg-[#f8fafc] py-20 md:py-24">
-      <div className="container mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          {meta.eyebrow ? (
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary-600">
-              {meta.eyebrow}
-            </p>
-          ) : null}
-          <h2
-            className={`font-heading text-3xl font-bold tracking-tight text-[#1a3a5c] md:text-4xl ${meta.eyebrow ? "mt-3" : ""}`}
-          >
-            {meta.title}
-          </h2>
-          {meta.subtitle ? (
-            <p className="mt-4 text-base leading-relaxed text-slate-600 md:text-lg">
-              {meta.subtitle}
-            </p>
-          ) : null}
-        </div>
+    <ServiceSection tone="muted" id={isPackageSection ? "packages" : undefined}>
+      <ServiceSectionHeader
+        badge={meta.eyebrow}
+        title={meta.title}
+        subtitle={meta.subtitle}
+      />
 
-        <div className={`mt-14 grid grid-cols-1 gap-5 ${gridClass}`}>
-          {offerings.map((offering) => (
+      <div
+        className={cn(
+          "mt-12 grid gap-5",
+          isPackageSection
+            ? "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+            : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+        )}
+      >
+        {offerings.map((offering) => {
+          if (isPackageSection) {
+            return <PackageOfferingCard key={offering.title} offering={offering} />;
+          }
+
+          const imageSrc = offering.image
+            ? encodePublicPath(offering.image)
+            : null;
+
+          return (
             <article
               key={offering.title}
-              className={`relative rounded-2xl border bg-white p-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md md:p-7 ${
-                offering.badge
-                  ? "border-primary-300 ring-1 ring-primary-200"
-                  : "border-slate-200/80"
-              }`}
+              className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm transition-shadow hover:shadow-md"
             >
-              {offering.badge ? (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary-600 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white">
-                  {offering.badge}
-                </span>
+              {imageSrc ? (
+                <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
+                  <Image
+                    src={imageSrc}
+                    alt={offering.title}
+                    fill
+                    className="object-cover transition duration-500 group-hover:scale-[1.03]"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                </div>
               ) : null}
-              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-50 text-primary-600 md:h-[4.5rem] md:w-[4.5rem]">
-                <ServicePageIcon
-                  icon={offering.icon}
-                  iconSet={offering.iconSet ?? "lucide"}
-                  size={34}
-                />
+
+              <div className="flex flex-1 flex-col p-6 md:p-7">
+                {!imageSrc ? (
+                  <div className="mb-5">
+                    <ServiceIconFrame size="md">
+                      <ServicePageIcon
+                        icon={offering.icon}
+                        iconSet={offering.iconSet ?? "lucide"}
+                        size={28}
+                      />
+                    </ServiceIconFrame>
+                  </div>
+                ) : null}
+
+                <h3 className="font-heading text-lg font-bold leading-snug text-slate-900">
+                  {offering.title}
+                </h3>
+
+                <div className="mt-4 flex-1">
+                  {offering.description ? (
+                    <p className="text-sm leading-relaxed text-slate-600 md:text-[15px]">
+                      {offering.description}
+                    </p>
+                  ) : null}
+                </div>
               </div>
-              <h3 className="font-heading text-lg font-bold text-[#1a3a5c]">
-                {offering.title}
-              </h3>
-              {offering.price ? (
-                <p className="mt-2 text-base font-bold text-primary-600">
-                  {offering.price}
-                </p>
-              ) : null}
-              {offering.features?.length ? (
-                <ul className="mt-4 space-y-2 text-left text-sm leading-relaxed text-slate-600">
-                  {offering.features.map((feature) => (
-                    <li key={feature} className="flex gap-2">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-500" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : offering.description ? (
-                <p className="mt-2 text-sm leading-relaxed text-slate-600 md:text-base">
-                  {offering.description}
-                </p>
-              ) : null}
             </article>
-          ))}
-        </div>
+          );
+        })}
       </div>
-    </section>
+    </ServiceSection>
   );
 }

@@ -11,7 +11,7 @@ export default function ServicePageIcon({
   if (iconSet === "health") {
     const HealthIcon = getHealthIcon(icon);
     if (HealthIcon) {
-      const healthSize = Math.round(size * 1.2);
+      const healthSize = Math.round(size * 1.15);
       return (
         <HealthIcon
           width={healthSize}

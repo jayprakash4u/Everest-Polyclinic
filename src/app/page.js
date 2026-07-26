@@ -7,6 +7,7 @@ import DownloadReportBookVisit from "@/components/sections/DownloadReportBookVis
 import Services from "@/components/sections/Services";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import Testimonials from "@/components/sections/Testimonials";
+import { getHomepageHealthPackages } from "@/lib/data/healthPackages";
 import { getHomepageSpecialists } from "@/lib/data/doctors";
 import { getTestimonials } from "@/lib/data/testimonials";
 
@@ -15,9 +16,10 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [testimonials, specialists] = await Promise.all([
+  const [testimonials, specialists, healthPackages] = await Promise.all([
     getTestimonials(),
     getHomepageSpecialists(),
+    getHomepageHealthPackages(),
   ]);
 
   return (
@@ -25,7 +27,7 @@ export default async function HomePage() {
       <Hero />
       <WelcomeSection />
       <CenterOfExcellenceSection />
-      <LatestDiseases />
+      <LatestDiseases packages={healthPackages} />
       <DoctorsSection specialists={specialists} />
       <DownloadReportBookVisit />
       <Services />

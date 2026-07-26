@@ -10,6 +10,7 @@ function mapDoctorToHomepageCard(doctor) {
     id: doctor.id,
     name: doctor.name,
     degree: doctor.education,
+    experience: doctor.experience,
     specialist: doctor.category?.name ?? "Specialist",
     timing: doctor.timing ?? "By appointment",
     phone: doctor.phone ?? "",

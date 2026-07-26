@@ -16,15 +16,15 @@ export const SERVICE_PAGE_CONTENT = {
       title: "General Medicine",
       headline:"Complete Care for your Everyday Health",
       description:
-        "Our General Medicine experts provive comprehensive care for a wide range of medical conditions with accurate diagnosis and personalized treatment.",
+        "Our General Medicine experts provide comprehensive care for a wide range of medical conditions with accurate diagnosis and personalized treatment.",
       image: "/images/services/General Medicine/general medicine.jpg",
       secondaryCtaLabel: "Talk to Expert",
       eyebrow: "General Medicine",
       features: [
         { icon: "users", iconSet: "lucide", label: "Expert Physicians" },
-        { icon: "ShieldCheck", iconSet: "lucide", label: "Accurate Diagnosis" },
-        { icon: "HeartPulse", iconSet: "lucide", label: "Preventive Care" },
-        {icon:"HandHeart", iconSet: "lucide", label: "Compassionate support"}
+        { icon: "shieldCheck", iconSet: "lucide", label: "Accurate Diagnosis" },
+        { icon: "heartPulse", iconSet: "lucide", label: "Preventive Care" },
+        { icon: "heartHandshake", iconSet: "lucide", label: "Compassionate Support" },
       ],
       highlights: [
         "Experienced Physicians",
@@ -36,32 +36,32 @@ export const SERVICE_PAGE_CONTENT = {
     "General Medicine is the Foundation of Primary Healthcare. We  focused on preventing, diagnosing, and treating common illnesses and chronic conditions in adults. \n\nOur team is dedicated to helping patients of all ages maintain optimal health and improve their quality of life .",
     aboutBenefits: [
       {
-        icon: "UserRound",
+        icon: "users",
         iconSet: "lucide",
         title: "Comprehensive Care",
         description:
           "Complete care for acute illnesses, injuries, preventive care, and chronic conditions.",
       },
       {
-        icon: "ShieldCheck",
+        icon: "shieldCheck",
         iconSet: "lucide",
         title: "Accurate Diagnosis",
         description:
           "Complete care for acute illnesses, injuries, preventive care, and chronic conditions.",
       },
       {
-        icon: "Heart",
+        icon: "heart",
         iconSet: "lucide",
         title: "preventive Focus",
         description:
           "Regular check-ups, screenings, and lifestyle guidance to prevent disease and detect issues early.",
       },
       {
-        icon: "HandHeart",
+        icon: "heart",
         iconSet: "lucide",
-        title: "Patient-Centered ",
+        title: "Patient-Centered",
         description:
-          "We listen,care and create personalized treatment plans for each patient.",
+          "We listen, care, and create personalized treatment plans for each patient.",
       },
     ],
     sections: {
@@ -89,24 +89,27 @@ export const SERVICE_PAGE_CONTENT = {
     serviceOfferings: [
       {
         icon: "stethoscope",
+        iconSet: "lucide",
         title: "General Consultation",
         description:
           "Thorough evaluation of symptoms with a clear diagnosis and treatment plan.",
       },
       {
         icon: "clipboardcheck",
+        iconSet: "lucide",
         title: "Health Checkups",
         description:
           "Preventive screenings and wellness assessments to catch issues early.",
       },
       {
         icon: "heart",
+        iconSet: "lucide",
         title: "Chronic Disease Management",
         description:
           "Ongoing care for diabetes, hypertension, and other long-term conditions.",
       },
       {
-        icon: "flaskConical",
+        icon: "microscope",
         iconSet: "health",
         title: "Diagnostic Services",
         description:
@@ -121,6 +124,7 @@ export const SERVICE_PAGE_CONTENT = {
       },
       {
         icon: "stethoscope",
+        iconSet: "lucide",
         title: "Follow-up Care",
         description:
           "Regular reviews to track progress and adjust treatment as needed.",
@@ -128,8 +132,8 @@ export const SERVICE_PAGE_CONTENT = {
     ],
     whyChooseUs: [
       {
-        icon: "doctor-outline",
-        iconSet: "health",
+        icon: "users",
+        iconSet: "lucide",
         title: "Experienced Doctors",
         description:
           "Skilled and experienced doctors who provide comprehensive care for a wide range of medical conditions.",
@@ -156,11 +160,17 @@ export const SERVICE_PAGE_CONTENT = {
           "Regular screenings and preventive measures to maintain health.",
       },
       {
-        icon: "handHeart",
+        icon: "heart",
         iconSet: "lucide",
         title: "Compassionate Support",
         description:
           "We listen, care, and create personalized treatment plans for each patient.",
+      },
+      {
+        icon: "activity",
+        iconSet: "lucide",
+        title: "Same-Day Appointments",
+        description: "Convenient scheduling with minimal waiting time for your visit.",
       },
     ],
     conditions: [
@@ -562,67 +572,73 @@ export const SERVICE_PAGE_CONTENT = {
   gynecology: {
     hero: {
       title: "Gynecology",
-      headline: "Women's Health. Expert Care.",
+      headline: "Compassionate Care for Every Stage of Womanhood",
       description:
-        "Confidential, comprehensive women's health services — from routine exams and family planning to prenatal care and gynecological treatment.",
+        "Comprehensive gynecological services for women of all ages, from routine check-ups to advanced treatments, delivered with compassion and expertise.",
       image: "/images/services/Gynecology/Gynecology1.jpg",
-      secondaryCtaLabel: "Talk to Expert",
-      eyebrow: "Women's Health",
+      secondaryCtaLabel: "Talk to Our Specialist",
+      eyebrow: "Gynecology Care",
       features: [
-        { icon: "heart", iconSet: "lucide", label: "Confidential Care" },
-        { icon: "microscope", iconSet: "health", label: "Expert OB-GYNs" },
-        { icon: "activity", iconSet: "lucide", label: "Advanced Screening" },
-        { icon: "baby", iconSet: "health", label: "Prenatal Support" },
+        { icon: "users", iconSet: "lucide", label: "Experienced Gynecologists" },
+        { icon: "body", iconSet: "health", label: "Women-Centered Approach" },
+        { icon: "virusShield", iconSet: "health", label: "Safe & Confidential Care" },
+        { icon: "microscope", iconSet: "health", label: "Advanced Technology" },
+      ],
+      highlights: [
+        "Personalized Treatment",
+        "Modern Facilities",
+        "Complete Women's Care",
+        "Better Health, Better Life",
       ],
     },
     about:
-      "Our gynecology department provides confidential, comprehensive care for women at every stage of life. From routine examinations and family planning to management of gynecological conditions, we ensure privacy, respect, and clinical excellence.\n\nWhether you need preventive screening, prenatal support, or treatment for menstrual and hormonal concerns, our specialists combine medical expertise with compassionate communication.",
+      "Our gynecology department provides comprehensive preventive and diagnostic services for women at every stage of life. From routine check-ups and screening to specialized treatment, we prioritize your comfort, privacy, and long-term wellness.\n\nWhether you need guidance on menstrual health, pregnancy care, family planning, or menopause management, our specialists deliver compassionate, expert care tailored to your needs.",
     aboutBenefits: [
       {
-        icon: "heart",
+        icon: "clipboardcheck",
         iconSet: "lucide",
-        title: "Confidential Consultations",
-        description: "Private, respectful care in a comfortable, supportive environment.",
+        title: "Preventive Care",
+        description:
+          "Regular check-ups, screenings, and wellness guidance to protect your long-term health.",
       },
       {
-        icon: "microscope",
-        iconSet: "health",
-        title: "Advanced Diagnostics",
-        description: "Modern screening tools for early detection and accurate diagnosis.",
-      },
-      {
-        icon: "baby",
-        iconSet: "health",
-        title: "Prenatal & Antenatal Care",
-        description: "Comprehensive monitoring and guidance throughout pregnancy.",
-      },
-      {
-        icon: "activity",
+        icon: "shieldCheck",
         iconSet: "lucide",
-        title: "Holistic Women's Health",
-        description: "Care spanning reproductive health, menopause, and chronic gynecological conditions.",
+        title: "Accurate Diagnosis",
+        description:
+          "Thorough evaluation and modern diagnostics for early detection and precise care.",
+      },
+      {
+        icon: "heartPulse",
+        iconSet: "lucide",
+        title: "Advanced Treatment",
+        description:
+          "Evidence-based therapies for menstrual, hormonal, and reproductive health concerns.",
+      },
+      {
+        icon: "heartHandshake",
+        iconSet: "lucide",
+        title: "Compassionate Support",
+        description:
+          "Confidential, respectful care in a comfortable, women-friendly environment.",
       },
     ],
     sections: {
       about: {
-        eyebrow: "About Gynecology",
-        title: "Comprehensive Women's Health Care",
+        eyebrow: "About Gynecology Care",
+        title: "Your Health. Our Priority.",
       },
       offerings: {
-        eyebrow: "Our Services",
-        title: "Gynecology Services We Offer",
-        subtitle:
-          "Complete care for women's health, screening, and well-being at every life stage.",
+        eyebrow: "Our Gynecology Services",
+        title: "Comprehensive Gynecology Services",
       },
       whyChooseUs: {
         eyebrow: "Why Choose Us",
-        title: "Why Patients Trust Our Gynecology Care",
+        title: "Why Women Trust Our Care",
       },
       faq: {
         eyebrow: "Frequently Asked Questions",
         title: "Have Questions?",
-        subtitle:
-          "Find answers to common questions about gynecology at our clinic.",
         image: "/images/services/Gynecology/Have a questions.jpg",
       },
     },
@@ -630,105 +646,139 @@ export const SERVICE_PAGE_CONTENT = {
       {
         icon: "clipboardcheck",
         iconSet: "lucide",
-        title: "Routine Gynecological Exams",
+        title: "Routine Gynecological Checkups",
         description:
-          "Regular checkups and preventive screening for early detection and peace of mind.",
-      },
-      {
-        icon: "baby",
-        iconSet: "health",
-        title: "Prenatal & Antenatal Care",
-        description:
-          "Comprehensive monitoring, ultrasound coordination, and delivery planning support.",
-      },
-      {
-        icon: "heart",
-        iconSet: "lucide",
-        title: "Family Planning Counseling",
-        description:
-          "Guidance on contraceptive options, fertility concerns, and preconception health.",
+          "Regular wellness exams and preventive screening to maintain optimal women's health.",
       },
       {
         icon: "activity",
         iconSet: "lucide",
-        title: "Menstrual Disorder Management",
+        title: "Menstrual Disorder Treatment",
         description:
-          "Diagnosis and treatment for irregular cycles, pain, and hormonal imbalances.",
+          "Diagnosis and treatment for irregular periods, heavy bleeding, and hormonal imbalances.",
       },
       {
-        icon: "scan",
-        iconSet: "lucide",
-        title: "Pap Smear & Breast Screening",
+        icon: "baby",
+        iconSet: "health",
+        title: "Preconception & Pregnancy Care",
         description:
-          "Early detection screening for cervical and breast health with expert follow-up.",
+          "Preconception counseling, antenatal monitoring, and comprehensive pregnancy support.",
+      },
+      {
+        icon: "heartOrgan",
+        iconSet: "health",
+        title: "Family Planning & Contraception",
+        description:
+          "Guidance on contraceptive options and personalized family planning counseling.",
+      },
+      {
+        icon: "elderly",
+        iconSet: "health",
+        title: "Menopause Management",
+        description:
+          "Support and treatment for menopause symptoms and hormonal changes.",
+      },
+      {
+        icon: "biopsy",
+        iconSet: "health",
+        title: "Cervical Cancer Screening",
+        description:
+          "Pap smear testing and cervical health screening for early detection.",
       },
     ],
     whyChooseUs: [
       {
         icon: "users",
         iconSet: "lucide",
-        title: "Experienced OB-GYNs",
-        description: "Specialists trained in comprehensive women's health and gynecological care.",
+        title: "Expert Specialists",
+        description:
+          "Highly skilled gynecologists with years of experience in women's health.",
       },
       {
-        icon: "heart",
-        iconSet: "lucide",
-        title: "Compassionate Approach",
-        description: "Care delivered with empathy, respect, and complete patient confidentiality.",
-      },
-      {
-        icon: "microscope",
+        icon: "childCare",
         iconSet: "health",
-        title: "Modern Facilities",
-        description: "Advanced diagnostic and treatment equipment for accurate care.",
+        title: "Women-Friendly Environment",
+        description:
+          "A comfortable, private setting designed for your peace of mind.",
       },
       {
-        icon: "activity",
+        icon: "scan",
         iconSet: "lucide",
-        title: "Personalized Treatment",
-        description: "Care plans tailored to your age, health goals, and life stage.",
+        title: "State-of-the-Art Facilities",
+        description:
+          "Modern diagnostic and treatment equipment for accurate care.",
+      },
+      {
+        icon: "shieldCheck",
+        iconSet: "lucide",
+        title: "Confidential & Safe",
+        description:
+          "Your privacy and safety are our highest priorities.",
+      },
+      {
+        icon: "calendar",
+        iconSet: "lucide",
+        title: "Easy Appointments",
+        description:
+          "Convenient scheduling with minimal waiting time.",
+      },
+      {
+        icon: "star",
+        iconSet: "lucide",
+        title: "Patient Satisfaction",
+        description:
+          "Trusted by thousands of women for compassionate, quality care.",
       },
     ],
     conditions: [
-      "Prenatal care",
-      "Menstrual disorders",
-      "Family planning",
-      "Cervical screening",
-      "Menopause care",
-      "Pelvic pain",
+      "PCOS / PCOD",
+      "Endometriosis",
+      "Fibroids",
+      "Ovarian Cysts",
+      "UTI & Infections",
+      "Vaginal Discharge",
+      "Menstrual Problems",
     ],
     symptoms: [
       "Irregular periods",
       "Pelvic pain",
       "Unusual discharge",
-      "Pregnancy concerns",
-      "Breast changes",
+      "Heavy bleeding",
       "Hot flashes",
+      "Pregnancy concerns",
     ],
     highlights: [
-      "Confidential women's care",
-      "Prenatal & antenatal support",
-      "Screening & prevention",
-      "Experienced OB-GYN team",
+      "Personalized Treatment",
+      "Modern Facilities",
+      "Complete Women's Care",
+      "Better Health, Better Life",
     ],
     faqs: [
       faq(
-        "How often should I have a gynecological checkup?",
-        "Most women benefit from an annual exam, or more frequently if you are pregnant or managing a specific condition.",
+        "How often should I visit a gynecologist?",
+        "Most women should have an annual gynecological check-up. You may need more frequent visits during pregnancy or when managing specific conditions.",
       ),
       faq(
-        "Do you provide prenatal care?",
-        "Yes. We offer comprehensive antenatal monitoring, ultrasound coordination, and delivery planning support.",
+        "At what age should I start gynecological checkups?",
+        "Routine gynecological care typically begins between ages 13 and 15, or when you become sexually active — whichever comes first.",
       ),
       faq(
-        "Is family planning counseling available?",
-        "Yes. We discuss contraceptive options, fertility concerns, and preconception health in confidential consultations.",
+        "What are the signs of PCOS?",
+        "Common signs include irregular periods, excess hair growth, acne, weight gain, and difficulty conceiving. A gynecologist can confirm diagnosis with evaluation and tests.",
+      ),
+      faq(
+        "Is HPV vaccination necessary?",
+        "HPV vaccination is recommended for adolescents and young adults to reduce the risk of cervical cancer and related conditions. Your gynecologist can advise based on your age and health history.",
+      ),
+      faq(
+        "What should I expect during my first visit?",
+        "Your first visit includes a health history review, discussion of concerns, and possibly a physical exam depending on your age and reason for visit. Our team ensures you feel comfortable and informed throughout.",
       ),
     ],
     cta: {
-      title: "Your Health Matters. Book a Consultation Today.",
+      title: "Your Health. Our Care. Always with You.",
       subtitle:
-        "Take the first step toward better women's health with our expert gynecology team.",
+        "Book your appointment today and take a positive step towards a healthier, happier you.",
       image: "/images/services/Gynecology/Gynecology2.jpg",
       buttonLabel: "Book Appointment Now",
     },
@@ -1243,57 +1293,65 @@ export const SERVICE_PAGE_CONTENT = {
   ent: {
     hero: {
       title: "ENT",
-      headline: "Clear Hearing. Easy Breathing. Better Living.",
+      headline: "Expert Care for Ear, Nose & Throat Health",
       description:
-        "Expert ear, nose, and throat care for hearing, sinus, and voice-related conditions — delivered by experienced ENT specialists.",
+        "Advanced diagnosis and treatment for a wide range of ENT conditions to help you hear better, breathe easier, and live better.",
       image: "/images/services/ENT/Ent1.jpg",
-      secondaryCtaLabel: "Talk to Expert",
+      secondaryCtaLabel: "Talk to Our Expert",
       eyebrow: "ENT Care",
       features: [
-        { icon: "ear", iconSet: "lucide", label: "ENT Specialists" },
-        { icon: "microscope", iconSet: "health", label: "Modern Diagnostics" },
-        { icon: "activity", iconSet: "lucide", label: "Hearing Assessments" },
-        { icon: "heart", iconSet: "lucide", label: "Minor Procedures" },
+        { icon: "microscope", iconSet: "health", label: "Advanced Technology" },
+        { icon: "users", iconSet: "lucide", label: "Experienced ENT Specialists" },
+        { icon: "virusShield", iconSet: "health", label: "Safe & Effective Treatments" },
+        { icon: "heartHandshake", iconSet: "lucide", label: "Patient-Centered Care" },
+      ],
+      highlights: [
+        "Accurate Diagnosis",
+        "Personalized Treatment",
+        "Compassionate Care",
+        "Better Quality of Life",
       ],
     },
     about:
-      "The ENT department addresses conditions affecting the ear, nose, throat, and related structures. Our specialists provide medical and minor procedural care for both acute and chronic ENT problems.\n\nFrom sinusitis and hearing loss to tonsillitis and voice disorders, we combine accurate diagnosis with targeted treatment so you can breathe easier, hear clearly, and live comfortably.",
+      "ENT care addresses a wide range of conditions affecting the ear, nose, throat, and related structures. From hearing loss and sinus problems to voice disorders and pediatric concerns, our specialists provide complete evaluation and personalized treatment.\n\nWe listen carefully, diagnose accurately, and create treatment plans focused on long-term relief — helping you hear better, breathe easier, and live better.",
     aboutBenefits: [
       {
         icon: "ear",
         iconSet: "lucide",
-        title: "Hearing & Ear Care",
-        description: "Assessment and treatment for infections, hearing loss, and ear disorders.",
+        title: "Comprehensive Care",
+        description:
+          "Complete evaluation and treatment for all ENT related conditions.",
       },
       {
-        icon: "head",
-        iconSet: "health",
-        title: "Sinus & Allergy Relief",
-        description: "Targeted care for chronic sinusitis, allergies, and nasal breathing issues.",
-      },
-      {
-        icon: "microscope",
-        iconSet: "health",
-        title: "Advanced Diagnostics",
-        description: "Modern equipment for accurate ENT evaluation and treatment planning.",
-      },
-      {
-        icon: "users",
+        icon: "scan",
         iconSet: "lucide",
-        title: "Experienced Specialists",
-        description: "ENT consultants with expertise in medical and minor procedural care.",
+        title: "Advanced Technology",
+        description:
+          "State-of-the-art equipment for accurate diagnosis and effective treatment.",
+      },
+      {
+        icon: "stethoscope",
+        iconSet: "lucide",
+        title: "Expert Specialists",
+        description:
+          "Highly experienced ENT surgeons and audiologists for the best care.",
+      },
+      {
+        icon: "heartPulse",
+        iconSet: "lucide",
+        title: "Better Outcomes",
+        description:
+          "Personalized treatment plans focused on long-term relief and wellness.",
       },
     ],
     sections: {
       about: {
-        eyebrow: "About ENT",
-        title: "Expert Care for Ear, Nose & Throat",
+        eyebrow: "About ENT Care",
+        title: "We Listen. We Care. We Treat.",
       },
       offerings: {
-        eyebrow: "Our Services",
-        title: "ENT Services We Offer",
-        subtitle:
-          "Comprehensive ear, nose, and throat care for all ages.",
+        eyebrow: "Our ENT Services",
+        title: "ENT Conditions We Treat",
       },
       whyChooseUs: {
         eyebrow: "Why Choose Us",
@@ -1302,8 +1360,6 @@ export const SERVICE_PAGE_CONTENT = {
       faq: {
         eyebrow: "Frequently Asked Questions",
         title: "Have Questions?",
-        subtitle:
-          "Find answers to common questions about ENT care at our clinic.",
         image: "/images/services/ENT/have a question.jpg",
       },
     },
@@ -1311,105 +1367,138 @@ export const SERVICE_PAGE_CONTENT = {
       {
         icon: "ear",
         iconSet: "lucide",
-        title: "Ear Infection Treatment",
+        title: "Ear Care",
         description:
-          "Diagnosis and treatment for acute and chronic ear infections with pain relief.",
+          "Treatment for ear pain, infections, hearing loss, tinnitus and balance disorders.",
+      },
+      {
+        icon: "allergies",
+        iconSet: "health",
+        title: "Nasal Care",
+        description:
+          "Allergy, sinusitis, nasal obstruction, sinus headache and more.",
+      },
+      {
+        icon: "mic",
+        iconSet: "lucide",
+        title: "Throat Care",
+        description:
+          "Sore throat, tonsillitis, voice problems and swallowing difficulties.",
+      },
+      {
+        icon: "ear",
+        iconSet: "lucide",
+        title: "Hearing Care",
+        description:
+          "Hearing tests, hearing loss management and hearing aid support.",
       },
       {
         icon: "head",
         iconSet: "health",
-        title: "Sinusitis & Allergy Care",
+        title: "Head & Neck",
         description:
-          "Medical and minimally invasive management of sinus and nasal allergy conditions.",
+          "Lumps, tumors, thyroid disorders and other neck conditions.",
       },
       {
-        icon: "activity",
-        iconSet: "lucide",
-        title: "Hearing Assessments",
+        icon: "boy",
+        iconSet: "health",
+        title: "Pediatric ENT",
         description:
-          "Professional hearing tests with clear results and next-step recommendations.",
+          "Specialized care for children's ear, nose and throat problems.",
       },
       {
-        icon: "scan",
+        icon: "surgery",
         iconSet: "lucide",
-        title: "Tonsillitis Management",
+        title: "ENT Surgeries",
         description:
-          "Medical and procedural care for recurring tonsil and throat infections.",
-      },
-      {
-        icon: "video",
-        iconSet: "lucide",
-        title: "Voice & Throat Disorders",
-        description:
-          "Evaluation and treatment for hoarseness, reflux, and throat discomfort.",
+          "Endoscopic surgeries, tonsillectomy, adenoidectomy and other ENT procedures.",
       },
     ],
     whyChooseUs: [
       {
         icon: "users",
         iconSet: "lucide",
-        title: "Experienced ENT Specialists",
-        description: "Consultants skilled in ear, nose, throat, and related conditions.",
+        title: "Experienced ENT Experts",
+        description:
+          "Specialized care by skilled and experienced doctors.",
       },
       {
-        icon: "microscope",
-        iconSet: "health",
-        title: "Advanced Equipment",
-        description: "Modern diagnostic tools for accurate ENT evaluation.",
-      },
-      {
-        icon: "heart",
+        icon: "scan",
         iconSet: "lucide",
-        title: "Patient-Centered Care",
-        description: "Comfortable, respectful treatment focused on your symptoms and goals.",
+        title: "Modern Facilities",
+        description:
+          "Advanced clinics and surgical technology.",
       },
       {
-        icon: "activity",
+        icon: "clock",
         iconSet: "lucide",
-        title: "Quick Relief",
-        description: "Efficient diagnosis and treatment to help you recover sooner.",
+        title: "Quick Appointments",
+        description:
+          "Timely consultations and minimal waiting time.",
+      },
+      {
+        icon: "shieldCheck",
+        iconSet: "lucide",
+        title: "Safe & Hygienic",
+        description:
+          "Highest standards of safety and hygiene.",
+      },
+      {
+        icon: "star",
+        iconSet: "lucide",
+        title: "Patient Satisfaction",
+        description:
+          "Thousands of satisfied patients and better outcomes.",
       },
     ],
     conditions: [
-      "Sinusitis",
-      "Ear infections",
+      "Ear pain and infections",
       "Hearing loss",
-      "Tonsillitis",
+      "Sinusitis and allergies",
+      "Sore throat and tonsillitis",
       "Voice disorders",
-      "Nasal allergies",
+      "Head and neck conditions",
     ],
     symptoms: [
       "Ear pain",
       "Hearing difficulty",
-      "Sore throat",
       "Nasal congestion",
+      "Sore throat",
       "Hoarse voice",
-      "Dizziness",
+      "Balance problems",
     ],
     highlights: [
-      "Ear, nose & throat specialists",
-      "Hearing assessments",
-      "Allergy management",
-      "Minor ENT procedures",
+      "Accurate Diagnosis",
+      "Personalized Treatment",
+      "Compassionate Care",
+      "Better Quality of Life",
     ],
     faqs: [
       faq(
-        "Do you perform hearing tests?",
-        "Yes. Hearing assessments are available and results are explained clearly with next-step recommendations.",
+        "What are the common signs that I should see an ENT specialist?",
+        "Persistent ear pain, hearing loss, chronic sinus congestion, frequent sore throats, hoarseness, balance problems, or snoring and sleep issues are common reasons to see an ENT specialist.",
       ),
       faq(
-        "Can chronic sinus problems be treated?",
-        "Yes. We evaluate allergies, infections, and structural factors to create an effective management plan.",
+        "Do you treat allergies and sinus problems?",
+        "Yes. We diagnose and treat nasal allergies, chronic sinusitis, nasal obstruction, and related sinus headaches with medical and minimally invasive options.",
       ),
       faq(
-        "Do I need a referral to visit ENT?",
-        "No referral is required. You may book directly for ENT consultation.",
+        "Is hearing loss treatable?",
+        "Many forms of hearing loss are treatable. We perform hearing tests, identify the cause, and recommend medical treatment, hearing aids, or further specialist referral when needed.",
+      ),
+      faq(
+        "Do you perform surgeries?",
+        "Yes. Our ENT team performs procedures including endoscopic surgeries, tonsillectomy, adenoidectomy, and other ENT surgical treatments when medically indicated.",
+      ),
+      faq(
+        "Are your ENT treatments safe for children?",
+        "Yes. We provide specialized pediatric ENT care in a child-friendly environment, with safe evaluation and treatment tailored to children's needs.",
       ),
     ],
     cta: {
-      title: "Ready to Breathe and Hear Better?",
+      title: "Breathe Better. Hear Better. Live Better.",
       subtitle:
-        "Book an appointment with our ENT specialists and find relief today.",
+        "Book your ENT appointment today and experience expert care you can trust.",
       image: "/images/services/ENT/ent2.jpg",
       buttonLabel: "Book Appointment Now",
     },
@@ -2657,57 +2746,65 @@ export const SERVICE_PAGE_CONTENT = {
   "home-care": {
     hero: {
       title: "Home Care",
-      headline: "Healing at Home. Comfortable Recovery.",
+      headline: "Compassionate Care in the Comfort of Your Home",
       description:
-        "Skilled nursing and medical support delivered at your home for post-surgery recovery, elder care, and ongoing medical needs.",
+        "Comprehensive medical and nursing support delivered at your doorstep — from post-surgery recovery and elder care to chronic disease management, with compassion and clinical excellence.",
       image: "/images/services/Home care/home care1.jpg",
-      secondaryCtaLabel: "Call to Inquire",
-      eyebrow: "Home Care Services",
+      secondaryCtaLabel: "Talk to Our Expert",
+      eyebrow: "Home Care",
       features: [
-        { icon: "home", iconSet: "lucide", label: "At-Home Convenience" },
-        { icon: "heart", iconSet: "lucide", label: "Skilled Nursing" },
-        { icon: "activity", iconSet: "lucide", label: "Post-Surgery Support" },
-        { icon: "users", iconSet: "lucide", label: "Elder Care" },
+        { icon: "users", iconSet: "lucide", label: "Skilled Nurses" },
+        { icon: "clock", iconSet: "lucide", label: "24/7 Support" },
+        { icon: "clipboardcheck", iconSet: "lucide", label: "Personalized Care Plans" },
+        { icon: "virusShield", iconSet: "health", label: "Safe & Trusted Care" },
+      ],
+      highlights: [
+        "Personalized Care",
+        "Experienced Nurses",
+        "Complete Home Support",
+        "Better Recovery at Home",
       ],
     },
     about:
-      "Home care brings professional healthcare to patients who need assistance recovering at home. Our skilled nursing and support services help patients heal in the comfort of their own environment.\n\nWhether recovering from surgery, managing chronic illness, or needing elderly care support, our team provides medication management, wound care, vital monitoring, and emotional reassurance for patients and families.",
+      "Home care brings professional healthcare directly to patients who need support recovering or managing health conditions at home. Our skilled nursing and caregiver services help patients heal in a familiar, comfortable environment.\n\nWhether recovering from surgery, caring for an elderly loved one, or managing a chronic illness, our team provides wound care, medication management, vital monitoring, and compassionate support for patients and families.",
     aboutBenefits: [
       {
         icon: "home",
         iconSet: "lucide",
-        title: "Comfort of Home",
-        description: "Recover in a familiar, comfortable environment with professional support.",
+        title: "Comprehensive Home Care",
+        description:
+          "Complete medical and nursing support delivered in the comfort of your home.",
       },
       {
-        icon: "heart",
+        icon: "heartPulse",
         iconSet: "lucide",
-        title: "Skilled Nursing Care",
-        description: "Licensed nurses providing wound care, medication management, and monitoring.",
+        title: "Skilled Nursing",
+        description:
+          "Licensed nurses for wound care, injections, vitals monitoring, and medication management.",
       },
       {
-        icon: "activity",
-        iconSet: "lucide",
-        title: "Post-Discharge Support",
-        description: "Seamless transition from hospital to home with coordinated follow-up care.",
+        icon: "bandaged",
+        iconSet: "health",
+        title: "Advanced Support",
+        description:
+          "Post-surgery recovery, chronic disease management, and coordinated doctor follow-up.",
       },
       {
-        icon: "users",
+        icon: "heartHandshake",
         iconSet: "lucide",
-        title: "Family Peace of Mind",
-        description: "Regular updates and professional care that gives families confidence and reassurance.",
+        title: "Compassionate Service",
+        description:
+          "Respectful, dignified care with regular updates for patients and family members.",
       },
     ],
     sections: {
       about: {
         eyebrow: "About Home Care",
-        title: "Professional Care Where You Live",
+        title: "We Care. You Recover.",
       },
       offerings: {
-        eyebrow: "Our Services",
-        title: "Home Care Services We Offer",
-        subtitle:
-          "Comprehensive medical and nursing support delivered directly to your doorstep.",
+        eyebrow: "Our Home Care Services",
+        title: "Complete Home Healthcare Services",
       },
       whyChooseUs: {
         eyebrow: "Why Choose Us",
@@ -2716,81 +2813,105 @@ export const SERVICE_PAGE_CONTENT = {
       faq: {
         eyebrow: "Frequently Asked Questions",
         title: "Have Questions?",
-        subtitle:
-          "Find answers to common questions about our home care services.",
         image: "/images/services/Home care/have a questions.jpg",
       },
     },
     serviceOfferings: [
       {
-        icon: "heart",
+        icon: "stethoscope",
         iconSet: "lucide",
-        title: "Skilled Nursing Visits",
+        title: "Skilled Nursing Care",
         description:
-          "Professional nursing care for wound management, injections, and health monitoring.",
+          "Professional nursing visits for wound management, injections, and health monitoring.",
       },
       {
-        icon: "activity",
-        iconSet: "lucide",
-        title: "Post-Surgery Home Care",
+        icon: "bandaged",
+        iconSet: "health",
+        title: "Post-Surgery Recovery",
         description:
           "Recovery support after hospitalization with dressing changes and mobility assistance.",
       },
       {
-        icon: "users",
-        iconSet: "lucide",
-        title: "Elder Care Support",
+        icon: "elderly",
+        iconSet: "health",
+        title: "Elder Care Services",
         description:
-          "Daily assistance, medication reminders, and social companionship for seniors.",
+          "Daily assistance, medication reminders, and companionship for seniors at home.",
       },
       {
-        icon: "pill",
-        iconSet: "lucide",
-        title: "Medication Administration",
+        icon: "bloodPressure",
+        iconSet: "health",
+        title: "Chronic Disease Support",
         description:
-          "Timely medication support with compliance tracking and side-effect monitoring.",
+          "Ongoing care for diabetes, hypertension, and other long-term health conditions.",
       },
       {
-        icon: "heartPulse",
-        iconSet: "lucide",
-        title: "Vital Monitoring at Home",
+        icon: "physicalTherapy",
+        iconSet: "health",
+        title: "Physiotherapy at Home",
         description:
-          "Regular blood pressure, sugar, and vital checks with doctor coordination.",
+          "Rehabilitation and mobility support delivered by trained therapists in your home.",
+      },
+      {
+        icon: "heartOrgan",
+        iconSet: "health",
+        title: "Palliative Care",
+        description:
+          "Compassionate comfort care and support for patients and families at home.",
       },
     ],
     whyChooseUs: [
       {
-        icon: "heart",
+        icon: "users",
         iconSet: "lucide",
-        title: "Compassionate Caregivers",
-        description: "Trained professionals who treat every patient with dignity and respect.",
+        title: "Experienced Caregivers",
+        description:
+          "Trained professionals who treat every patient with dignity and respect.",
       },
       {
-        icon: "microscope",
-        iconSet: "health",
-        title: "Clinical Excellence",
-        description: "Evidence-based home care protocols monitored by qualified clinicians.",
+        icon: "shieldCheck",
+        iconSet: "lucide",
+        title: "Licensed & Verified Staff",
+        description:
+          "Background-verified nurses and caregivers with proven clinical expertise.",
       },
       {
         icon: "activity",
         iconSet: "lucide",
-        title: "Flexible Scheduling",
-        description: "Visits arranged around your routine and recovery needs.",
+        title: "24/7 Emergency Support",
+        description:
+          "Round-the-clock coordination and urgent care assistance when you need it.",
       },
       {
-        icon: "users",
+        icon: "calendar",
+        iconSet: "lucide",
+        title: "Flexible Scheduling",
+        description:
+          "Visits arranged around your routine, recovery needs, and family preferences.",
+      },
+      {
+        icon: "heartHandshake",
         iconSet: "lucide",
         title: "Family Communication",
-        description: "Regular updates and coordination with family members and doctors.",
+        description:
+          "Regular updates and coordination with family members and treating doctors.",
+      },
+      {
+        icon: "star",
+        iconSet: "lucide",
+        title: "Patient Satisfaction",
+        description:
+          "Trusted by families for reliable, compassionate home healthcare services.",
       },
     ],
     conditions: [
-      "Post-surgery recovery",
-      "Elder care",
-      "Chronic illness support",
-      "Wound care",
-      "Medication management",
-      "Mobility assistance",
+      "Post-Surgery Recovery",
+      "Elderly Care",
+      "Chronic Illness Support",
+      "Bedridden Patients",
+      "Palliative Care",
+      "Disability Support",
+      "New Mothers",
     ],
     symptoms: [
       "Difficulty leaving home",
@@ -2801,31 +2922,39 @@ export const SERVICE_PAGE_CONTENT = {
       "Fall risk at home",
     ],
     highlights: [
-      "Skilled home nursing",
-      "Personalized care plans",
-      "Post-discharge support",
-      "Family peace of mind",
+      "Personalized Care",
+      "Experienced Nurses",
+      "Complete Home Support",
+      "Better Recovery at Home",
     ],
     faqs: [
       faq(
-        "What home care services do you offer?",
-        "Skilled nursing visits, wound care, medication administration, vitals monitoring, and elder support.",
+        "What home care services do you provide?",
+        "We offer skilled nursing visits, post-surgery recovery, elder care, chronic disease support, physiotherapy at home, and palliative care — all delivered at your doorstep.",
       ),
       faq(
-        "How do I arrange a home visit?",
-        "Contact our home care coordinator to assess needs and schedule the first visit.",
+        "How do I book a home care visit?",
+        "Contact our home care coordinator by phone or through our website. We assess your needs and schedule the first visit at a convenient time.",
+      ),
+      faq(
+        "Are your caregivers trained and verified?",
+        "Yes. All our nurses and caregivers are licensed, background-verified, and trained to follow clinical protocols monitored by qualified clinicians.",
       ),
       faq(
         "Is home care available after hospital discharge?",
-        "Yes. Post-surgical and post-hospitalization packages are among our most requested services.",
+        "Yes. Post-surgical and post-hospitalization home care is one of our most requested services, helping patients recover safely at home.",
+      ),
+      faq(
+        "Do you provide 24/7 home care support?",
+        "We offer flexible visit schedules and 24/7 emergency coordination. Extended or round-the-clock care can be arranged based on medical need.",
       ),
     ],
     cta: {
-      title: "Heal Comfortably at Home",
+      title: "Recover Safely in the Comfort of Your Home",
       subtitle:
-        "Book a home care assessment and let our team support your recovery where you live.",
+        "Book a home care assessment today and let our team support your recovery where you feel most comfortable.",
       image: "/images/services/Home care/homecare2.jpg",
-      buttonLabel: "Book Home Care",
+      buttonLabel: "Book Appointment Now",
     },
   },
   telemedicine: {
@@ -3015,6 +3144,10 @@ export function enrichServicesWithPageContent(services) {
 
     return {
       ...service,
+      shortDescription:
+        page.shortDescription ??
+        page.hero?.description?.slice(0, 120) ??
+        "",
       about,
       overview: about,
       hero: page.hero ?? null,
