@@ -117,7 +117,7 @@ export default function ContactPage() {
   return (
     <main className="min-h-screen bg-background-light">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#061d2e] via-[#0c3347] to-primary-700 px-4 py-16 text-center sm:py-20 md:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#061d2e] via-[#0c3347] to-primary-700 px-4 py-8 text-center sm:py-16 md:py-20 lg:py-24">
         <div
           className="pointer-events-none absolute inset-0 opacity-40"
           style={{
@@ -127,17 +127,17 @@ export default function ContactPage() {
           }}
         />
         <div className="relative mx-auto max-w-3xl">
-          <div className="mb-4 flex items-center justify-center gap-2">
-            <span className="h-[2px] w-6 bg-secondary-400" />
+          <div className="mb-2 flex items-center justify-center gap-2 sm:mb-4">
+            <span className="h-[2px] w-5 bg-secondary-400 sm:w-6" />
             <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-secondary-300">
               Get In Touch
             </span>
-            <span className="h-[2px] w-6 bg-secondary-400" />
+            <span className="h-[2px] w-5 bg-secondary-400 sm:w-6" />
           </div>
-          <h1 className="font-heading text-3xl font-bold text-white sm:text-4xl md:text-5xl">
+          <h1 className="font-heading text-2xl font-bold text-white sm:text-4xl md:text-5xl">
             Contact Us
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-primary-100 sm:text-lg">
+          <p className="mx-auto mt-2.5 max-w-2xl text-sm leading-relaxed text-primary-100 sm:mt-4 sm:text-base md:text-lg">
             Questions about our services or need to book a visit? Our team is
             ready to help you 24/7.
           </p>
@@ -145,9 +145,9 @@ export default function ContactPage() {
       </section>
 
       {/* Quick contact cards */}
-      <section className="relative z-10 -mt-8 px-4 sm:-mt-10">
+      <section className="relative z-10 -mt-4 px-4 sm:-mt-10">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 lg:gap-5">
             {QUICK_CONTACTS.map((item) => {
               const Icon = item.icon;
               const Wrapper = item.href ? "a" : "div";
@@ -156,26 +156,29 @@ export default function ContactPage() {
                   key={item.title}
                   href={item.href}
                   className={cn(
-                    "flex items-start gap-4 rounded-2xl border bg-white p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-card-hover",
+                    "flex items-start gap-2.5 rounded-xl border bg-white p-3 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-card-hover sm:gap-4 sm:rounded-2xl sm:p-5",
                     item.accent,
+                    !item.href && "col-span-2 sm:col-span-1 lg:col-span-1",
                   )}
                 >
                   <div
                     className={cn(
-                      "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl",
+                      "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg sm:h-12 sm:w-12 sm:rounded-xl",
                       item.iconBg,
                     )}
                   >
-                    <Icon size={22} className={item.iconColor} />
+                    <Icon size={18} className={item.iconColor} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 sm:text-[10px]">
                       {item.title}
                     </p>
-                    <p className="mt-1 font-heading text-base font-bold text-text-dark sm:text-lg">
+                    <p className="mt-0.5 font-heading text-[13px] font-bold leading-snug text-text-dark sm:mt-1 sm:text-base md:text-lg">
                       {item.value}
                     </p>
-                    <p className="mt-0.5 text-sm text-slate-500">{item.desc}</p>
+                    <p className="mt-0.5 text-[11px] text-slate-500 sm:text-sm">
+                      {item.desc}
+                    </p>
                   </div>
                 </Wrapper>
               );

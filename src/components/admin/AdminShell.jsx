@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import {
+  Award,
+  BarChart3,
   BookOpen,
   HelpCircle,
   ImageIcon,
@@ -13,6 +15,8 @@ import {
   MessageSquareQuote,
   Package,
   Settings,
+  Sparkles,
+  Star,
   Stethoscope,
   Users,
 } from "lucide-react";
@@ -23,6 +27,10 @@ const NAV_ITEMS = [
   { href: "/admin/inbox", label: "Inbox", icon: Inbox },
   { href: "/admin/doctors", label: "Doctors", icon: Stethoscope },
   { href: "/admin/homepage-specialists", label: "Homepage Specialists", icon: Users },
+  { href: "/admin/services", label: "Services", icon: Sparkles },
+  { href: "/admin/centers-of-excellence", label: "Centers of Excellence", icon: Award },
+  { href: "/admin/why-choose-us", label: "Why Choose Us", icon: Star },
+  { href: "/admin/stats", label: "Site Stats", icon: BarChart3 },
   { href: "/admin/health-packages", label: "Health Packages", icon: Package },
   { href: "/admin/gallery", label: "Gallery", icon: ImageIcon },
   { href: "/admin/blog", label: "Blog Posts", icon: BookOpen },
@@ -36,6 +44,10 @@ const PAGE_TITLES = {
   "/admin/inbox": "Inbox",
   "/admin/doctors": "Doctors",
   "/admin/homepage-specialists": "Homepage Specialists",
+  "/admin/services": "Services",
+  "/admin/centers-of-excellence": "Centers of Excellence",
+  "/admin/why-choose-us": "Why Choose Us",
+  "/admin/stats": "Site Stats",
   "/admin/health-packages": "Health Packages",
   "/admin/gallery": "Gallery",
   "/admin/blog": "Blog Posts",

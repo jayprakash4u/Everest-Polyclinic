@@ -136,7 +136,9 @@ const ICONS = {
   users: ExpertSpecialistsIcon,
 };
 
-export default function WhyChooseUs() {
+export default function WhyChooseUs({ items = WHY_CHOOSE_US }) {
+  const list = items?.length ? items : WHY_CHOOSE_US;
+
   return (
     <section className="bg-white py-10 sm:py-12 md:py-14">
       <div className="container mx-auto px-4 sm:px-6">
@@ -162,24 +164,27 @@ export default function WhyChooseUs() {
             />
 
             <div className="grid grid-cols-2 gap-3 sm:gap-5">
-              {WHY_CHOOSE_US.map((item) => (
-                <div
-                  key={item.title}
-                  className="flex flex-col items-center gap-2 text-center sm:flex-row sm:items-start sm:gap-4 sm:text-left"
-                >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center sm:h-12 sm:w-12 [&_svg]:h-10 [&_svg]:w-10 sm:[&_svg]:h-12 sm:[&_svg]:w-12">
-                    {React.createElement(ICONS[item.icon])}
+              {list.map((item) => {
+                const Icon = ICONS[item.icon];
+                return (
+                  <div
+                    key={item.title}
+                    className="flex flex-col items-center gap-2 text-center sm:flex-row sm:items-start sm:gap-4 sm:text-left"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center sm:h-12 sm:w-12 [&_svg]:h-10 [&_svg]:w-10 sm:[&_svg]:h-12 sm:[&_svg]:w-12">
+                      {Icon ? React.createElement(Icon) : null}
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="mb-1 font-heading text-xs font-semibold leading-snug text-slate-800 sm:text-base">
+                        {item.title}
+                      </h4>
+                      <p className="text-[11px] leading-relaxed text-slate-500 line-clamp-3 sm:line-clamp-none sm:text-sm">
+                        {item.description}
+                      </p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <h4 className="mb-1 font-heading text-xs font-semibold leading-snug text-slate-800 sm:text-base">
-                      {item.title}
-                    </h4>
-                    <p className="text-[11px] leading-relaxed text-slate-500 line-clamp-3 sm:line-clamp-none sm:text-sm">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

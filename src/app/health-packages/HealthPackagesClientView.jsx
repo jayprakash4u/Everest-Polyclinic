@@ -72,8 +72,8 @@ export default function HealthPackagesClientView({ packages = [] }) {
     categoryOptions.find((c) => c.id === activeCategory)?.label ?? "Packages";
 
   return (
-    <main className="min-h-screen bg-[#f8fafc] pb-24">
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#061d2e] via-[#0c3347] to-[#1E5FA8] px-4 py-10 text-center sm:py-14 md:py-20">
+    <main className="min-h-screen bg-[#f8fafc] pb-16 sm:pb-24">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#061d2e] via-[#0c3347] to-[#1E5FA8] px-4 py-8 text-center sm:py-14 md:py-20">
         <div
           className="pointer-events-none absolute inset-0 opacity-40"
           style={{
@@ -83,10 +83,10 @@ export default function HealthPackagesClientView({ packages = [] }) {
           }}
         />
         <div className="relative mx-auto max-w-3xl">
-          <span className="mb-2 inline-block text-[10px] font-black uppercase tracking-[0.25em] text-secondary-300 sm:mb-4 sm:text-[11px] sm:tracking-[0.3em]">
+          <span className="mb-1.5 inline-block text-[10px] font-black uppercase tracking-[0.25em] text-secondary-300 sm:mb-4 sm:text-[11px] sm:tracking-[0.3em]">
             Preventive Care
           </span>
-          <h1 className="font-heading text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl lg:text-5xl">
+          <h1 className="font-heading text-xl font-bold leading-tight text-white sm:text-3xl md:text-4xl lg:text-5xl">
             Health Checkup Packages
           </h1>
           <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-slate-300 sm:mt-4 sm:text-base md:text-lg">
@@ -96,8 +96,8 @@ export default function HealthPackagesClientView({ packages = [] }) {
         </div>
       </section>
 
-      <section className="container relative z-10 mx-auto -mt-5 px-4 sm:-mt-8">
-        <div className="grid grid-cols-2 gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-card sm:gap-4 sm:p-5 md:grid-cols-4 md:p-6">
+      <section className="container relative z-10 mx-auto -mt-4 px-4 sm:-mt-8">
+        <div className="grid grid-cols-2 gap-2 rounded-xl border border-slate-100 bg-white p-2.5 shadow-card sm:gap-4 sm:rounded-2xl sm:p-5 md:grid-cols-4 md:p-6">
           {HEALTH_PACKAGE_FEATURES.map((feature) => {
             const Icon = FEATURE_ICONS[feature.icon];
             return (
@@ -105,10 +105,10 @@ export default function HealthPackagesClientView({ packages = [] }) {
                 key={feature.label}
                 className="flex items-center gap-2 rounded-xl px-1 py-1 sm:gap-3 sm:px-2"
               >
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600 sm:h-10 sm:w-10">
-                  <Icon className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-600 sm:h-10 sm:w-10 sm:rounded-xl">
+                  <Icon className="h-3.5 w-3.5 sm:h-[18px] sm:w-[18px]" />
                 </div>
-                <p className="text-xs font-semibold text-slate-700 sm:text-sm">
+                <p className="text-[11px] font-semibold leading-snug text-slate-700 sm:text-sm">
                   {feature.label}
                 </p>
               </div>
@@ -117,24 +117,24 @@ export default function HealthPackagesClientView({ packages = [] }) {
         </div>
       </section>
 
-      <section className="container mx-auto px-4 pt-10 sm:pt-14 md:pt-16">
-        <div className="mb-6 sm:mb-8">
+      <section className="container mx-auto px-4 pt-8 sm:pt-14 md:pt-16">
+        <div className="mb-5 sm:mb-8">
           <div className="mb-2 flex items-center gap-2">
             <span className="h-[2px] w-6 bg-primary-500" />
             <span className="text-[10px] font-bold uppercase tracking-widest text-primary-600">
               Browse by Category
             </span>
           </div>
-          <h2 className="font-heading text-2xl font-bold text-text-dark sm:text-3xl">
+          <h2 className="font-heading text-xl font-bold text-text-dark sm:text-3xl">
             Select a <span className="text-primary-600">Package Type</span>
           </h2>
-          <p className="mt-2 max-w-xl text-slate-500">
+          <p className="mt-1.5 max-w-xl text-sm text-slate-500 sm:mt-2 sm:text-base">
             Filter packages by category to find the health screen that fits your
             needs.
           </p>
         </div>
 
-        <div className="mb-6 flex flex-wrap gap-2">
+        <div className="-mx-4 mb-5 flex gap-2 overflow-x-auto overscroll-x-contain px-4 hide-scrollbar sm:mx-0 sm:mb-6 sm:flex-wrap sm:overflow-visible sm:px-0">
           {categoryOptions.map(({ id, label, icon: Icon }) => {
             const isActive = activeCategory === id;
             return (
@@ -143,13 +143,13 @@ export default function HealthPackagesClientView({ packages = [] }) {
                 type="button"
                 onClick={() => setActiveCategory(id)}
                 className={cn(
-                  "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-200",
+                  "inline-flex shrink-0 items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition-all duration-200 sm:px-4 sm:py-2 sm:text-sm",
                   isActive
                     ? "border-primary-600 bg-primary-600 text-white shadow-sm"
                     : "border-slate-200 bg-white text-slate-600 hover:border-primary-200 hover:bg-primary-50 hover:text-primary-700",
                 )}
               >
-                <Icon size={15} />
+                <Icon size={14} />
                 {label}
               </button>
             );
@@ -157,7 +157,7 @@ export default function HealthPackagesClientView({ packages = [] }) {
         </div>
 
         <div className="mb-3">
-          <p className="text-sm font-medium text-slate-500">
+          <p className="text-xs font-medium text-slate-500 sm:text-sm">
             Showing{" "}
             <span className="font-bold text-slate-800">
               {filteredPackages.length}
@@ -167,7 +167,7 @@ export default function HealthPackagesClientView({ packages = [] }) {
           </p>
         </div>
 
-        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-3">
           {filteredPackages.map((pkg) => (
             <HealthPackageCard
               key={pkg.id}
@@ -178,8 +178,8 @@ export default function HealthPackagesClientView({ packages = [] }) {
         </div>
       </section>
 
-      <section className="container mx-auto px-4 pt-20">
-        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-r from-primary-700 to-secondary-700 px-8 py-12 text-center md:px-16">
+      <section className="container mx-auto px-4 pt-12 sm:pt-20">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary-700 to-secondary-700 px-5 py-8 text-center sm:rounded-[2rem] sm:px-8 sm:py-12 md:px-16">
           <div
             className="absolute inset-0 opacity-10"
             style={{
@@ -189,15 +189,15 @@ export default function HealthPackagesClientView({ packages = [] }) {
             }}
           />
           <div className="relative">
-            <Award className="mx-auto mb-4 h-10 w-10 text-white/90" />
-            <h3 className="font-heading text-2xl font-bold text-white md:text-3xl">
+            <Award className="mx-auto mb-3 h-8 w-8 text-white/90 sm:mb-4 sm:h-10 sm:w-10" />
+            <h3 className="font-heading text-xl font-bold text-white sm:text-2xl md:text-3xl">
               Need a Custom Test Combination?
             </h3>
-            <p className="mx-auto mt-3 max-w-xl text-slate-200">
+            <p className="mx-auto mt-2 max-w-xl text-sm text-slate-200 sm:mt-3 sm:text-base">
               We can build a personalized package based on your doctor&apos;s
               prescription or specific health concerns.
             </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <div className="mt-6 flex flex-col justify-center gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-4">
               <Button href="/contact" variant="accent" size="lg">
                 Contact Our Lab
               </Button>

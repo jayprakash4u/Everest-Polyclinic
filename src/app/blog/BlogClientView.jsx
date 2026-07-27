@@ -111,40 +111,44 @@ function FeaturedArticleCard({ post }) {
 
 function BlogPostCard({ post }) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-100 hover:shadow-card-hover">
-      <div className="h-1 w-full bg-primary-600" />
+    <article className="group flex flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-100 hover:shadow-card-hover sm:rounded-2xl">
+      <div className="h-0.5 w-full bg-primary-600 sm:h-1" />
 
-      <div className="relative h-48 overflow-hidden bg-slate-100">
+      <div className="relative h-28 overflow-hidden bg-slate-100 sm:h-48">
         <Image
           src={post.image}
           alt={post.title}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-primary-900/50 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-        <span className="absolute left-4 top-4 rounded-full border border-white/20 bg-white/95 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-700 backdrop-blur-sm">
+        <span className="absolute left-2 top-2 max-w-[calc(100%-1rem)] truncate rounded-full border border-white/20 bg-white/95 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-primary-700 backdrop-blur-sm sm:left-4 sm:top-4 sm:max-w-none sm:px-2.5 sm:py-1 sm:text-[10px]">
           {post.category}
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <PostMeta date={post.date} readTime={post.readTime} />
+      <div className="flex flex-1 flex-col p-3 sm:p-5 md:p-6">
+        <PostMeta
+          date={post.date}
+          readTime={post.readTime}
+          className="gap-1.5 text-[10px] sm:gap-3 sm:text-xs [&_svg]:h-3 [&_svg]:w-3"
+        />
 
-        <h3 className="mt-3 font-heading text-lg font-bold leading-snug text-text-dark transition-colors group-hover:text-primary-700">
+        <h3 className="mt-2 font-heading text-[13px] font-bold leading-snug text-text-dark transition-colors group-hover:text-primary-700 sm:mt-3 sm:text-lg">
           {post.title}
         </h3>
 
-        <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-500 line-clamp-3">
+        <p className="mt-1.5 flex-1 text-[11px] leading-relaxed text-slate-500 line-clamp-2 sm:mt-2 sm:text-sm sm:line-clamp-3">
           {post.excerpt}
         </p>
 
         <Link
           href="/contact"
-          className="mt-5 inline-flex items-center gap-1.5 border-t border-slate-100 pt-4 text-sm font-bold text-primary-600 transition-all group-hover:gap-2.5"
+          className="mt-3 inline-flex items-center gap-1 border-t border-slate-100 pt-2.5 text-[11px] font-bold text-primary-600 transition-all group-hover:gap-2.5 sm:mt-5 sm:gap-1.5 sm:pt-4 sm:text-sm"
         >
           Continue reading
-          <ArrowRight size={15} />
+          <ArrowRight size={14} />
         </Link>
       </div>
     </article>
@@ -189,7 +193,7 @@ export default function BlogClientView({
   return (
     <main className="min-h-screen bg-background-light">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#061d2e] via-[#0c3347] to-primary-700 px-4 py-16 sm:py-20 md:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#061d2e] via-[#0c3347] to-primary-700 px-4 py-8 sm:py-16 md:py-20 lg:py-24">
         <div
           className="pointer-events-none absolute inset-0 opacity-40"
           style={{
@@ -198,8 +202,8 @@ export default function BlogClientView({
             backgroundSize: "32px 32px",
           }}
         />
-        <div className="relative container mx-auto max-w-6xl px-4 sm:px-6">
-          <nav className="mb-6 flex items-center gap-2 text-sm text-primary-200/80">
+        <div className="relative container mx-auto max-w-6xl sm:px-6">
+          <nav className="mb-3 flex items-center gap-2 text-xs text-primary-200/80 sm:mb-6 sm:text-sm">
             <Link href="/" className="transition-colors hover:text-white">
               Home
             </Link>
@@ -208,16 +212,16 @@ export default function BlogClientView({
           </nav>
 
           <div className="max-w-3xl">
-            <h1 className="text-xl font-bold uppercase tracking-tight text-white sm:text-2xl md:text-3xl">
+            <h1 className="text-lg font-bold uppercase tracking-tight text-white sm:text-2xl md:text-3xl">
               Health Blog
             </h1>
-            <div className="mt-2 flex items-center gap-2">
+            <div className="mt-1.5 flex items-center gap-2 sm:mt-2">
               <div className="h-0.5 w-8 bg-secondary-400" />
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-primary-200">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-200 sm:text-[11px]">
                 Expert insights & wellness tips
               </p>
             </div>
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-primary-100 sm:text-lg">
+            <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-primary-100 sm:mt-4 sm:text-base md:text-lg">
               Evidence-based articles from {SITE.shortName} specialists — covering
               prevention, treatment, and everyday health decisions.
             </p>
@@ -226,15 +230,15 @@ export default function BlogClientView({
       </section>
 
       {/* Stats strip */}
-      <section className="relative z-10 -mt-6 px-4 sm:-mt-8">
+      <section className="relative z-10 -mt-4 px-4 sm:-mt-8">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-2 gap-3 rounded-2xl border border-primary-100 bg-white p-4 shadow-card sm:grid-cols-4 sm:gap-0 sm:p-0 sm:divide-x sm:divide-slate-100">
+          <div className="grid grid-cols-2 gap-2 rounded-xl border border-primary-100 bg-white p-2.5 shadow-card sm:grid-cols-4 sm:gap-0 sm:rounded-2xl sm:p-0 sm:divide-x sm:divide-slate-100">
             {blogStats.map((stat) => (
-              <div key={stat.label} className="px-4 py-4 text-center sm:py-6">
-                <p className="font-heading text-2xl font-bold text-primary-700 sm:text-3xl">
+              <div key={stat.label} className="px-2 py-2.5 text-center sm:px-4 sm:py-6">
+                <p className="font-heading text-xl font-bold text-primary-700 sm:text-3xl">
                   {stat.value}
                 </p>
-                <p className="mt-1 text-xs font-medium uppercase tracking-wider text-slate-500">
+                <p className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-slate-500 sm:mt-1 sm:text-xs">
                   {stat.label}
                 </p>
               </div>
@@ -265,7 +269,7 @@ export default function BlogClientView({
             description="Filter by category to find practical guidance written by our clinical team."
           />
 
-          <div className="mb-6 flex flex-wrap gap-2 sm:mb-8">
+          <div className="-mx-4 mb-6 flex gap-2 overflow-x-auto overscroll-x-contain px-4 hide-scrollbar sm:mx-0 sm:mb-8 sm:flex-wrap sm:overflow-visible sm:px-0">
             {categories.map((category) => {
               const Icon = category.icon;
               const isActive = activeCategory === category.id;
@@ -275,7 +279,7 @@ export default function BlogClientView({
                   type="button"
                   onClick={() => setActiveCategory(category.id)}
                   className={cn(
-                    "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-all",
+                    "inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-all",
                     isActive
                       ? "border-primary-600 bg-primary-600 text-white shadow-md"
                       : "border-slate-200 bg-white text-slate-600 hover:border-primary-200 hover:text-primary-700",
@@ -297,7 +301,7 @@ export default function BlogClientView({
           </p>
 
           {filteredPosts.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-6 lg:grid-cols-3">
               {filteredPosts.map((post) => (
                 <BlogPostCard key={post.id} post={post} />
               ))}

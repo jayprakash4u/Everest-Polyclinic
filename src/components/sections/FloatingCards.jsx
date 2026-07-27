@@ -1,18 +1,18 @@
 import { STATS } from "@/constants";
 
-export default function FloatingCards() {
+export default function FloatingCards({ stats = STATS }) {
+  const items = stats?.length ? stats : STATS;
+
   return (
-    <section className="relative -mt-48 z-10 px-4">
+    <section className="relative z-10 -mt-48 px-4">
       <div className="container mx-auto">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
-          {STATS.map((stat) => (
+        <div className="mx-auto grid max-w-4xl grid-cols-2 gap-4 lg:grid-cols-4">
+          {items.map((stat) => (
             <div
               key={stat.label}
-              className="bg-primary-600 text-white text-center py-6 px-4 shadow-lg rounded-tl-3xl rounded-br-3xl"
+              className="rounded-br-3xl rounded-tl-3xl bg-primary-600 px-4 py-6 text-center text-white shadow-lg"
             >
-              <p className="text-3xl md:text-4xl font-bold mb-1">
-                {stat.value}
-              </p>
+              <p className="mb-1 text-3xl font-bold md:text-4xl">{stat.value}</p>
               <p className="text-sm text-primary-200">{stat.label}</p>
             </div>
           ))}

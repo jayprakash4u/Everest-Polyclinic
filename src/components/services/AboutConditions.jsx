@@ -33,29 +33,32 @@ export default function AboutConditions({ page }) {
         </div>
 
         {aboutBenefits.length ? (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-4">
             {aboutBenefits.map((benefit, index) => (
               <article
                 key={benefit.title}
-                className="group rounded-2xl border border-slate-200/80 bg-slate-50/50 p-5 transition-colors hover:border-primary-200 hover:bg-white md:p-6"
+                className="group rounded-xl border border-slate-200/80 bg-slate-50/50 p-3 transition-colors hover:border-primary-200 hover:bg-white sm:rounded-2xl sm:p-5 md:p-6"
               >
-                <div className="mb-4 flex items-center gap-3">
-                  <ServiceIconFrame size="sm">
+                <div className="mb-2.5 flex items-center gap-2 sm:mb-4 sm:gap-3">
+                  <ServiceIconFrame
+                    size="sm"
+                    className="h-8 w-8 rounded-lg sm:h-11 sm:w-11 sm:rounded-xl"
+                  >
                     <ServicePageIcon
                       icon={benefit.icon}
                       iconSet={benefit.iconSet ?? "health"}
-                      size={22}
+                      size={18}
                     />
                   </ServiceIconFrame>
-                  <span className="text-xs font-bold tabular-nums text-slate-400">
+                  <span className="text-[10px] font-bold tabular-nums text-slate-400 sm:text-xs">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                 </div>
-                <h3 className="font-heading text-base font-bold text-slate-900">
+                <h3 className="font-heading text-[13px] font-bold leading-snug text-slate-900 sm:text-base">
                   {benefit.title}
                 </h3>
                 {benefit.description ? (
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  <p className="mt-1.5 text-[11px] leading-relaxed text-slate-600 sm:mt-2 sm:text-sm">
                     {benefit.description}
                   </p>
                 ) : null}

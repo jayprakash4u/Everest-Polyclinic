@@ -49,28 +49,28 @@ export default function ServiceHero({ page }) {
               </Badge>
             ) : null}
 
-            <h1 className="font-heading text-4xl font-bold leading-[1.08] tracking-tight text-slate-900 md:text-5xl lg:text-[3.15rem]">
+            <h1 className="font-heading text-[1.85rem] font-bold leading-[1.12] tracking-tight text-slate-900 sm:text-4xl md:text-5xl lg:text-[3.15rem]">
               {displayTitle}
             </h1>
 
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-slate-600 md:text-lg">
+            <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-slate-600 sm:mt-5 sm:text-base md:text-lg">
               {hero.description}
             </p>
 
             {hero.features.length ? (
-              <ul className="mt-7 flex flex-wrap gap-2.5">
+              <ul className="mt-7 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2.5">
                 {hero.features.map((feature) => (
                   <li
                     key={feature.label}
-                    className="inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm"
+                    className="flex min-w-0 items-start gap-2 rounded-2xl border border-slate-200/90 bg-white px-3 py-2.5 text-left text-[13px] font-medium leading-snug text-slate-700 shadow-sm sm:inline-flex sm:w-auto sm:items-center sm:rounded-full sm:px-3.5 sm:py-2 sm:text-sm sm:leading-normal"
                   >
                     <ServicePageIcon
                       icon={feature.icon}
                       iconSet={feature.iconSet ?? "lucide"}
                       size={16}
-                      className="text-primary-600"
+                      className="mt-0.5 shrink-0 text-primary-600 sm:mt-0"
                     />
-                    {feature.label}
+                    <span className="min-w-0">{feature.label}</span>
                   </li>
                 ))}
               </ul>
@@ -88,13 +88,16 @@ export default function ServiceHero({ page }) {
             )}
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Link href="/contact">
+              <Link href="/contact" className="w-full sm:w-auto">
                 <Button size="lg" className="w-full rounded-full sm:w-auto">
                   <Calendar size={18} />
                   {hero.primaryCtaLabel ?? "Book Appointment"}
                 </Button>
               </Link>
-              <a href={`tel:${SITE.phone.replace(/\s/g, "")}`}>
+              <a
+                href={`tel:${SITE.phone.replace(/\s/g, "")}`}
+                className="w-full sm:w-auto"
+              >
                 <Button
                   variant="outline"
                   size="lg"
@@ -110,14 +113,14 @@ export default function ServiceHero({ page }) {
               </a>
             </div>
 
-            <div className="mt-8 flex flex-wrap gap-4 border-t border-slate-100 pt-6 text-sm text-slate-600">
+            <div className="mt-8 flex flex-col gap-3 border-t border-slate-100 pt-6 text-sm text-slate-600 sm:flex-row sm:flex-wrap sm:gap-x-5 sm:gap-y-2">
               <span className="inline-flex items-center gap-2">
-                <ShieldCheck size={16} className="text-secondary-600" />
+                <ShieldCheck size={16} className="shrink-0 text-secondary-600" />
                 Licensed specialists
               </span>
               <span className="inline-flex items-center gap-2">
-                <Clock3 size={16} className="text-secondary-600" />
-                {SITE.workingHours}
+                <Clock3 size={16} className="shrink-0 text-secondary-600" />
+                <span className="min-w-0">{SITE.workingHours}</span>
               </span>
             </div>
           </div>

@@ -10,28 +10,41 @@ import Testimonials from "@/components/sections/Testimonials";
 import { getHomepageHealthPackages } from "@/lib/data/healthPackages";
 import { getHomepageSpecialists } from "@/lib/data/doctors";
 import { getTestimonials } from "@/lib/data/testimonials";
+import { getAllServices } from "@/lib/data/services";
+import { getCentersOfExcellence } from "@/lib/data/centersOfExcellence";
+import { getWhyChooseUsItems } from "@/lib/data/whyChooseUs";
 
 export const metadata = {
   title: "Everest International Polyclinic — World-Class Healthcare in Nepal",
 };
 
 export default async function HomePage() {
-  const [testimonials, specialists, healthPackages] = await Promise.all([
+  const [
+    testimonials,
+    specialists,
+    healthPackages,
+    services,
+    centers,
+    whyChooseUs,
+  ] = await Promise.all([
     getTestimonials(),
     getHomepageSpecialists(),
     getHomepageHealthPackages(),
+    getAllServices(),
+    getCentersOfExcellence(),
+    getWhyChooseUsItems(),
   ]);
 
   return (
     <>
       <Hero />
       <WelcomeSection />
-      <CenterOfExcellenceSection />
+      <CenterOfExcellenceSection items={centers} />
       <LatestDiseases packages={healthPackages} />
       <DoctorsSection specialists={specialists} />
       <DownloadReportBookVisit />
-      <Services />
-      <WhyChooseUs />
+      <Services services={services} />
+      <WhyChooseUs items={whyChooseUs} />
       <Testimonials testimonials={testimonials} />
     </>
   );

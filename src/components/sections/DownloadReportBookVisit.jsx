@@ -93,8 +93,8 @@ export default function DownloadReportBookVisit() {
             <div className="group relative min-h-[240px] overflow-hidden rounded-[1.5rem] shadow-2xl sm:min-h-[300px] sm:rounded-[2.5rem] md:min-h-[360px] lg:h-full lg:min-h-0">
               <div className="absolute inset-0 z-10 bg-gradient-to-t from-primary-900/80 via-transparent to-transparent" />
               <img
-                src="https://images.unsplash.com/photo-1579152276503-34e891040316?q=80&w=1200&auto=format&fit=crop"
-                alt="Laboratory Facility"
+                src="/images/image1234.jpg"
+                alt="Everest Polyclinic laboratory"
                 className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
               />
               <div className="absolute bottom-6 left-6 z-20 sm:bottom-10 sm:left-10">

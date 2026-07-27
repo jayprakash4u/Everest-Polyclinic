@@ -104,13 +104,15 @@ export function AdminCrudListRow({
         >
           {editLabel}
         </button>
-        <button
-          type="button"
-          onClick={onDelete}
-          className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50"
-        >
-          {deleteLabel}
-        </button>
+        {onDelete ? (
+          <button
+            type="button"
+            onClick={onDelete}
+            className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50"
+          >
+            {deleteLabel}
+          </button>
+        ) : null}
       </div>
     </li>
   );

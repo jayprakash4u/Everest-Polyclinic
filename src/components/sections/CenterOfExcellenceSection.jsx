@@ -59,7 +59,11 @@ function ExcellenceItem({ item, layout = "horizontal" }) {
   );
 }
 
-export default function CenterOfExcellenceSection() {
+export default function CenterOfExcellenceSection({
+  items = CENTERS_OF_EXCELLENCE,
+}) {
+  const centers = items?.length ? items : CENTERS_OF_EXCELLENCE;
+
   return (
     <section className="bg-white py-16 md:py-20">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -83,9 +87,8 @@ export default function CenterOfExcellenceSection() {
           </div>
 
           <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-2 sm:p-3">
-            {/* Mobile: 2 cards per row */}
             <div className="grid grid-cols-2 gap-2 sm:hidden">
-              {CENTERS_OF_EXCELLENCE.map((item) => (
+              {centers.map((item) => (
                 <ExcellenceItem
                   key={item.title}
                   item={item}
@@ -94,15 +97,14 @@ export default function CenterOfExcellenceSection() {
               ))}
             </div>
 
-            {/* Tablet+: two columns of three */}
             <div className="hidden grid-cols-2 divide-x divide-slate-200/70 sm:grid">
               <div className="flex flex-col divide-y divide-slate-200/70">
-                {CENTERS_OF_EXCELLENCE.slice(0, 3).map((item) => (
+                {centers.slice(0, 3).map((item) => (
                   <ExcellenceItem key={item.title} item={item} />
                 ))}
               </div>
               <div className="flex flex-col divide-y divide-slate-200/70">
-                {CENTERS_OF_EXCELLENCE.slice(3).map((item) => (
+                {centers.slice(3).map((item) => (
                   <ExcellenceItem key={item.title} item={item} />
                 ))}
               </div>
