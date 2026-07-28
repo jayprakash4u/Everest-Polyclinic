@@ -9,6 +9,7 @@ import { ChevronDown, Menu, Phone, Search, X } from "lucide-react";
 import { NAV_LINKS, SITE } from "@/constants";
 import Button from "@/components/ui/Button";
 import ServicesOptionsMenu from "@/components/layout/ServicesOptionsMenu";
+import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
 import { cn } from "@/lib/utils";
 
 const SOCIAL_LINKS = [
@@ -87,12 +88,19 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const [bookingOpen, setBookingOpen] = useState(false);
   const [servicesDropdownPos, setServicesDropdownPos] = useState({ top: 0, left: 0 });
   const [isMounted, setIsMounted] = useState(false);
   const servicesTriggerRef = useRef(null);
   const servicesDropdownRef = useRef(null);
   const servicesCloseTimerRef = useRef(null);
   const pathname = usePathname();
+
+  const openBooking = useCallback(() => {
+    setBookingOpen(true);
+    closeMobileMenu(setIsOpen, setMobileServicesOpen);
+    setServicesOpen(false);
+  }, []);
 
   const updateServicesDropdownPosition = useCallback(() => {
     setServicesDropdownPos(getServicesDropdownPosition(servicesTriggerRef.current));
@@ -345,7 +353,8 @@ export default function Navbar() {
                 </button>
 
                 <Button
-                  href="/contact"
+                  type="button"
+                  onClick={openBooking}
                   size="sm"
                   variant="secondary"
                   className="hidden px-4 text-[11px] font-bold uppercase tracking-wider shadow-md sm:inline-flex sm:px-5 sm:text-xs"
@@ -354,7 +363,8 @@ export default function Navbar() {
                 </Button>
 
                 <Button
-                  href="/contact"
+                  type="button"
+                  onClick={openBooking}
                   size="xs"
                   variant="secondary"
                   className="px-3 text-[10px] font-bold uppercase tracking-wide shadow-sm sm:hidden"
@@ -510,12 +520,12 @@ export default function Navbar() {
           {/* Drawer footer CTAs */}
           <div className="border-t border-slate-100 bg-slate-50/80 p-4">
             <Button
-              href="/contact"
+              type="button"
+              onClick={openBooking}
               variant="secondary"
               size="md"
               fullWidth
               className="rounded-xl font-bold uppercase tracking-wide"
-              onClick={handleCloseMobile}
             >
               Book Appointment
             </Button>
@@ -529,6 +539,11 @@ export default function Navbar() {
           </div>
         </aside>
       </div>
+
+      <BookAppointmentModal
+        isOpen={bookingOpen}
+        onClose={() => setBookingOpen(false)}
+      />
 
       {isMounted &&
         servicesOpen &&

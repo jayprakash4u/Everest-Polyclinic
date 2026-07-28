@@ -20,11 +20,11 @@ const SITE = {
   tagline: "World-Class Healthcare at the Foot of the Himalayas",
   description:
     "Nepal's most trusted international polyclinic offering comprehensive medical services with cutting-edge technology and compassionate care.",
-  phone: "+977 986-1848382",
-  email: "info@everestpolyclinic.com",
-  address: "Mid-Baneshwor, Kathmandu, Nepal",
+  phone: "+977 985-8021822",
+  email: "everestintel2070@gmail.com",
+  address: "Karkando Chowk, Nepalgunj-18, Nepalganj, Nepal",
   workingHours: "Sun – Fri: 8:00 AM – 8:00 PM",
-  emergencyHotline: "+977 01-4567890",
+  emergencyHotline: "+977 985-8021822",
 };
 
 const STATS = [

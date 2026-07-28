@@ -23,46 +23,61 @@ function ServiceCard({ service }) {
   return (
     <Link
       href={`/services/${service.slug}`}
-      className="group relative flex h-full w-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_8px_30px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-primary-200 hover:shadow-[0_16px_40px_rgba(30,95,168,0.12)]"
+      className="group relative flex h-full w-full flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-[0_4px_18px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-[0_12px_28px_rgba(30,95,168,0.1)] sm:rounded-2xl"
     >
-      <div className="h-1 w-full bg-gradient-to-r from-primary-600 via-primary-500 to-secondary-500" />
+      <div className="h-0.5 w-full bg-gradient-to-r from-primary-600 via-primary-500 to-secondary-500 sm:h-1" />
 
-      <div className="relative flex flex-1 flex-col p-5 sm:p-6">
-        <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-primary-50/80 transition-transform duration-500 group-hover:scale-110" />
+      <div className="relative flex flex-1 flex-col p-3 sm:p-6">
+        <div className="pointer-events-none absolute -right-6 -top-6 hidden h-24 w-24 rounded-full bg-primary-50/70 sm:block" />
 
-        <div className="relative mb-4">
+        <div className="relative mb-2.5 sm:mb-4">
           {image ? (
-            <BrandIconImage
-              src={image}
-              alt={service.title}
-              size={72}
-              rounded="2xl"
-              variant="brand"
-              className="shadow-md ring-4 ring-primary-50 transition-transform duration-300 group-hover:scale-[1.04]"
-            />
+            <>
+              <BrandIconImage
+                src={image}
+                alt={service.title}
+                size={44}
+                rounded="xl"
+                variant="brand"
+                className="shadow-sm ring-2 ring-primary-50 transition-transform duration-300 group-hover:scale-[1.03] sm:hidden"
+              />
+              <BrandIconImage
+                src={image}
+                alt={service.title}
+                size={64}
+                rounded="2xl"
+                variant="brand"
+                className="hidden shadow-md ring-4 ring-primary-50 transition-transform duration-300 group-hover:scale-[1.04] sm:block"
+              />
+            </>
           ) : (
-            <div className="flex h-[72px] w-[72px] items-center justify-center rounded-2xl bg-gradient-to-br from-primary-600 to-primary-800 text-white shadow-md ring-4 ring-primary-50">
-              <Icon size={32} strokeWidth={1.5} />
-            </div>
+            <>
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary-600 to-primary-800 text-white shadow-sm ring-2 ring-primary-50 sm:hidden">
+                <Icon size={20} strokeWidth={1.5} />
+              </div>
+              <div className="hidden h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-600 to-primary-800 text-white shadow-md ring-4 ring-primary-50 sm:flex">
+                <Icon size={28} strokeWidth={1.5} />
+              </div>
+            </>
           )}
         </div>
 
-        <h3 className="relative font-heading text-base font-bold leading-snug text-slate-900 transition-colors group-hover:text-primary-700 sm:text-lg">
-          {service.title}
+        <h3 className="relative font-heading text-[13px] font-bold leading-snug text-slate-900 transition-colors group-hover:text-primary-700 sm:text-lg">
+          <span className="line-clamp-2">{service.title}</span>
         </h3>
 
-        <p className="relative mt-2 line-clamp-3 flex-1 text-[13px] leading-relaxed text-slate-500 sm:text-sm">
+        <p className="relative mt-1.5 line-clamp-2 flex-1 text-[11px] leading-snug text-slate-500 sm:mt-2 sm:line-clamp-3 sm:text-sm sm:leading-relaxed">
           {summary}
         </p>
 
-        <div className="relative mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
-          <span className="text-sm font-semibold text-primary-600">
-            View service
+        <div className="relative mt-3 flex items-center justify-between border-t border-slate-100 pt-2.5 sm:mt-5 sm:pt-4">
+          <span className="text-[11px] font-semibold text-primary-600 sm:text-sm">
+            View
+            <span className="hidden sm:inline"> service</span>
           </span>
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-50 text-primary-600 transition-all duration-300 group-hover:bg-primary-600 group-hover:text-white group-hover:shadow-md">
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-50 text-primary-600 transition-all duration-300 group-hover:bg-primary-600 group-hover:text-white group-hover:shadow-md sm:h-8 sm:w-8">
             <ArrowRight
-              size={15}
-              className="transition-transform duration-300 group-hover:translate-x-0.5"
+              className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 sm:h-[15px] sm:w-[15px]"
             />
           </span>
         </div>

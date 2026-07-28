@@ -19,9 +19,17 @@ function readGap(container) {
   return parseFloat(styles.columnGap) || parseFloat(styles.gap) || 16;
 }
 
-function computeLayout(containerWidth, itemCount, gap, minCardWidth, maxColumns) {
+function computeLayout(containerWidth, itemCount, gap, minCardWidth, maxColumns, forceMobileTwoUp = false) {
   if (containerWidth <= 0 || itemCount === 0) {
     return { cardWidth: minCardWidth, visibleCount: 1 };
+  }
+
+  // Mobile: always show 2 cards in the row when possible
+  if (forceMobileTwoUp && itemCount >= 2) {
+    const visibleCount = Math.min(2, maxColumns, itemCount);
+    const cardWidth =
+      (containerWidth - (visibleCount - 1) * gap) / visibleCount;
+    return { cardWidth, visibleCount };
   }
 
   let visibleCount = Math.floor(
@@ -101,12 +109,17 @@ export default function HorizontalSnapCarousel({
     if (!el) return;
 
     const gap = readGap(el);
+    const forceMobileTwoUp =
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 639px)").matches;
+
     const next = computeLayout(
       el.clientWidth,
       itemCount,
       gap,
       minCardWidth,
       maxColumns,
+      forceMobileTwoUp,
     );
     setLayout(next);
   }, [itemCount, minCardWidth, maxColumns]);
@@ -206,7 +219,7 @@ export default function HorizontalSnapCarousel({
           ref={scrollRef}
           onScroll={updateScrollState}
           className={cn(
-            "hide-scrollbar flex snap-x snap-mandatory scroll-smooth gap-4 overflow-x-auto pb-2 pt-1 md:gap-5",
+            "hide-scrollbar flex snap-x snap-mandatory scroll-smooth gap-2.5 overflow-x-auto pb-2 pt-1 sm:gap-4 md:gap-5",
             trackClassName,
           )}
         >

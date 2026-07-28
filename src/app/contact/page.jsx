@@ -230,7 +230,7 @@ export default function ContactPage() {
                   Visit Our Clinic
                 </h2>
                 <p className="mt-1 text-sm text-slate-500">
-                  Find us at our main branch in Kathmandu.
+                  Find us at our main branch in Nepalgunj.
                 </p>
 
                 <div className="mt-6 space-y-5">
@@ -364,7 +364,7 @@ export default function ContactPage() {
           frameBorder="0"
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3531.8907380419406!2d85.32390742346914!3d27.71922847096282!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb19a3778e0001%3A0x1234567890!2sMid-Baneshwor!5e0!3m2!1sen!2snp!4v1234567890"
+          src="https://www.google.com/maps?q=Karkando+Chowk,+Nepalgunj-18,+Nepal&output=embed"
           className="h-full w-full grayscale-[30%]"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-primary-900/20 to-transparent" />

@@ -37,22 +37,92 @@ function buildCategoryOptions(specialists) {
 
 function PageSectionHeader({ title, subtitle, description, className }) {
   return (
-    <div className={cn("mb-6 max-w-2xl sm:mb-8", className)}>
-      <h2 className="text-lg font-bold uppercase tracking-tight text-text-dark sm:text-xl">
+    <div className={cn("mb-5 max-w-2xl sm:mb-8", className)}>
+      <h2 className="text-base font-bold uppercase tracking-tight text-text-dark sm:text-xl">
         {title}
       </h2>
       <div className="mt-1 flex items-center gap-2">
         <div className="h-0.5 w-8 bg-secondary-500" />
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-primary-400">
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-400 sm:text-[11px]">
           {subtitle}
         </p>
       </div>
       {description ? (
-        <p className="mt-3 text-sm leading-relaxed text-slate-500 sm:text-base">
+        <p className="mt-2.5 text-sm leading-relaxed text-slate-500 sm:mt-3 sm:text-base">
           {description}
         </p>
       ) : null}
     </div>
+  );
+}
+
+function DoctorCard({ doctor }) {
+  return (
+    <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-100 hover:shadow-card-hover sm:rounded-2xl">
+      <div className="relative h-28 overflow-hidden bg-slate-100 sm:h-56 md:h-60">
+        <Image
+          src={doctor.image}
+          alt={doctor.name}
+          fill
+          className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+          sizes="(max-width: 639px) 45vw, (max-width: 1024px) 50vw, 25vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary-900/55 via-transparent to-transparent sm:from-primary-900/50 sm:opacity-0 sm:transition-opacity sm:duration-300 sm:group-hover:opacity-100" />
+        <div className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-white/95 shadow-sm sm:right-3 sm:top-3 sm:h-9 sm:w-9">
+          <Award
+            className="h-3 w-3 text-secondary-600 sm:h-4 sm:w-4"
+            strokeWidth={1.75}
+          />
+        </div>
+        <div className="absolute inset-x-0 bottom-0 px-2 pb-1.5 sm:hidden">
+          <p className="truncate text-[8px] font-bold uppercase tracking-wider text-secondary-300">
+            {doctor.category}
+          </p>
+        </div>
+      </div>
+
+      <div className="flex flex-1 flex-col p-2.5 sm:p-5">
+        <p className="hidden text-[10px] font-bold uppercase tracking-widest text-secondary-600 sm:block">
+          {doctor.category}
+        </p>
+        <h3 className="font-heading text-[12px] font-bold leading-snug text-text-dark transition-colors group-hover:text-primary-700 sm:mt-1 sm:text-lg">
+          <span className="line-clamp-2">{doctor.name}</span>
+        </h3>
+
+        <div className="mt-1 flex items-start gap-1 text-[10px] leading-snug text-slate-500 sm:mt-2 sm:gap-2 sm:text-sm">
+          <GraduationCap className="mt-0.5 h-3 w-3 shrink-0 text-primary-400 sm:h-[15px] sm:w-[15px]" />
+          <span className="line-clamp-2">{doctor.education}</span>
+        </div>
+
+        {doctor.experience ? (
+          <p className="mt-1.5 text-[10px] font-semibold text-primary-600 sm:mt-2 sm:text-xs">
+            {doctor.experience}
+            <span className="hidden sm:inline"> Experience</span>
+            <span className="sm:hidden"> exp.</span>
+          </p>
+        ) : null}
+
+        <div className="mt-auto hidden items-center gap-2 border-t border-slate-100 pt-4 text-xs text-slate-500 sm:mt-4 sm:flex">
+          <CheckCircle2
+            size={14}
+            className="shrink-0 text-secondary-500"
+          />
+          Accepting new patients
+        </div>
+
+        <Button
+          href="/contact"
+          variant="secondary"
+          size="sm"
+          fullWidth
+          className="mt-2.5 rounded-lg px-2 py-1.5 text-[10px] sm:mt-5 sm:rounded-xl sm:px-4 sm:py-2 sm:text-sm"
+        >
+          <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
+          Book
+          <span className="hidden sm:inline"> Consultation</span>
+        </Button>
+      </div>
+    </article>
   );
 }
 
@@ -101,7 +171,7 @@ export default function DoctorsClientView({
   return (
     <main className="min-h-screen bg-background-light">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#061d2e] via-[#0c3347] to-primary-700 px-4 py-16 sm:py-20 md:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#061d2e] via-[#0c3347] to-primary-700 px-4 py-10 sm:py-16 md:py-24">
         <div
           className="pointer-events-none absolute inset-0 opacity-40"
           style={{
@@ -110,8 +180,8 @@ export default function DoctorsClientView({
             backgroundSize: "32px 32px",
           }}
         />
-        <div className="relative container mx-auto max-w-6xl px-4 sm:px-6">
-          <nav className="mb-6 flex items-center gap-2 text-sm text-primary-200/80">
+        <div className="relative container mx-auto max-w-6xl px-0 sm:px-6">
+          <nav className="mb-4 flex items-center gap-1.5 text-xs text-primary-200/80 sm:mb-6 sm:gap-2 sm:text-sm">
             <Link href="/" className="transition-colors hover:text-white">
               Home
             </Link>
@@ -120,16 +190,16 @@ export default function DoctorsClientView({
           </nav>
 
           <div className="max-w-3xl">
-            <h1 className="text-xl font-bold uppercase tracking-tight text-white sm:text-2xl md:text-3xl">
+            <h1 className="text-lg font-bold uppercase tracking-tight text-white sm:text-2xl md:text-3xl">
               Our Specialists
             </h1>
-            <div className="mt-2 flex items-center gap-2">
+            <div className="mt-1.5 flex items-center gap-2 sm:mt-2">
               <div className="h-0.5 w-8 bg-secondary-400" />
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-primary-200">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-200 sm:text-[11px]">
                 Expert care for your health
               </p>
             </div>
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-primary-100 sm:text-lg">
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-primary-100 sm:mt-4 sm:text-base md:text-lg">
               Board-certified professionals delivering evidence-based,
               compassionate care for you and your family.
             </p>
@@ -138,18 +208,18 @@ export default function DoctorsClientView({
       </section>
 
       {/* Stats strip */}
-      <section className="relative z-10 -mt-6 px-4 sm:-mt-8">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-2 gap-3 rounded-2xl border border-primary-100 bg-white p-4 shadow-card sm:grid-cols-4 sm:gap-0 sm:p-0 sm:divide-x sm:divide-slate-100">
+      <section className="relative z-10 -mt-5 px-4 sm:-mt-8">
+        <div className="container mx-auto max-w-6xl px-0">
+          <div className="grid grid-cols-2 gap-2 rounded-xl border border-primary-100 bg-white p-2.5 shadow-card sm:grid-cols-4 sm:gap-0 sm:rounded-2xl sm:p-0 sm:divide-x sm:divide-slate-100">
             {stats.map((stat) => (
               <div
                 key={stat.label}
-                className="px-4 py-4 text-center sm:py-6"
+                className="rounded-lg bg-slate-50/80 px-2 py-2.5 text-center sm:rounded-none sm:bg-transparent sm:px-4 sm:py-6"
               >
-                <p className="font-heading text-2xl font-bold text-primary-700 sm:text-3xl">
+                <p className="font-heading text-xl font-bold text-primary-700 sm:text-3xl">
                   {stat.value}
                 </p>
-                <p className="mt-1 text-xs font-medium uppercase tracking-wider text-slate-500">
+                <p className="mt-0.5 text-[9px] font-medium uppercase tracking-wider text-slate-500 sm:mt-1 sm:text-xs">
                   {stat.label}
                 </p>
               </div>
@@ -159,7 +229,7 @@ export default function DoctorsClientView({
       </section>
 
       {/* Filters & grid */}
-      <section className="py-14 sm:py-16 md:py-20">
+      <section className="py-10 sm:py-16 md:py-20">
         <div className="container mx-auto max-w-6xl px-4 sm:px-6">
           <PageSectionHeader
             title="Our Specialists"
@@ -168,21 +238,18 @@ export default function DoctorsClientView({
           />
 
           {/* Search bar */}
-          <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mb-4 flex flex-col gap-2.5 sm:mb-8 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
             <div className="relative max-w-md flex-1">
-              <Search
-                size={18}
-                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-              />
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 sm:left-4 sm:h-[18px] sm:w-[18px]" />
               <input
                 type="search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search by name or specialty..."
-                className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-text-dark shadow-sm transition-all placeholder:text-slate-400 focus:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-100"
+                className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-9 pr-3 text-sm text-text-dark shadow-sm transition-all placeholder:text-slate-400 focus:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-100 sm:py-3 sm:pl-11 sm:pr-4"
               />
             </div>
-            <p className="text-sm text-slate-400">
+            <p className="text-xs text-slate-400 sm:text-sm">
               Showing{" "}
               <span className="font-semibold text-slate-600">
                 {filteredDoctors.length}
@@ -191,111 +258,49 @@ export default function DoctorsClientView({
             </p>
           </div>
 
-          {/* Category pills */}
-          <div className="mb-8 flex flex-wrap gap-2 sm:mb-10">
-            {categoryOptions.map((category) => {
-              const Icon = category.icon;
-              const isActive = activeCategory === category.id;
-              return (
-                <button
-                  key={category.id}
-                  type="button"
-                  onClick={() => setActiveCategory(category.id)}
-                  className={cn(
-                    "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-all",
-                    isActive
-                      ? "border-primary-600 bg-primary-600 text-white shadow-md"
-                      : "border-slate-200 bg-white text-slate-600 hover:border-primary-200 hover:text-primary-700",
-                  )}
-                >
-                  <Icon size={15} strokeWidth={2} />
-                  {category.label}
-                </button>
-              );
-            })}
+          {/* Category chips — horizontal swipe on mobile */}
+          <div className="-mx-4 mb-6 overflow-x-auto px-4 hide-scrollbar sm:mx-0 sm:mb-10 sm:overflow-visible sm:px-0">
+            <div className="flex w-max gap-1.5 sm:w-auto sm:flex-wrap sm:gap-2">
+              {categoryOptions.map((category) => {
+                const Icon = category.icon;
+                const isActive = activeCategory === category.id;
+                return (
+                  <button
+                    key={category.id}
+                    type="button"
+                    onClick={() => setActiveCategory(category.id)}
+                    className={cn(
+                      "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-semibold transition-all sm:gap-2 sm:px-4 sm:py-2 sm:text-sm",
+                      isActive
+                        ? "border-primary-600 bg-primary-600 text-white shadow-md"
+                        : "border-slate-200 bg-white text-slate-600 hover:border-primary-200 hover:text-primary-700",
+                    )}
+                  >
+                    <Icon className="h-3.5 w-3.5 sm:h-[15px] sm:w-[15px]" strokeWidth={2} />
+                    {category.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Doctor cards */}
+          {/* Doctor cards — 2 per row on mobile */}
           {filteredDoctors.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
               {filteredDoctors.map((doctor) => (
-                <article
-                  key={doctor.id}
-                  className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-100 hover:shadow-card-hover"
-                >
-                  <div className="relative h-56 overflow-hidden bg-slate-100 sm:h-60">
-                    <Image
-                      src={doctor.image}
-                      alt={doctor.name}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary-900/50 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                    <div className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 shadow-sm">
-                      <Award
-                        size={16}
-                        className="text-secondary-600"
-                        strokeWidth={1.75}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-1 flex-col p-5">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-secondary-600">
-                      {doctor.category}
-                    </p>
-                    <h3 className="mt-1 font-heading text-lg font-bold text-text-dark transition-colors group-hover:text-primary-700">
-                      {doctor.name}
-                    </h3>
-
-                    <div className="mt-2 flex items-start gap-2 text-sm text-slate-500">
-                      <GraduationCap
-                        size={15}
-                        className="mt-0.5 shrink-0 text-primary-400"
-                      />
-                      <span>{doctor.education}</span>
-                    </div>
-
-                    {doctor.experience && (
-                      <p className="mt-2 text-xs font-semibold text-primary-600">
-                        {doctor.experience} Experience
-                      </p>
-                    )}
-
-                    <div className="mt-4 flex items-center gap-2 border-t border-slate-100 pt-4 text-xs text-slate-500">
-                      <CheckCircle2
-                        size={14}
-                        className="shrink-0 text-secondary-500"
-                      />
-                      Accepting new patients
-                    </div>
-
-                    <Button
-                      href="/contact"
-                      variant="secondary"
-                      size="sm"
-                      fullWidth
-                      className="mt-5 rounded-xl"
-                    >
-                      <Calendar size={16} />
-                      Book Consultation
-                    </Button>
-                  </div>
-                </article>
+                <DoctorCard key={doctor.id} doctor={doctor} />
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-6 py-16 text-center">
+            <div className="rounded-xl border border-dashed border-slate-200 bg-white px-4 py-12 text-center sm:rounded-2xl sm:px-6 sm:py-16">
               <Stethoscope
-                size={40}
-                className="mx-auto text-slate-300"
+                className="mx-auto h-8 w-8 text-slate-300 sm:h-10 sm:w-10"
                 strokeWidth={1.5}
               />
-              <h3 className="mt-4 font-heading text-lg font-bold text-text-dark">
+              <h3 className="mt-3 font-heading text-base font-bold text-text-dark sm:mt-4 sm:text-lg">
                 No doctors found
               </h3>
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-1.5 text-sm text-slate-500 sm:mt-2">
                 Try adjusting your search or filter to find a specialist.
               </p>
               <button
@@ -304,7 +309,7 @@ export default function DoctorsClientView({
                   setSearchQuery("");
                   setActiveCategory(ALL_CATEGORY);
                 }}
-                className="mt-4 text-sm font-semibold text-primary-600 hover:text-primary-700"
+                className="mt-3 text-sm font-semibold text-primary-600 hover:text-primary-700 sm:mt-4"
               >
                 Clear filters
               </button>
@@ -314,9 +319,9 @@ export default function DoctorsClientView({
       </section>
 
       {/* CTA */}
-      <section className="px-4 pb-16 sm:pb-20">
-        <div className="container mx-auto max-w-6xl">
-          <div className="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-r from-primary-700 to-primary-600 px-6 py-10 sm:rounded-[2rem] sm:px-10 sm:py-12">
+      <section className="px-4 pb-12 sm:pb-20">
+        <div className="container mx-auto max-w-6xl px-0">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary-700 to-primary-600 px-4 py-7 sm:rounded-[2rem] sm:px-10 sm:py-12">
             <div
               className="pointer-events-none absolute inset-0 opacity-10"
               style={{
@@ -325,28 +330,28 @@ export default function DoctorsClientView({
                 backgroundSize: "24px 24px",
               }}
             />
-            <div className="relative flex flex-col items-center gap-6 text-center md:flex-row md:justify-between md:text-left">
+            <div className="relative flex flex-col items-center gap-4 text-center sm:gap-6 md:flex-row md:justify-between md:text-left">
               <div className="max-w-xl">
-                <h2 className="text-lg font-bold uppercase tracking-tight text-white sm:text-xl">
+                <h2 className="text-base font-bold uppercase tracking-tight text-white sm:text-xl">
                   Find a Specialist
                 </h2>
-                <div className="mt-2 flex items-center justify-center gap-2 md:justify-start">
+                <div className="mt-1.5 flex items-center justify-center gap-2 sm:mt-2 md:justify-start">
                   <div className="h-0.5 w-8 bg-secondary-400" />
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-primary-100">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-100 sm:text-[11px]">
                     Need help choosing?
                   </p>
                 </div>
-                <p className="mt-3 text-sm text-primary-100 sm:text-base">
+                <p className="mt-2.5 text-sm text-primary-100 sm:mt-3 sm:text-base">
                   Our reception team will guide you to the best doctor for your
                   condition and schedule your visit.
                 </p>
               </div>
-              <div className="flex shrink-0 flex-wrap justify-center gap-3">
+              <div className="flex w-full shrink-0 flex-col gap-2.5 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3">
                 <Button
                   href="/contact"
                   variant="secondary"
                   size="md"
-                  className="rounded-xl px-8"
+                  className="w-full rounded-xl px-6 sm:w-auto sm:px-8"
                 >
                   Contact Us
                 </Button>
@@ -354,7 +359,7 @@ export default function DoctorsClientView({
                   href={`tel:${SITE.phone.replace(/\s/g, "")}`}
                   variant="outlineWhite"
                   size="md"
-                  className="rounded-xl"
+                  className="w-full rounded-xl sm:w-auto"
                 >
                   <Phone size={16} />
                   Call Now

@@ -55,7 +55,7 @@ html.lenis body {
 
 /* Health package card test list scrollbar */
 .package-test-list {
-  max-height: 160px;
+  max-height: 96px;
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 transparent;
 }

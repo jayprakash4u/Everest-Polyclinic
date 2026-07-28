@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -16,43 +15,44 @@ import HorizontalSnapCarousel, {
 
 function SpecialistCard({ doctor }) {
   return (
-    <article className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md">
-      <div className="relative h-44 overflow-hidden bg-slate-100 sm:h-48">
+    <article className="group flex h-full w-full flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md sm:rounded-2xl">
+      <div className="relative h-28 overflow-hidden bg-slate-100 sm:h-48">
         <Image
           src={doctor.image}
           alt={doctor.name}
           fill
-          sizes="(max-width: 768px) 300px, 320px"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          sizes="(max-width: 639px) 45vw, 320px"
+          className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-primary-900/70 via-primary-900/20 to-transparent px-4 pb-3 pt-10">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-secondary-300">
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-primary-900/80 via-primary-900/25 to-transparent px-2.5 pb-2 pt-6 sm:px-4 sm:pb-3 sm:pt-10">
+          <p className="truncate text-[9px] font-bold uppercase tracking-wider text-secondary-300 sm:text-[11px]">
             {doctor.specialist}
           </p>
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-5">
-        <h3 className="font-heading text-lg font-bold leading-snug text-slate-900">
-          {doctor.name}
+      <div className="flex flex-1 flex-col p-2.5 sm:p-5">
+        <h3 className="font-heading text-[13px] font-bold leading-snug text-slate-900 sm:text-lg">
+          <span className="line-clamp-2">{doctor.name}</span>
         </h3>
 
-        <div className="mt-2 flex items-start gap-2 text-sm leading-relaxed text-slate-600">
+        <div className="mt-1 flex items-start gap-1.5 text-[10px] leading-snug text-slate-600 sm:mt-2 sm:gap-2 sm:text-sm sm:leading-relaxed">
           <GraduationCap
-            size={15}
-            className="mt-0.5 shrink-0 text-primary-500"
+            className="mt-0.5 h-3 w-3 shrink-0 text-primary-500 sm:h-[15px] sm:w-[15px]"
             strokeWidth={1.75}
           />
-          <span>{doctor.degree}</span>
+          <span className="line-clamp-2">{doctor.degree}</span>
         </div>
 
         {doctor.experience ? (
-          <p className="mt-2 text-xs font-semibold text-primary-600">
-            {doctor.experience} experience
+          <p className="mt-1.5 text-[10px] font-semibold text-primary-600 sm:mt-2 sm:text-xs">
+            {doctor.experience}
+            <span className="hidden sm:inline"> experience</span>
+            <span className="sm:hidden"> exp.</span>
           </p>
         ) : null}
 
-        <div className="mt-4 space-y-2.5 border-t border-slate-100 pt-4">
+        <div className="mt-auto hidden space-y-2.5 border-t border-slate-100 pt-4 sm:mt-4 sm:block">
           {doctor.timing ? (
             <div className="flex items-center gap-2.5 text-sm text-slate-600">
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary-50 text-secondary-600">

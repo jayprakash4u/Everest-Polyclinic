@@ -29,10 +29,10 @@ export default function ServiceHero({ page }) {
         aria-hidden
       />
 
-      <div className="container relative mx-auto max-w-6xl px-4 py-10 sm:px-6 md:py-14 lg:py-16">
+      <div className="container relative mx-auto max-w-6xl px-4 py-7 sm:px-6 sm:py-10 md:py-14 lg:py-16">
         <nav
           aria-label="Breadcrumb"
-          className="flex flex-wrap items-center gap-1.5 text-sm text-slate-500"
+          className="flex flex-wrap items-center gap-1.5 text-xs text-slate-500 sm:text-sm"
         >
           <Link href="/" className="transition-colors hover:text-primary-600">
             Home
@@ -41,53 +41,63 @@ export default function ServiceHero({ page }) {
           <span className="font-medium text-slate-700">{title}</span>
         </nav>
 
-        <div className="mt-8 grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+        <div className="mt-5 grid items-center gap-7 sm:mt-8 sm:gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
           <div>
             {hero.eyebrow ? (
-              <Badge variant="primary" className="mb-4">
+              <Badge variant="primary" className="mb-2.5 sm:mb-4">
                 {hero.eyebrow}
               </Badge>
             ) : null}
 
-            <h1 className="font-heading text-[1.85rem] font-bold leading-[1.12] tracking-tight text-slate-900 sm:text-4xl md:text-5xl lg:text-[3.15rem]">
+            <h1 className="font-heading text-[1.55rem] font-bold leading-[1.15] tracking-tight text-slate-900 sm:text-4xl md:text-5xl lg:text-[3.15rem]">
               {displayTitle}
             </h1>
 
-            <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-slate-600 sm:mt-5 sm:text-base md:text-lg">
+            <p className="mt-3 line-clamp-4 max-w-xl text-sm leading-relaxed text-slate-600 sm:mt-5 sm:line-clamp-none sm:text-base md:text-lg">
               {hero.description}
             </p>
 
             {hero.features.length ? (
-              <ul className="mt-7 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2.5">
+              <ul className="mt-5 grid grid-cols-2 gap-1.5 sm:mt-7 sm:flex sm:flex-wrap sm:gap-2.5">
                 {hero.features.map((feature) => (
                   <li
                     key={feature.label}
-                    className="flex min-w-0 items-start gap-2 rounded-2xl border border-slate-200/90 bg-white px-3 py-2.5 text-left text-[13px] font-medium leading-snug text-slate-700 shadow-sm sm:inline-flex sm:w-auto sm:items-center sm:rounded-full sm:px-3.5 sm:py-2 sm:text-sm sm:leading-normal"
+                    className="flex min-w-0 items-start gap-1.5 rounded-xl border border-slate-200/90 bg-white px-2.5 py-2 text-left text-[11px] font-medium leading-snug text-slate-700 shadow-sm sm:inline-flex sm:w-auto sm:items-center sm:gap-2 sm:rounded-full sm:px-3.5 sm:py-2 sm:text-sm sm:leading-normal"
                   >
                     <ServicePageIcon
                       icon={feature.icon}
                       iconSet={feature.iconSet ?? "lucide"}
-                      size={16}
+                      size={14}
                       className="mt-0.5 shrink-0 text-primary-600 sm:mt-0"
                     />
-                    <span className="min-w-0">{feature.label}</span>
+                    <span className="min-w-0 line-clamp-2 sm:line-clamp-none">
+                      {feature.label}
+                    </span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <ul className="mt-7 space-y-3">
+              <ul className="mt-5 grid grid-cols-2 gap-2 sm:mt-7 sm:grid-cols-1 sm:gap-3">
                 {hero.highlights.map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-slate-700">
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-secondary-100 text-secondary-600">
-                      <Check size={12} strokeWidth={2.5} />
+                  <li
+                    key={item}
+                    className="flex items-start gap-2 text-slate-700 sm:gap-3"
+                  >
+                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-secondary-100 text-secondary-600 sm:h-5 sm:w-5">
+                      <Check
+                        className="h-2.5 w-2.5 sm:h-3 sm:w-3"
+                        strokeWidth={2.5}
+                      />
                     </span>
-                    <span className="text-sm font-medium md:text-base">{item}</span>
+                    <span className="text-[11px] font-medium leading-snug sm:text-sm md:text-base">
+                      {item}
+                    </span>
                   </li>
                 ))}
               </ul>
             )}
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:items-center sm:gap-3">
               <Link href="/contact" className="w-full sm:w-auto">
                 <Button size="lg" className="w-full rounded-full sm:w-auto">
                   <Calendar size={18} />
@@ -113,7 +123,7 @@ export default function ServiceHero({ page }) {
               </a>
             </div>
 
-            <div className="mt-8 flex flex-col gap-3 border-t border-slate-100 pt-6 text-sm text-slate-600 sm:flex-row sm:flex-wrap sm:gap-x-5 sm:gap-y-2">
+            <div className="mt-5 hidden flex-col gap-3 border-t border-slate-100 pt-6 text-sm text-slate-600 sm:mt-8 sm:flex sm:flex-row sm:flex-wrap sm:gap-x-5 sm:gap-y-2">
               <span className="inline-flex items-center gap-2">
                 <ShieldCheck size={16} className="shrink-0 text-secondary-600" />
                 Licensed specialists
@@ -126,7 +136,7 @@ export default function ServiceHero({ page }) {
           </div>
 
           <div className="relative mx-auto w-full max-w-xl lg:mx-0 lg:max-w-none">
-            <div className="relative aspect-[5/4] overflow-hidden rounded-3xl bg-slate-100 shadow-[0_24px_64px_rgba(15,23,42,0.10)] ring-1 ring-slate-200/80">
+            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-slate-100 shadow-[0_16px_40px_rgba(15,23,42,0.08)] ring-1 ring-slate-200/80 sm:aspect-[5/4] sm:rounded-3xl sm:shadow-[0_24px_64px_rgba(15,23,42,0.10)]">
               <Image
                 src={hero.image}
                 alt={`${title} at Everest Polyclinic`}
@@ -141,7 +151,7 @@ export default function ServiceHero({ page }) {
                 Everest Polyclinic
               </p>
               <p className="mt-0.5 text-sm font-medium text-slate-700">
-                Trusted care in Kathmandu
+                Trusted care in Nepalgunj
               </p>
             </div>
           </div>

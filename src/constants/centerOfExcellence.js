@@ -1,4 +1,4 @@
-const BASE = "/images/Center of excellence";
+const BASE = "/images/Center of excellences";
 
 export const CENTERS_OF_EXCELLENCE = [
   {
@@ -10,31 +10,31 @@ export const CENTERS_OF_EXCELLENCE = [
   {
     title: "Oncology",
     description: "Comprehensive care and advanced treatment for cancer patients.",
-    image: `${BASE}/2 (1).png`,
+    image: `${BASE}/2.png`,
     slug: null,
   },
   {
     title: "Pediatrics",
     description: "Dedicated care for infants, children, and adolescents at every stage.",
-    image: `${BASE}/3 (1).png`,
+    image: `${BASE}/3.png`,
     slug: "pediatrics",
   },
   {
     title: "Dermatology",
     description: "Medical and aesthetic skin care with precise, patient-focused treatment.",
-    image: `${BASE}/4 (1).png`,
+    image: `${BASE}/4.png`,
     slug: "dermatology",
   },
   {
     title: "Physiotherapy",
     description: "Rehabilitation and movement therapy to restore strength and function.",
-    image: `${BASE}/5 (1).png`,
+    image: `${BASE}/5.png`,
     slug: "physiotherapy",
   },
   {
     title: "Anaesthesia",
     description: "Expert pain management and surgical anaesthesia services.",
-    image: `${BASE}/6 (1).png`,
+    image: `${BASE}/6.png`,
     slug: null,
   },
 ];
