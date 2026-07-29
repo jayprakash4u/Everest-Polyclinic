@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  pageExtensions: ["js", "jsx", "ts", "tsx"],
   images: {
     domains: ["localhost", "images.unsplash.com", "i.pravatar.cc"],
   },
