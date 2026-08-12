@@ -22,6 +22,7 @@ export default function BrandIconImage({
     dark: "bg-[#050505]",
     brand: "bg-gradient-to-br from-primary-600 to-primary-800",
     light: "bg-primary-50",
+    white: "bg-white",
   };
 
   const roundedClass =

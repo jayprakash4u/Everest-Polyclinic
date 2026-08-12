@@ -1,5 +1,4 @@
 import Hero from "@/components/sections/Hero";
-import WelcomeSection from "@/components/sections/WelcomeSection";
 import CenterOfExcellenceSection from "@/components/sections/CenterOfExcellenceSection";
 import LatestDiseases from "@/components/sections/LatestDiseases";
 import DoctorsSection from "@/components/sections/DoctorsSection";
@@ -38,7 +37,6 @@ export default async function HomePage() {
   return (
     <>
       <Hero />
-      <WelcomeSection />
       <CenterOfExcellenceSection items={centers} />
       <LatestDiseases packages={healthPackages} />
       <DoctorsSection specialists={specialists} />

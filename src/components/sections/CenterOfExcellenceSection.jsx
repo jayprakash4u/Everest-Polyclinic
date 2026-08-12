@@ -25,7 +25,7 @@ function ExcellenceItem({ item, layout = "horizontal" }) {
         alt={item.title}
         size={isCompact ? 52 : 72}
         rounded="full"
-        variant="brand"
+        variant="white"
         className="shrink-0 shadow-md ring-4 ring-primary-100/80"
       />
 

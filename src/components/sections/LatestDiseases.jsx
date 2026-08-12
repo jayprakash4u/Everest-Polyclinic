@@ -42,20 +42,17 @@ export default function LatestDiseases({
   };
 
   return (
-    <section className="bg-background-light py-10 sm:py-12 md:py-14">
-      <div className="container mx-auto px-4 sm:px-6">
-        <div className="mb-6 flex flex-col gap-4 sm:mb-8 md:flex-row md:items-end md:justify-between">
+    <section className="bg-white py-16 md:py-24">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 flex flex-col gap-4 sm:mb-12 md:flex-row md:items-end md:justify-between">
           <div className="min-w-0">
-            <div className="mb-2 flex items-center gap-2">
-              <span className="h-[2px] w-6 bg-primary-500" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-secondary-600">
-                Diagnostic Solutions
-              </span>
-            </div>
-            <h2 className="font-heading text-xl font-bold text-text-dark sm:text-2xl md:text-3xl">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-primary-600">
+              Diagnostic Solutions
+            </p>
+            <h2 className="font-heading text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
               Health <span className="text-primary-600">Packages</span>
             </h2>
-            <p className="mt-2 max-w-lg text-sm text-slate-500">
+            <p className="mt-3 max-w-xl text-base leading-relaxed text-slate-500 md:text-lg">
               Comprehensive checkup packages with transparent pricing and
               detailed test lists.
             </p>
@@ -69,13 +66,13 @@ export default function LatestDiseases({
                 disabled={!canScrollLeft}
                 aria-label="Scroll packages left"
                 className={cn(
-                  "rounded-lg border p-2 transition-all",
+                  "rounded-full border p-2.5 transition-all duration-200",
                   !canScrollLeft
                     ? "cursor-not-allowed border-slate-100 opacity-30"
-                    : "border-primary-100 hover:bg-white hover:shadow-md",
+                    : "border-slate-200 hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700",
                 )}
               >
-                <ChevronLeft size={20} className="text-primary-600" />
+                <ChevronLeft size={18} className="text-slate-600" />
               </button>
               <button
                 type="button"
@@ -83,19 +80,19 @@ export default function LatestDiseases({
                 disabled={!canScrollRight}
                 aria-label="Scroll packages right"
                 className={cn(
-                  "rounded-lg border p-2 transition-all",
+                  "rounded-full border p-2.5 transition-all duration-200",
                   !canScrollRight
                     ? "cursor-not-allowed border-slate-100 opacity-30"
-                    : "border-primary-100 hover:bg-white hover:shadow-md",
+                    : "border-slate-200 hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700",
                 )}
               >
-                <ChevronRight size={20} className="text-primary-600" />
+                <ChevronRight size={18} className="text-slate-600" />
               </button>
             </div>
 
             <Link
               href="/health-packages"
-              className="hidden items-center gap-1.5 rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-700 md:inline-flex"
+              className="hidden items-center gap-2 rounded-full bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-700 hover:shadow-md md:inline-flex"
             >
               View All
               <ArrowRight size={16} />
@@ -114,10 +111,10 @@ export default function LatestDiseases({
           ))}
         </HorizontalSnapCarousel>
 
-        <div className="mt-6 text-center md:hidden">
+        <div className="mt-10 text-center md:hidden">
           <Link
             href="/health-packages"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-700"
+            className="inline-flex items-center gap-2 rounded-full bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-700 hover:shadow-md"
           >
             View All Packages
             <ArrowRight size={16} />

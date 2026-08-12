@@ -20,15 +20,15 @@ function TestList({ tests, compact = false }) {
     const hidden = Math.max(0, labels.length - visible);
 
     return (
-      <ul className="space-y-1 text-[10px] leading-snug text-text">
+      <ul className="space-y-1.5 text-xs leading-relaxed text-slate-600">
         {labels.slice(0, visible).map((label, index) => (
-          <li key={`${label}-${index}`} className="flex gap-1.5">
-            <span className="mt-[5px] h-1 w-1 shrink-0 rounded-full bg-primary-500" />
+          <li key={`${label}-${index}`} className="flex gap-2">
+            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary-400" />
             <span className="min-w-0 line-clamp-1">{label}</span>
           </li>
         ))}
         {hidden > 0 ? (
-          <li className="pl-2.5 text-[10px] font-semibold text-primary-600">
+          <li className="pl-3.5 text-xs font-semibold text-primary-600">
             +{hidden} more tests
           </li>
         ) : null}
@@ -37,12 +37,12 @@ function TestList({ tests, compact = false }) {
   }
 
   return (
-    <ul className="space-y-2 text-[13px] leading-relaxed text-text">
+    <ul className="space-y-2.5 text-sm leading-relaxed text-slate-600">
       {tests.map((test, index) => {
         if (typeof test === "string") {
           return (
-            <li key={index} className="flex gap-2">
-              <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-primary-500" />
+            <li key={index} className="flex gap-2.5">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-400" />
               <span className="min-w-0 break-words">{test}</span>
             </li>
           );
@@ -50,14 +50,14 @@ function TestList({ tests, compact = false }) {
 
         return (
           <li key={index}>
-            <div className="flex gap-2 font-medium text-text-dark">
-              <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-secondary-500" />
+            <div className="flex gap-2.5 font-semibold text-slate-800">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-secondary-500" />
               <span className="min-w-0 break-words">{test.label}</span>
             </div>
-            <ul className="mt-1.5 space-y-1 pl-4">
+            <ul className="mt-1.5 space-y-1.5 pl-4">
               {test.items.map((item, subIndex) => (
-                <li key={subIndex} className="flex gap-2 text-text-light">
-                  <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-primary-200" />
+                <li key={subIndex} className="flex gap-2 text-slate-500">
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary-200" />
                   <span className="min-w-0 break-words">{item}</span>
                 </li>
               ))}
@@ -77,66 +77,59 @@ export default function HealthPackageCard({ pkg, onBookNow, className }) {
   return (
     <article
       className={cn(
-        "group relative flex h-full w-full flex-col overflow-hidden rounded-xl bg-white sm:rounded-card",
-        "border border-primary-100 shadow-card",
-        "transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-card-hover",
+        "group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary-200 hover:shadow-lg",
         className,
       )}
     >
-      <div className="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 px-2.5 pb-5 pt-2.5 sm:px-4 sm:pb-8 sm:pt-6">
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
         {pkg.badge ? (
-          <span className="absolute left-1.5 top-1.5 rounded bg-secondary-100 px-1.5 py-0.5 text-[7px] font-bold uppercase tracking-wide text-secondary-700 sm:left-3 sm:top-3 sm:rounded-full sm:px-2.5 sm:text-[10px]">
+          <span className="mb-3 inline-flex w-fit rounded-full bg-primary-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-700">
             {pkg.badge}
           </span>
         ) : null}
 
-        <h3
-          className={cn(
-            "font-heading text-[12px] font-bold leading-snug text-white sm:pr-16 sm:text-base",
-            pkg.badge ? "mt-3.5 sm:mt-0" : "",
-          )}
-        >
+        <h3 className="font-heading text-base font-bold leading-snug text-slate-900 sm:text-lg">
           <span className="line-clamp-2">{pkg.name}</span>
         </h3>
 
-        <div className="mt-1.5 flex flex-wrap items-end gap-1 sm:mt-3 sm:gap-2">
-          <div className="flex items-baseline gap-0.5 sm:gap-1">
-            <span className="text-[9px] font-semibold text-primary-100 sm:text-xs">
+        <div className="mt-4 flex flex-wrap items-baseline gap-2">
+          <div className="flex items-baseline gap-1">
+            <span className="text-xs font-semibold text-slate-500">
               NRs.
             </span>
-            <span className="text-base font-black tracking-tight text-white sm:text-2xl">
+            <span className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
               {formatPrice(pkg.price)}
             </span>
           </div>
           {pkg.originalPrice ? (
-            <span className="pb-0.5 text-[9px] text-primary-200 line-through sm:text-xs">
+            <span className="text-sm text-slate-400 line-through">
               {formatPrice(pkg.originalPrice)}
             </span>
           ) : null}
         </div>
 
         {savings > 0 ? (
-          <span className="mt-1 inline-flex rounded bg-secondary-500 px-1.5 py-0.5 text-[7px] font-bold uppercase tracking-wide text-white sm:mt-1.5 sm:rounded-full sm:px-2 sm:text-[10px]">
+          <span className="mt-2 inline-flex w-fit rounded-full bg-secondary-50 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-secondary-700">
             Save {savings}%
           </span>
         ) : null}
 
+        <div className="mt-5 flex-1">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+            Includes
+          </p>
+          <div className="mt-3">
+            <TestList tests={pkg.tests} compact />
+          </div>
+        </div>
+
         <button
           type="button"
           onClick={() => onBookNow?.(pkg)}
-          className="absolute bottom-0 right-1.5 translate-y-1/2 rounded-md bg-secondary-600 px-2 py-1 text-[8px] font-bold uppercase tracking-wide text-white shadow-md transition-all duration-200 hover:bg-secondary-700 group-hover:shadow-lg sm:right-3 sm:rounded-lg sm:px-4 sm:py-2 sm:text-[11px]"
+          className="mt-5 w-full rounded-xl bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-primary-700 hover:shadow-md active:scale-[0.98]"
         >
-          Book
-          <span className="hidden sm:inline"> Now</span>
+          Book Now
         </button>
-      </div>
-
-      {/* Mobile: capped preview; desktop: scrollable full list */}
-      <div className="flex-1 px-2.5 pb-2.5 pt-4 sm:hidden">
-        <TestList tests={pkg.tests} compact />
-      </div>
-      <div className="package-test-list hidden flex-1 overflow-y-auto px-4 pb-4 pt-6 sm:block">
-        <TestList tests={pkg.tests} />
       </div>
     </article>
   );

@@ -3,15 +3,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   Award,
   BarChart3,
   BookOpen,
+  CalendarCheck,
   HelpCircle,
   ImageIcon,
   Inbox,
   LayoutDashboard,
+  Menu,
   MessageSquareQuote,
   Package,
   Settings,
@@ -19,16 +21,17 @@ import {
   Star,
   Stethoscope,
   Users,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SITE } from "@/constants";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { href: "/admin/inbox", label: "Inbox", icon: Inbox },
+  { href: "/admin/appointments", label: "Appointments", icon: CalendarCheck },
   { href: "/admin/doctors", label: "Doctors", icon: Stethoscope },
   { href: "/admin/homepage-specialists", label: "Homepage Specialists", icon: Users },
-  { href: "/admin/services", label: "Services", icon: Sparkles },
-  { href: "/admin/centers-of-excellence", label: "Centers of Excellence", icon: Award },
   { href: "/admin/why-choose-us", label: "Why Choose Us", icon: Star },
   { href: "/admin/stats", label: "Site Stats", icon: BarChart3 },
   { href: "/admin/health-packages", label: "Health Packages", icon: Package },
@@ -42,10 +45,9 @@ const NAV_ITEMS = [
 const PAGE_TITLES = {
   "/admin": "Overview",
   "/admin/inbox": "Inbox",
+  "/admin/appointments": "Appointments",
   "/admin/doctors": "Doctors",
   "/admin/homepage-specialists": "Homepage Specialists",
-  "/admin/services": "Services",
-  "/admin/centers-of-excellence": "Centers of Excellence",
   "/admin/why-choose-us": "Why Choose Us",
   "/admin/stats": "Site Stats",
   "/admin/health-packages": "Health Packages",
@@ -118,6 +120,19 @@ export default function AdminShell({ children, adminName = "Admin" }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const pageTitle = useMemo(() => getPageTitle(pathname), [pathname]);
 
+  useEffect(() => {
+    if (!mobileNavOpen) return;
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setMobileNavOpen(false);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [mobileNavOpen]);
+
   const handleLogout = async () => {
     await fetch("/api/admin/logout", { method: "POST" });
     router.push("/admin/login");
@@ -147,7 +162,23 @@ export default function AdminShell({ children, adminName = "Admin" }) {
           <header className="flex flex-wrap items-center justify-between gap-3 border-b border-primary-100 bg-white px-4 py-3 shadow-sm sm:px-6 sm:py-4">
             <div className="flex min-w-0 items-center gap-3">
               <div className="lg:hidden">
-                <AdminSidebarBrand />
+                <Link href="/admin" className="flex items-center gap-2">
+                  <Image
+                    src="/images/logos/logo.jpg"
+                    alt={SITE.shortName}
+                    width={32}
+                    height={32}
+                    className="h-8 w-8 shrink-0 rounded-full ring-2 ring-primary-100"
+                  />
+                  <div className="min-w-0 leading-tight">
+                    <p className="truncate font-heading text-sm font-bold text-slate-800">
+                      Everest Polyclinic
+                    </p>
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-secondary-600">
+                      Admin
+                    </p>
+                  </div>
+                </Link>
               </div>
               <div className="hidden lg:block">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-secondary-600">
@@ -172,9 +203,10 @@ export default function AdminShell({ children, adminName = "Admin" }) {
               <button
                 type="button"
                 onClick={() => setMobileNavOpen((open) => !open)}
-                className="rounded-lg border border-primary-200 px-3 py-2 text-xs font-semibold text-primary-700 lg:hidden"
+                className="rounded-lg border border-primary-200 p-2 text-primary-700 lg:hidden"
+                aria-label="Toggle menu"
               >
-                Menu
+                {mobileNavOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
               <button
                 type="button"
@@ -187,14 +219,37 @@ export default function AdminShell({ children, adminName = "Admin" }) {
           </header>
 
           {mobileNavOpen ? (
-            <div className="border-b border-primary-100 bg-white lg:hidden">
-              <p className="px-4 pb-2 pt-3 text-[10px] font-bold uppercase tracking-widest text-primary-600/70">
-                Menu
-              </p>
-              <AdminNav
-                pathname={pathname}
-                onNavigate={() => setMobileNavOpen(false)}
+            <div className="fixed inset-0 z-50 lg:hidden">
+              <div
+                className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity"
+                onClick={() => setMobileNavOpen(false)}
               />
+              <div className="absolute left-0 top-0 h-full w-[280px] -translate-x-0 bg-white shadow-2xl transition-transform duration-300 ease-out">
+                <div className="border-b border-primary-100">
+                  <div className="h-1 bg-secondary-500" />
+                  <div className="flex items-center justify-between px-5 py-4">
+                    <AdminSidebarBrand />
+                    <button
+                      type="button"
+                      onClick={() => setMobileNavOpen(false)}
+                      className="rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
+                      aria-label="Close menu"
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto px-2 py-3">
+                  <p className="px-3 pb-2 pt-1 text-[10px] font-bold uppercase tracking-widest text-primary-600/70">
+                    Menu
+                  </p>
+                  <AdminNav
+                    pathname={pathname}
+                    onNavigate={() => setMobileNavOpen(false)}
+                  />
+                </div>
+              </div>
             </div>
           ) : null}
 
