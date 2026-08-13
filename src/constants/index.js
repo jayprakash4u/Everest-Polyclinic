@@ -22,6 +22,28 @@ export const NAV_LINKS = [
   { label: "Contact", href: "/contact" },
 ];
 
+/**
+ * The header splits NAV_LINKS across two rows. All eight destinations stay
+ * reachable; putting eight in a single bar forced the desktop menu behind a
+ * hamburger until 1280px, so laptops and landscape tablets lost the nav.
+ *
+ * PRIMARY sits in the main bar — the patient journey.
+ * SECONDARY sits in the utility bar above it — browsing and background.
+ */
+export const PRIMARY_NAV_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Doctors", href: "/doctors" },
+  { label: "Health Packages", href: "/health-packages" },
+];
+
+export const SECONDARY_NAV_LINKS = [
+  { label: "Gallery", href: "/gallery" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
+];
+
 export { SERVICES } from "@/constants/services/catalog";
 
 export const STATS = [
@@ -49,7 +71,7 @@ export const WHY_CHOOSE_US = [
   },
   {
     title: "Home Sample Collection",
-    description: "Convenient doorstep blood and sample collection across Kathmandu.",
+    description: "Convenient doorstep blood and sample collection across Nepalgunj.",
     icon: "home",
   },
   {

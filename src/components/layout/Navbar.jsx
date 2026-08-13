@@ -5,14 +5,32 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { CalendarDays, ChevronDown, Menu, Phone, X } from "lucide-react";
-import { NAV_LINKS, SITE } from "@/constants";
+import {
+  CalendarDays,
+  ChevronDown,
+  Clock,
+  Mail,
+  MapPin,
+  Menu,
+  Phone,
+  X,
+} from "lucide-react";
+import {
+  NAV_LINKS,
+  PRIMARY_NAV_LINKS,
+  SECONDARY_NAV_LINKS,
+  SITE,
+} from "@/constants";
 import ServicesOptionsMenu from "@/components/layout/ServicesOptionsMenu";
 import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
 import { cn } from "@/lib/utils";
 
 const SERVICES_MENU_WIDTH = 860;
 const VIEWPORT_PADDING = 16;
+
+/** Shared by every top-level nav item, including the "More" trigger. */
+const labelClass =
+  "relative flex items-center gap-1 py-2 text-[15px] font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2";
 
 function isActiveLink(pathname, href) {
   return href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -33,47 +51,90 @@ function getServicesDropdownPosition(triggerEl) {
   return { top: rect.bottom, left };
 }
 
-/** Wordmark echoes the reception signage: EVEREST / INTERNATIONAL / descriptor. */
+/**
+ * Slim navy utility strip. Gives the header a deliberate top edge and carries
+ * the detail a clinic is asked for constantly, so the white bar below can hold
+ * nothing but identity, navigation and the one action that matters.
+ * Not sticky — it scrolls away and the navigation alone follows the reader.
+ */
+function UtilityBar() {
+  return (
+    <div className="hidden bg-primary-900 text-slate-300 md:block">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-2 text-[13px] sm:px-6 lg:px-8">
+        <div className="flex min-w-0 items-center gap-5">
+          <span className="flex min-w-0 items-center gap-2">
+            <MapPin size={13} className="shrink-0 text-secondary-400" />
+            <span className="truncate">{SITE.address}</span>
+          </span>
+          <span className="hidden shrink-0 items-center gap-2 xl:flex">
+            <Clock size={13} className="shrink-0 text-secondary-400" />
+            {SITE.workingHours}
+          </span>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-5">
+          <a
+            href={`mailto:${SITE.email}`}
+            className="hidden items-center gap-2 transition-colors hover:text-white lg:flex"
+          >
+            <Mail size={13} className="shrink-0 text-secondary-400" />
+            {SITE.email}
+          </a>
+          <a
+            href={`tel:${SITE.phone.replace(/\s/g, "")}`}
+            className="flex items-center gap-2 font-semibold text-white transition-colors hover:text-secondary-300"
+          >
+            <Phone size={13} className="shrink-0 text-secondary-400" />
+            {SITE.phone}
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The logo badge already carries the full registered name around its ring, so
+ * the old three-line stack beside it (EVEREST / INTERNATIONAL / POLYCLINIC &
+ * DIAGNOSTIC CENTER) repeated the mark word for word. Two lines is enough:
+ * the name, then the descriptor.
+ */
 function BrandLockup({ compact, onClick }) {
   return (
+    // min-w-0 is what lets this shrink instead of shoving the booking CTA off
+    // the right edge on a 360-390px screen.
     <Link
       href="/"
       onClick={onClick}
-      className="flex shrink-0 items-center gap-3 transition-opacity hover:opacity-90"
+      className="flex min-w-0 items-center gap-2.5 rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 sm:gap-3"
     >
       <Image
         src="/images/logos/logo.jpg"
         alt=""
         width={160}
         height={160}
-        priority
-        sizes="56px"
+        preload
+        sizes="64px"
         className={cn(
           "shrink-0 rounded-full object-cover transition-all duration-300",
-          compact ? "h-11 w-11" : "h-12 w-12 lg:h-14 lg:w-14",
+          compact ? "h-10 w-10 sm:h-11 sm:w-11" : "h-10 w-10 sm:h-12 sm:w-12 lg:h-[58px] lg:w-[58px]",
         )}
       />
-      <span className="flex min-w-0 flex-col leading-none">
+      <span className="flex min-w-0 flex-col">
         <span
           className={cn(
-            "font-heading font-extrabold uppercase leading-none tracking-tight text-primary-900 transition-all duration-300",
-            compact ? "text-xl lg:text-[26px]" : "text-xl lg:text-[30px]",
+            "truncate font-heading font-semibold leading-tight tracking-[-0.01em] text-primary-900 transition-all duration-300",
+            compact
+              ? "text-[15px] sm:text-lg lg:text-xl"
+              : "text-[15px] sm:text-lg lg:text-[26px]",
           )}
         >
-          Everest
+          Everest International
         </span>
         <span
           className={cn(
-            "font-heading font-medium uppercase leading-none tracking-[0.08em] text-primary-900/90 transition-all duration-300",
-            compact ? "mt-1 text-[11px] lg:text-[14px]" : "mt-1.5 text-[11px] lg:text-[17px]",
-          )}
-        >
-          International
-        </span>
-        <span
-          className={cn(
-            "font-semibold uppercase leading-none tracking-[0.04em] text-slate-500 transition-all duration-300",
-            compact ? "mt-1 text-[7px] lg:text-[8px]" : "mt-1.5 text-[7px] lg:text-[9.5px]",
+            "truncate font-medium uppercase leading-tight tracking-[0.12em] text-slate-500 transition-all duration-300",
+            compact ? "mt-1 text-[8px] sm:text-[9px]" : "mt-1 text-[8px] sm:text-[9px] lg:text-[10px]",
           )}
         >
           Polyclinic &amp; Diagnostic Center
@@ -88,6 +149,7 @@ export default function Navbar() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
@@ -96,6 +158,7 @@ export default function Navbar() {
 
   const servicesTriggerRef = useRef(null);
   const servicesCloseTimerRef = useRef(null);
+  const moreCloseTimerRef = useRef(null);
 
   /* Route changed — drop every open menu during render, not in an effect. */
   if (renderedPath !== pathname) {
@@ -103,6 +166,7 @@ export default function Navbar() {
     setIsOpen(false);
     setMobileServicesOpen(false);
     setServicesOpen(false);
+    setMoreOpen(false);
   }
 
   const closeMobile = useCallback(() => {
@@ -130,6 +194,26 @@ export default function Navbar() {
     syncDropdownPosition();
     setServicesOpen(true);
   }, [syncDropdownPosition]);
+
+  const openMoreMenu = useCallback(() => {
+    if (moreCloseTimerRef.current) {
+      clearTimeout(moreCloseTimerRef.current);
+      moreCloseTimerRef.current = null;
+    }
+    setMoreOpen(true);
+  }, []);
+
+  /* Same 140ms grace as the services menu — closing the instant the pointer
+     leaves makes the gap between trigger and panel unusable. */
+  const scheduleCloseMoreMenu = useCallback(() => {
+    if (moreCloseTimerRef.current) {
+      clearTimeout(moreCloseTimerRef.current);
+    }
+    moreCloseTimerRef.current = setTimeout(() => {
+      setMoreOpen(false);
+      moreCloseTimerRef.current = null;
+    }, 140);
+  }, []);
 
   const scheduleCloseServicesMenu = useCallback(() => {
     if (servicesCloseTimerRef.current) {
@@ -170,10 +254,24 @@ export default function Navbar() {
     };
   }, [servicesOpen, syncDropdownPosition]);
 
+  useEffect(() => {
+    if (!moreOpen) return undefined;
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") setMoreOpen(false);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [moreOpen]);
+
   useEffect(
     () => () => {
       if (servicesCloseTimerRef.current) {
         clearTimeout(servicesCloseTimerRef.current);
+      }
+      if (moreCloseTimerRef.current) {
+        clearTimeout(moreCloseTimerRef.current);
       }
     },
     [],
@@ -200,7 +298,10 @@ export default function Navbar() {
   const telHref = `tel:${SITE.phone.replace(/\s/g, "")}`;
 
   return (
-    <div className="sticky top-0 z-50 w-full">
+    <>
+      <UtilityBar />
+
+      <div className="sticky top-0 z-50 w-full">
       <header
         className={cn(
           "border-b bg-white transition-all duration-300",
@@ -212,19 +313,17 @@ export default function Navbar() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div
             className={cn(
-              "flex items-center justify-between gap-6 transition-all duration-300",
-              scrolled ? "h-[76px]" : "h-[84px] lg:h-[104px]",
+              "flex items-center justify-between gap-2 transition-all duration-300 sm:gap-4 lg:gap-6",
+              scrolled ? "h-[68px] sm:h-[76px]" : "h-[68px] sm:h-[84px] lg:h-[100px]",
             )}
           >
             <BrandLockup compact={scrolled} onClick={closeMobile} />
 
             {/* Centre navigation */}
-            <nav aria-label="Main" className="hidden xl:block">
-              <ul className="flex items-center gap-5 2xl:gap-7">
-                {NAV_LINKS.map((link) => {
+            <nav aria-label="Main" className="hidden lg:block">
+              <ul className="flex items-center gap-4 xl:gap-6">
+                {PRIMARY_NAV_LINKS.map((link) => {
                   const isActive = isActiveLink(pathname, link.href);
-                  const labelClass =
-                    "relative flex items-center gap-1 py-2 text-[14.5px] font-medium transition-colors";
                   const indicator = (
                     <span
                       className={cn(
@@ -290,34 +389,90 @@ export default function Navbar() {
                     </li>
                   );
                 })}
+
+                {/* Secondary destinations tuck in here so the main bar stays
+                    short enough to survive 1024px without a hamburger. */}
+                <li
+                  className="relative"
+                  onMouseEnter={openMoreMenu}
+                  onMouseLeave={scheduleCloseMoreMenu}
+                >
+                  <button
+                    type="button"
+                    onClick={() => (moreOpen ? setMoreOpen(false) : openMoreMenu())}
+                    aria-expanded={moreOpen}
+                    aria-haspopup="true"
+                    className={cn(
+                      labelClass,
+                      moreOpen
+                        ? "text-primary-700"
+                        : "text-slate-600 hover:text-primary-700",
+                    )}
+                  >
+                    More
+                    <ChevronDown
+                      size={14}
+                      strokeWidth={2.5}
+                      className={cn(
+                        "transition-transform duration-200",
+                        moreOpen && "rotate-180",
+                      )}
+                    />
+                  </button>
+
+                  {moreOpen ? (
+                    <div className="absolute right-0 top-full z-50 mt-3 w-48 rounded-xl border border-slate-200 bg-white p-1.5 shadow-e2">
+                      {SECONDARY_NAV_LINKS.map((link) => {
+                        const isActive = isActiveLink(pathname, link.href);
+                        return (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            aria-current={isActive ? "page" : undefined}
+                            onClick={() => setMoreOpen(false)}
+                            className={cn(
+                              "block rounded-lg px-3 py-2.5 text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600",
+                              isActive
+                                ? "bg-primary-50 font-semibold text-primary-700"
+                                : "text-slate-600 hover:bg-slate-50 hover:text-primary-700",
+                            )}
+                          >
+                            {link.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  ) : null}
+                </li>
               </ul>
             </nav>
 
-            {/* Phone pill + mobile trigger */}
-            <div className="flex shrink-0 items-center gap-2.5">
+            {/* Booking CTA + mobile trigger. The phone number lives in the
+                utility bar above, so it isn't repeated here. */}
+            <div className="flex shrink-0 items-center gap-2">
+              {/* Below md the utility bar is hidden, so the number needs a home. */}
               <a
                 href={telHref}
-                className="hidden items-center gap-2.5 rounded-full border border-slate-200 py-2.5 pl-4 pr-5 transition-colors hover:border-primary-300 hover:bg-primary-50/50 md:inline-flex"
+                aria-label={`Call ${SITE.phone}`}
+                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-primary-600 sm:h-11 sm:w-11 transition-colors hover:border-primary-300 hover:bg-primary-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 md:hidden"
               >
-                <Phone size={17} strokeWidth={2.5} className="text-primary-600" />
-                <span className="font-heading text-[15px] font-semibold text-primary-900">
-                  {SITE.phone}
-                </span>
+                <Phone size={18} strokeWidth={2.25} />
               </a>
 
               <button
                 type="button"
                 onClick={openBooking}
-                className="inline-flex items-center gap-2 rounded-full bg-secondary-600 px-4 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-secondary-700 md:hidden"
+                className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl bg-secondary-600 px-3 py-2.5 text-[13px] font-semibold text-white sm:gap-2 sm:px-4 sm:py-3 sm:text-sm transition-colors hover:bg-secondary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary-600 focus-visible:ring-offset-2 lg:px-5"
               >
-                <CalendarDays size={15} strokeWidth={2.5} />
-                Book
+                <CalendarDays size={16} strokeWidth={2.25} />
+                <span className="hidden sm:inline">Book Appointment</span>
+                <span className="sm:hidden">Book</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setIsOpen(true)}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 text-slate-700 transition-colors hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700 xl:hidden"
+                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-700 sm:h-11 sm:w-11 transition-colors hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700 lg:hidden"
                 aria-label="Open menu"
                 aria-expanded={isOpen}
               >
@@ -331,7 +486,7 @@ export default function Navbar() {
       {/* ─── MOBILE DRAWER ─── */}
       <div
         className={cn(
-          "fixed inset-0 z-[60] xl:hidden",
+          "fixed inset-0 z-[60] lg:hidden",
           isOpen ? "pointer-events-auto" : "pointer-events-none",
         )}
         aria-hidden={!isOpen}
@@ -479,6 +634,7 @@ export default function Navbar() {
           </div>,
           document.body,
         )}
-    </div>
+      </div>
+    </>
   );
 }

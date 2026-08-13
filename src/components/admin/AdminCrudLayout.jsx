@@ -28,7 +28,7 @@ export function AdminCrudFormPanel({
       <form onSubmit={onSubmit} className="space-y-3">
         {children}
         <div className="flex flex-wrap gap-2 pt-1">
-          <Button type="submit" variant="secondary" size="sm">
+          <Button type="submit" variant="primary" size="sm">
             {isEditing ? updateLabel : submitLabel}
           </Button>
           {isEditing && onCancel ? (

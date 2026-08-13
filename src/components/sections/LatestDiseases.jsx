@@ -6,6 +6,8 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import HealthPackageCard from "@/components/sections/HealthPackageCard";
 import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
 import { HOMEPAGE_HEALTH_PACKAGES } from "@/constants/healthPackages";
+import Section from "@/components/ui/Section";
+import SectionHeader from "@/components/ui/SectionHeader";
 import HorizontalSnapCarousel, {
   CarouselItem,
   scrollCarouselPage,
@@ -41,92 +43,94 @@ export default function LatestDiseases({
     scrollCarouselPage(carouselRef.current, direction);
   };
 
-  return (
-    <section className="bg-white py-16 md:py-24">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 flex flex-col gap-4 sm:mb-12 md:flex-row md:items-end md:justify-between">
-          <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-primary-600">
-              Diagnostic Solutions
-            </p>
-            <h2 className="font-heading text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
-              Health <span className="text-primary-600">Packages</span>
-            </h2>
-            <p className="mt-3 max-w-xl text-base leading-relaxed text-slate-500 md:text-lg">
-              Comprehensive checkup packages with transparent pricing and
-              detailed test lists.
-            </p>
-          </div>
+  /*
+    One card carries the section. A pricing row of identical white tiles has no
+    focal point, which is what made this read as weightless — the fix is
+    contrast in one place, not a dark box around everything.
 
-          <div className="flex shrink-0 items-center gap-3 self-start md:self-auto">
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => scroll("left")}
+    Driven off the data rather than a hardcoded index: the first "Best Seller"
+    wins, and if the copy ever drops that badge the row degrades to plain cards
+    instead of promoting an arbitrary one.
+  */
+  const featuredId =
+    packages.find((pkg) => pkg.badge === "Best Seller")?.id ?? null;
+
+  return (
+    <Section tone="white">
+      <SectionHeader
+        eyebrow="Diagnostic solutions"
+        title="Health packages"
+        subtitle="Comprehensive checkup packages with transparent pricing and detailed test lists."
+        action={
+          <div className="flex items-center gap-3">
+            {/* Arrows hidden from assistive tech below md — the track is
+                swipeable there and the buttons would be redundant controls. */}
+            <div className="hidden gap-2 md:flex">
+              <ArrowButton
+                direction="left"
                 disabled={!canScrollLeft}
-                aria-label="Scroll packages left"
-                className={cn(
-                  "rounded-full border p-2.5 transition-all duration-200",
-                  !canScrollLeft
-                    ? "cursor-not-allowed border-slate-100 opacity-30"
-                    : "border-slate-200 hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700",
-                )}
-              >
-                <ChevronLeft size={18} className="text-slate-600" />
-              </button>
-              <button
-                type="button"
-                onClick={() => scroll("right")}
+                onClick={() => scroll("left")}
+              />
+              <ArrowButton
+                direction="right"
                 disabled={!canScrollRight}
-                aria-label="Scroll packages right"
-                className={cn(
-                  "rounded-full border p-2.5 transition-all duration-200",
-                  !canScrollRight
-                    ? "cursor-not-allowed border-slate-100 opacity-30"
-                    : "border-slate-200 hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700",
-                )}
-              >
-                <ChevronRight size={18} className="text-slate-600" />
-              </button>
+                onClick={() => scroll("right")}
+              />
             </div>
 
             <Link
               href="/health-packages"
-              className="hidden items-center gap-2 rounded-full bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-700 hover:shadow-md md:inline-flex"
+              className="inline-flex items-center gap-2 rounded-lg text-sm font-semibold text-primary-600 transition-colors hover:text-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2"
             >
-              View All
+              View all packages
               <ArrowRight size={16} />
             </Link>
           </div>
-        </div>
+        }
+      />
 
-        <HorizontalSnapCarousel
-          showArrows={false}
-          onScrollStateChange={handleScrollState}
-        >
-          {packages.map((pkg) => (
-            <CarouselItem key={pkg.id}>
-              <HealthPackageCard pkg={pkg} onBookNow={handleBookPackage} />
-            </CarouselItem>
-          ))}
-        </HorizontalSnapCarousel>
-
-        <div className="mt-10 text-center md:hidden">
-          <Link
-            href="/health-packages"
-            className="inline-flex items-center gap-2 rounded-full bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-700 hover:shadow-md"
-          >
-            View All Packages
-            <ArrowRight size={16} />
-          </Link>
-        </div>
-      </div>
+      <HorizontalSnapCarousel
+        showArrows={false}
+        onScrollStateChange={handleScrollState}
+      >
+        {packages.map((pkg) => (
+          <CarouselItem key={pkg.id}>
+            <HealthPackageCard
+              pkg={pkg}
+              featured={pkg.id === featuredId}
+              onBookNow={handleBookPackage}
+            />
+          </CarouselItem>
+        ))}
+      </HorizontalSnapCarousel>
 
       <BookAppointmentModal
         isOpen={bookingOpen}
         onClose={handleCloseBooking}
         bookingPackage={selectedPackage}
       />
-    </section>
+    </Section>
+  );
+}
+
+function ArrowButton({ direction, disabled, onClick }) {
+  const Icon = direction === "left" ? ChevronLeft : ChevronRight;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={`Scroll packages ${direction}`}
+      className={cn(
+        // h-11/w-11 keeps the hit area at the 44px touch minimum.
+        "flex h-11 w-11 items-center justify-center rounded-xl border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2",
+        disabled
+          ? "cursor-not-allowed border-slate-200 text-slate-300"
+          : "border-slate-300 text-slate-700 hover:border-primary-400 hover:bg-primary-50 hover:text-primary-700",
+      )}
+    >
+      <Icon size={18} />
+    </button>
   );
 }

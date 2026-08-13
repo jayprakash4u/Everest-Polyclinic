@@ -112,7 +112,7 @@ function DoctorCard({ doctor }) {
 
         <Button
           href="/contact"
-          variant="secondary"
+          variant="primary"
           size="sm"
           fullWidth
           className="mt-2.5 rounded-lg px-2 py-1.5 text-[10px] sm:mt-5 sm:rounded-xl sm:px-4 sm:py-2 sm:text-sm"
@@ -349,7 +349,7 @@ export default function DoctorsClientView({
               <div className="flex w-full shrink-0 flex-col gap-2.5 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3">
                 <Button
                   href="/contact"
-                  variant="secondary"
+                  variant="primary"
                   size="md"
                   className="w-full rounded-xl px-6 sm:w-auto sm:px-8"
                 >

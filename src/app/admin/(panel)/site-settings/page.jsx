@@ -114,7 +114,7 @@ export default function SiteSettingsAdminPage() {
           ) : null}
 
           <div className="md:col-span-2">
-            <Button type="submit" variant="secondary" disabled={saving}>
+            <Button type="submit" variant="primary" disabled={saving}>
               {saving ? "Saving..." : "Save Settings"}
             </Button>
           </div>

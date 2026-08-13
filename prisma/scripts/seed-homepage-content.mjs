@@ -9,41 +9,41 @@ const CENTERS_OF_EXCELLENCE = [
     title: "Orthopaedics",
     description:
       "Expert diagnosis and treatment for bone, joint, and mobility conditions.",
-    image: "/images/Center of excellences/1.png",
+    image: "/images/Center of excellence/one.png",
     slug: "orthopedics",
   },
   {
     title: "Oncology",
     description:
       "Comprehensive care and advanced treatment for cancer patients.",
-    image: "/images/Center of excellences/2.png",
+    image: "/images/Center of excellence/two.png",
     slug: null,
   },
   {
     title: "Pediatrics",
     description:
       "Dedicated care for infants, children, and adolescents at every stage.",
-    image: "/images/Center of excellences/3.png",
+    image: "/images/Center of excellence/three.png",
     slug: "pediatrics",
   },
   {
     title: "Dermatology",
     description:
       "Medical and aesthetic skin care with precise, patient-focused treatment.",
-    image: "/images/Center of excellences/4.png",
+    image: "/images/Center of excellence/four.png",
     slug: "dermatology",
   },
   {
     title: "Physiotherapy",
     description:
       "Rehabilitation and movement therapy to restore strength and function.",
-    image: "/images/Center of excellences/5.png",
+    image: "/images/Center of excellence/six.png",
     slug: "physiotherapy",
   },
   {
     title: "Anaesthesia",
     description: "Expert pain management and surgical anaesthesia services.",
-    image: "/images/Center of excellences/6.png",
+    image: "/images/Center of excellence/five.png",
     slug: null,
   },
 ];

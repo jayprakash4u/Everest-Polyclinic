@@ -191,7 +191,8 @@ export default function HorizontalSnapCarousel({
               disabled={!canScrollLeft}
               aria-label={prevLabel}
               className={cn(
-                "absolute -left-2 top-1/2 z-20 flex -translate-y-1/2 rounded-full border border-slate-200 bg-white p-2.5 shadow-md transition hover:border-primary-200 disabled:cursor-not-allowed disabled:opacity-40 sm:p-3",
+                // h-11/w-11 = 44px, the minimum comfortable touch target.
+                "absolute -left-2 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white shadow-md transition hover:border-primary-300 hover:bg-primary-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 disabled:cursor-not-allowed disabled:opacity-40",
                 !canScrollLeft && "opacity-30",
                 arrowsClassName,
               )}

@@ -378,7 +378,7 @@ export default function BlogClientView({
                 </div>
                 <Button
                   type="submit"
-                  variant="secondary"
+                  variant="primary"
                   size="md"
                   className="shrink-0 rounded-xl px-8"
                 >

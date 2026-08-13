@@ -1,20 +1,33 @@
 "use client";
 
+import { createElement } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { SERVICES } from "@/constants/services/catalog";
 import { getHomepageServiceImage } from "@/constants/services/homepageServiceImages";
 import { getServiceIcon } from "@/lib/service-icons";
-import Badge from "@/components/ui/Badge";
+import Section from "@/components/ui/Section";
+import SectionHeader from "@/components/ui/SectionHeader";
 import BrandIconImage from "@/components/ui/BrandIconImage";
 import HorizontalSnapCarousel, {
   CarouselItem,
 } from "@/components/ui/HorizontalSnapCarousel";
 
+const ICON_FRAME =
+  "shadow-e1 ring-1 ring-slate-200 transition-colors duration-300 group-hover:ring-primary-200";
+
+/**
+ * `getServiceIcon` returns a component from a fixed lookup table, so the
+ * identity is stable across renders — but binding it to a capitalised local and
+ * rendering `<Icon />` reads as a component created during render. createElement
+ * expresses the same thing without the ambiguity.
+ */
+function ServiceIcon({ iconKey, className }) {
+  return createElement(getServiceIcon(iconKey), { className, strokeWidth: 1.5 });
+}
+
 function ServiceCard({ service }) {
-  const Icon = getServiceIcon(service.icon);
-  const image =
-    service.homepageImage || getHomepageServiceImage(service.slug);
+  const image = service.homepageImage || getHomepageServiceImage(service.slug);
   const summary =
     service.shortDescription ||
     service.hero?.description ||
@@ -23,65 +36,54 @@ function ServiceCard({ service }) {
   return (
     <Link
       href={`/services/${service.slug}`}
-      className="group relative flex h-full w-full flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-[0_4px_18px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-[0_12px_28px_rgba(30,95,168,0.1)] sm:rounded-2xl"
+      className="group flex h-full w-full flex-col rounded-2xl border border-slate-200/80 bg-white p-4 shadow-e1 transition duration-300 hover:-translate-y-1 hover:border-primary-200 hover:shadow-e2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 sm:p-5"
     >
-      <div className="h-0.5 w-full bg-gradient-to-r from-primary-600 via-primary-500 to-secondary-500 sm:h-1" />
+      {image ? (
+        <>
+          <BrandIconImage
+            src={image}
+            alt=""
+            size={44}
+            rounded="xl"
+            variant="white"
+            className={`${ICON_FRAME} sm:hidden`}
+          />
+          <BrandIconImage
+            src={image}
+            alt=""
+            size={56}
+            rounded="xl"
+            variant="white"
+            className={`hidden ${ICON_FRAME} sm:flex`}
+          />
+        </>
+      ) : (
+        <span
+          className={`flex h-11 w-11 items-center justify-center rounded-xl bg-white text-primary-600 sm:h-14 sm:w-14 ${ICON_FRAME}`}
+        >
+          <ServiceIcon
+            iconKey={service.icon}
+            className="h-5 w-5 sm:h-6 sm:w-6"
+          />
+        </span>
+      )}
 
-      <div className="relative flex flex-1 flex-col p-3 sm:p-6">
-        <div className="pointer-events-none absolute -right-6 -top-6 hidden h-24 w-24 rounded-full bg-primary-50/70 sm:block" />
+      <h3 className="mt-4 text-sm font-semibold leading-snug tracking-[-0.01em] text-slate-900 transition-colors duration-300 group-hover:text-primary-700 sm:mt-5 sm:text-base">
+        <span className="line-clamp-2">{service.title}</span>
+      </h3>
 
-        <div className="relative mb-2.5 sm:mb-4">
-          {image ? (
-            <>
-              <BrandIconImage
-                src={image}
-                alt={service.title}
-                size={44}
-                rounded="xl"
-                variant="brand"
-                className="shadow-sm ring-2 ring-primary-50 transition-transform duration-300 group-hover:scale-[1.03] sm:hidden"
-              />
-              <BrandIconImage
-                src={image}
-                alt={service.title}
-                size={64}
-                rounded="2xl"
-                variant="brand"
-                className="hidden shadow-md ring-4 ring-primary-50 transition-transform duration-300 group-hover:scale-[1.04] sm:block"
-              />
-            </>
-          ) : (
-            <>
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary-600 to-primary-800 text-white shadow-sm ring-2 ring-primary-50 sm:hidden">
-                <Icon size={20} strokeWidth={1.5} />
-              </div>
-              <div className="hidden h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-600 to-primary-800 text-white shadow-md ring-4 ring-primary-50 sm:flex">
-                <Icon size={28} strokeWidth={1.5} />
-              </div>
-            </>
-          )}
-        </div>
+      <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-slate-500 sm:line-clamp-3 sm:text-sm">
+        {summary}
+      </p>
 
-        <h3 className="relative font-heading text-[13px] font-bold leading-snug text-slate-900 transition-colors group-hover:text-primary-700 sm:text-lg">
-          <span className="line-clamp-2">{service.title}</span>
-        </h3>
-
-        <p className="relative mt-1.5 line-clamp-2 flex-1 text-[11px] leading-snug text-slate-500 sm:mt-2 sm:line-clamp-3 sm:text-sm sm:leading-relaxed">
-          {summary}
-        </p>
-
-        <div className="relative mt-3 flex items-center justify-between border-t border-slate-100 pt-2.5 sm:mt-5 sm:pt-4">
-          <span className="text-[11px] font-semibold text-primary-600 sm:text-sm">
-            View
-            <span className="hidden sm:inline"> service</span>
-          </span>
-          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-50 text-primary-600 transition-all duration-300 group-hover:bg-primary-600 group-hover:text-white group-hover:shadow-md sm:h-8 sm:w-8">
-            <ArrowRight
-              className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 sm:h-[15px] sm:w-[15px]"
-            />
-          </span>
-        </div>
-      </div>
+      <span className="mt-auto flex items-center gap-1.5 pt-4 text-xs font-semibold text-primary-600 sm:pt-5 sm:text-sm">
+        View
+        <span className="hidden sm:inline">service</span>
+        <ArrowRight
+          className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+          strokeWidth={2}
+        />
+      </span>
     </Link>
   );
 }
@@ -90,38 +92,33 @@ export default function Services({ services = SERVICES }) {
   const items = services?.length ? services : SERVICES;
 
   return (
-    <section
-      className="relative overflow-hidden border-y border-slate-100 bg-gradient-to-b from-slate-50/80 via-white to-white py-14 sm:py-16 md:py-20"
-      id="services-list"
-    >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(ellipse_at_top,rgba(30,95,168,0.06),transparent_65%)]" />
+    <Section tone="muted" id="services-list">
+      <SectionHeader
+        eyebrow="Comprehensive care"
+        title="Our medical services"
+        subtitle="Specialist-led departments for prevention, diagnosis, treatment and follow-up — all under one roof."
+        action={
+          <Link
+            href="/services"
+            className="inline-flex items-center gap-2 rounded-lg text-sm font-semibold text-primary-600 transition-colors hover:text-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2"
+          >
+            View all services
+            <ArrowRight size={16} />
+          </Link>
+        }
+      />
 
-      <div className="container relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto mb-8 max-w-2xl text-center sm:mb-10 md:mb-12">
-          <Badge variant="primary" className="mb-3 sm:mb-4">
-            Comprehensive care
-          </Badge>
-          <h2 className="font-heading text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl md:text-4xl">
-            Our medical services
-          </h2>
-          <p className="mt-2.5 text-sm leading-relaxed text-slate-600 sm:mt-3 sm:text-base md:text-lg">
-            Specialist-led departments for prevention, diagnosis, treatment, and
-            follow-up — all under one roof.
-          </p>
-        </div>
-
-        <HorizontalSnapCarousel
-          prevLabel="Scroll services left"
-          nextLabel="Scroll services right"
-          arrowsClassName="top-[42%]"
-        >
-          {items.map((service) => (
-            <CarouselItem key={service.slug}>
-              <ServiceCard service={service} />
-            </CarouselItem>
-          ))}
-        </HorizontalSnapCarousel>
-      </div>
-    </section>
+      <HorizontalSnapCarousel
+        prevLabel="Scroll services left"
+        nextLabel="Scroll services right"
+        arrowsClassName="top-[42%]"
+      >
+        {items.map((service) => (
+          <CarouselItem key={service.slug}>
+            <ServiceCard service={service} />
+          </CarouselItem>
+        ))}
+      </HorizontalSnapCarousel>
+    </Section>
   );
 }
