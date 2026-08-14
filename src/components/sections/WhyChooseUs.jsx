@@ -1,12 +1,20 @@
+import Image from "next/image";
 import Section from "@/components/ui/Section";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Reveal from "@/components/ui/Reveal";
 import { WHY_CHOOSE_US } from "@/constants";
+import { encodePublicPath } from "@/lib/encode-public-path";
+
+const SIDE_IMAGE = "/images/why_everest_side_image.png";
 
 /*
  * The original hand-drawn icon set, kept as-is. Only the palette moved: these
  * were drawn in stock Tailwind green (#22c55e / #dcfce7), a hue that appears
  * nowhere else in the brand. They now use the logo green ramp.
+ *
+ * They render bare, at their own size — no circular badge behind them. Each
+ * already carries a pale green fill of its own, so a tinted disc underneath
+ * would put one green on top of another.
  */
 const InternationalStandardsIcon = () => (
   <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
@@ -147,55 +155,89 @@ export default function WhyChooseUs({ items = WHY_CHOOSE_US }) {
 
   return (
     <Section tone="white">
-      <SectionHeader
-        eyebrow="Why Everest"
-        title="Six reasons families keep coming back"
-        subtitle="International medical standards and local expertise, brought together in one place in Nepalgunj."
-      />
+      <div className="grid items-stretch gap-8 lg:grid-cols-12 lg:gap-12">
+        {/*
+          The photograph was dropped previously because the only asset available
+          was 735×525 being stretched into a tall panel, so it rendered visibly
+          soft. This source is 580×885 — portrait, and close enough to the
+          panel's own ratio to sit at native scale.
 
-      {/*
-        A hairline matrix rather than six floating cards or one long list.
-        `gap-px` over a slate background paints the rules between cells, so the
-        six reasons read as a single considered block — no borders stacking up,
-        no shadows, and the argument stays dense enough to take in at a glance.
+          4/8 rather than 5/7: at a 1280 container the seven-column split left
+          each of the three cells 227px — 179px of text once padding is off —
+          which wrapped "International Standards" and "Home Sample Collection"
+          onto two lines. Eight columns puts the cells at ~260px.
+        */}
+        <div className="lg:col-span-4">
+          {/*
+            Fixed portrait ratio below lg, where it is the only thing in the
+            row. From lg it drops the ratio and takes the row height instead —
+            the grid stretches this column to match the header-plus-matrix
+            beside it, so the two sides finish on the same line. Held to its
+            aspect it stopped short and left the corner empty.
+          */}
+          <div className="relative aspect-[580/885] w-full overflow-hidden rounded-2xl bg-slate-100 shadow-e1 sm:rounded-3xl lg:aspect-auto lg:h-full">
+            <Image
+              src={encodePublicPath(SIDE_IMAGE)}
+              alt="A family walking together outside the Everest Healthcare building"
+              fill
+              sizes="(min-width: 1024px) 34vw, 100vw"
+              /* Bias upward: the building and the faces are in the top two
+                 thirds, so a taller crop should eat pavement, not heads. */
+              className="object-cover object-[center_30%]"
+            />
+          </div>
+        </div>
 
-        The photograph that used to sit beside this list is gone: the only
-        asset available was 735x525 and was being stretched across a panel
-        roughly 576px wide and 720px tall, so it rendered visibly soft. An
-        upscaled stock photo was doing less for this section than the space is.
-      */}
-      <Reveal
-        as="ul"
-        stagger
-        className="grid gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-2 lg:grid-cols-3"
-      >
-        {list.map((item) => {
-          const Icon = ICONS[item.icon];
+        <div className="lg:col-span-8">
+          <SectionHeader
+            accent="secondary"
+            eyebrow="Why Everest"
+            titleClassName="text-primary-900"
+            title="Six reasons families keep coming back"
+            subtitle="International medical standards and local expertise, brought together in one place in Nepalgunj."
+            className="mb-8 sm:mb-10"
+          />
 
-          // Icon-left on a phone, stacked above the text from `sm` up. Stacked
-          // on mobile left each cell tall and half-empty, and six of those in a
-          // column is a long, sparse scroll.
-          return (
-            <li
-              key={item.title}
-              className="group flex gap-4 bg-white p-5 transition-colors hover:bg-slate-50/70 sm:flex-col sm:gap-0 sm:p-7"
-            >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center [&_svg]:h-10 [&_svg]:w-10 sm:h-12 sm:w-12 sm:[&_svg]:h-12 sm:[&_svg]:w-12">
-                {Icon ? <Icon /> : null}
-              </span>
+          {/*
+            A hairline matrix rather than six floating cards. `gap-px` over a
+            slate background paints the rules between cells, so the six reasons
+            read as one considered block — no borders stacking up, no shadows,
+            and the argument stays dense enough to take in at a glance.
+          */}
+          <Reveal
+            as="ul"
+            stagger
+            className="grid gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {list.map((item) => {
+              const Icon = ICONS[item.icon];
 
-              <div className="min-w-0">
-                <h3 className="text-base font-semibold tracking-[-0.01em] text-slate-900 sm:mt-5">
-                  {item.title}
-                </h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-slate-600 sm:mt-2">
-                  {item.description}
-                </p>
-              </div>
-            </li>
-          );
-        })}
-      </Reveal>
+              // Icon-left on a phone, stacked above the text from `sm` up.
+              // Stacked on mobile left each cell tall and half-empty, and six
+              // of those in a column is a long, sparse scroll.
+              return (
+                <li
+                  key={item.title}
+                  className="group flex gap-4 bg-white p-5 transition-colors hover:bg-slate-50/70 sm:flex-col sm:gap-0 sm:p-6"
+                >
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center [&_svg]:h-10 [&_svg]:w-10 sm:h-12 sm:w-12 sm:[&_svg]:h-12 sm:[&_svg]:w-12">
+                    {Icon ? <Icon /> : null}
+                  </span>
+
+                  <div className="min-w-0">
+                    <h3 className="font-heading text-base font-semibold tracking-[-0.01em] text-primary-900 sm:mt-5">
+                      {item.title}
+                    </h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-slate-600 sm:mt-2">
+                      {item.description}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
+          </Reveal>
+        </div>
+      </div>
     </Section>
   );
 }

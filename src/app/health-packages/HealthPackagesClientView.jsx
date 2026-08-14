@@ -1,38 +1,26 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import {
   Activity,
   Award,
-  ChevronRight,
-  Clock,
   Heart,
-  Home,
   LayoutGrid,
   Phone,
-  ShieldCheck,
   Stethoscope,
   User,
 } from "lucide-react";
 import HealthPackageCard from "@/components/sections/HealthPackageCard";
+import HealthPackagesHero from "@/components/sections/HealthPackagesHero";
 import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
 import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { HEALTH_PACKAGE_FEATURES } from "@/constants/healthPackages";
 import { SITE } from "@/constants";
 
 const SECTION_ICONS = {
   activity: Activity,
   user: User,
   heart: Heart,
-};
-
-const FEATURE_ICONS = {
-  shield: ShieldCheck,
-  clock: Clock,
-  home: Home,
-  stethoscope: Stethoscope,
 };
 
 const ALL_CATEGORY = "all";
@@ -79,62 +67,13 @@ export default function HealthPackagesClientView({ packages = [] }) {
 
   return (
     <main className="min-h-screen bg-[#f8fafc] pb-12 sm:pb-24">
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#061d2e] via-[#0c3347] to-[#1E5FA8] px-4 py-8 sm:py-14 md:py-20">
-        <div
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-          }}
-        />
-        <div className="relative mx-auto max-w-3xl text-center">
-          <nav className="mb-3 flex items-center justify-center gap-1.5 text-xs text-primary-200/80 sm:mb-5 sm:text-sm">
-            <Link href="/" className="transition-colors hover:text-white">
-              Home
-            </Link>
-            <ChevronRight size={14} className="text-primary-400" />
-            <span className="font-medium text-white">Health Packages</span>
-          </nav>
+      <HealthPackagesHero />
 
-          <span className="mb-1.5 inline-block text-[10px] font-black uppercase tracking-[0.25em] text-secondary-300 sm:mb-4 sm:text-[11px] sm:tracking-[0.3em]">
-            Preventive Care
-          </span>
-          <h1 className="font-heading text-xl font-bold leading-tight text-white sm:text-3xl md:text-4xl lg:text-5xl">
-            Health Checkup Packages
-          </h1>
-          <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-slate-300 sm:mt-4 sm:text-base md:text-lg">
-            Comprehensive diagnostic packages with transparent pricing. Choose
-            the right screen for your health goals — no hidden costs.
-          </p>
-        </div>
-      </section>
-
-      {/* Feature strip */}
-      <section className="container relative z-10 mx-auto -mt-4 px-4 sm:-mt-8">
-        <div className="grid grid-cols-2 gap-1.5 rounded-xl border border-slate-100 bg-white p-2 shadow-card sm:gap-4 sm:rounded-2xl sm:p-5 md:grid-cols-4 md:p-6">
-          {HEALTH_PACKAGE_FEATURES.map((feature) => {
-            const Icon = FEATURE_ICONS[feature.icon];
-            return (
-              <div
-                key={feature.label}
-                className="flex items-center gap-1.5 rounded-lg bg-slate-50/80 px-1.5 py-2 sm:gap-3 sm:bg-transparent sm:px-2 sm:py-1"
-              >
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-600 sm:h-10 sm:w-10 sm:rounded-xl">
-                  <Icon className="h-3.5 w-3.5 sm:h-[18px] sm:w-[18px]" />
-                </div>
-                <p className="text-[10px] font-semibold leading-snug text-slate-700 sm:text-sm">
-                  {feature.label}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Packages */}
-      <section className="container mx-auto px-4 pt-8 sm:pt-14 md:pt-16">
+      {/* Packages — `id` is the target of the hero's "Explore Our Packages". */}
+      <section
+        id="packages"
+        className="container mx-auto scroll-mt-24 px-4 pt-8 sm:pt-14 md:pt-16"
+      >
         <div className="mb-4 sm:mb-8">
           <div className="mb-1.5 flex items-center gap-2 sm:mb-2">
             <span className="h-[2px] w-6 bg-primary-500" />

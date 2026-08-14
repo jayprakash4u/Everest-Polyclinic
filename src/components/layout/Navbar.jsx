@@ -6,13 +6,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
+  ArrowRight,
   CalendarDays,
   ChevronDown,
   Clock,
   Mail,
-  MapPin,
   Menu,
   Phone,
+  PhoneCall,
   X,
 } from "lucide-react";
 import {
@@ -51,43 +52,81 @@ function getServicesDropdownPosition(triggerEl) {
   return { top: rect.bottom, left };
 }
 
+/** Shared shape for a utility-strip entry: outline icon, quiet label, bold value. */
+function UtilityItem({ icon: Icon, label, value, href, onClick, arrow }) {
+  const body = (
+    <>
+      <Icon
+        size={30}
+        strokeWidth={1.25}
+        className="shrink-0 text-secondary-400 transition-colors group-hover:text-secondary-300"
+      />
+      <span className="min-w-0">
+        <span className="block text-[11px] leading-tight text-secondary-300">
+          {label}
+        </span>
+        <span className="flex items-center gap-1.5 truncate text-sm font-bold leading-tight text-white transition-colors group-hover:text-secondary-200">
+          {value}
+          {arrow ? <ArrowRight size={14} strokeWidth={2.5} className="shrink-0" /> : null}
+        </span>
+      </span>
+    </>
+  );
+
+  const className =
+    "group flex min-w-0 items-center gap-3 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900";
+
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={`${className} text-left`}>
+        {body}
+      </button>
+    );
+  }
+
+  return (
+    <a href={href} className={className}>
+      {body}
+    </a>
+  );
+}
+
 /**
- * Slim navy utility strip. Gives the header a deliberate top edge and carries
- * the detail a clinic is asked for constantly, so the white bar below can hold
- * nothing but identity, navigation and the one action that matters.
+ * Navy utility strip carrying the four things a clinic is asked for
+ * constantly, each as icon + quiet label + bold value. Keeping it navy above
+ * the white navigation preserves the existing top edge — the two rows separate
+ * on tone without needing a divider.
  * Not sticky — it scrolls away and the navigation alone follows the reader.
  */
-function UtilityBar() {
+function UtilityBar({ onBook }) {
   return (
-    <div className="hidden bg-primary-900 text-slate-300 md:block">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-2 text-[13px] sm:px-6 lg:px-8">
-        <div className="flex min-w-0 items-center gap-5">
-          <span className="flex min-w-0 items-center gap-2">
-            <MapPin size={13} className="shrink-0 text-secondary-400" />
-            <span className="truncate">{SITE.address}</span>
-          </span>
-          <span className="hidden shrink-0 items-center gap-2 xl:flex">
-            <Clock size={13} className="shrink-0 text-secondary-400" />
-            {SITE.workingHours}
-          </span>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-5">
-          <a
-            href={`mailto:${SITE.email}`}
-            className="hidden items-center gap-2 transition-colors hover:text-white lg:flex"
-          >
-            <Mail size={13} className="shrink-0 text-secondary-400" />
-            {SITE.email}
-          </a>
-          <a
-            href={`tel:${SITE.phone.replace(/\s/g, "")}`}
-            className="flex items-center gap-2 font-semibold text-white transition-colors hover:text-secondary-300"
-          >
-            <Phone size={13} className="shrink-0 text-secondary-400" />
-            {SITE.phone}
-          </a>
-        </div>
+    <div className="hidden bg-primary-900 md:block">
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-6 gap-y-4 px-4 py-3.5 sm:px-6 lg:grid-cols-4 lg:px-8">
+        <UtilityItem
+          icon={PhoneCall}
+          label="Contact Us"
+          value={SITE.phone}
+          href={`tel:${SITE.phone.replace(/\s/g, "")}`}
+        />
+        <UtilityItem
+          icon={Mail}
+          label="Email"
+          value={SITE.email}
+          href={`mailto:${SITE.email}`}
+        />
+        <UtilityItem
+          icon={CalendarDays}
+          label="Online Appointment"
+          value="Book Now"
+          onClick={onBook}
+          arrow
+        />
+        <UtilityItem
+          icon={Clock}
+          label="Opening Hours"
+          value={SITE.workingHours}
+          href="/contact"
+        />
       </div>
     </div>
   );
@@ -299,7 +338,7 @@ export default function Navbar() {
 
   return (
     <>
-      <UtilityBar />
+      <UtilityBar onBook={openBooking} />
 
       <div className="sticky top-0 z-50 w-full">
       <header
@@ -454,7 +493,7 @@ export default function Navbar() {
               <a
                 href={telHref}
                 aria-label={`Call ${SITE.phone}`}
-                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-primary-600 sm:h-11 sm:w-11 transition-colors hover:border-primary-300 hover:bg-primary-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 md:hidden"
+                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-700 sm:h-11 sm:w-11 transition-colors hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 md:hidden"
               >
                 <Phone size={18} strokeWidth={2.25} />
               </a>

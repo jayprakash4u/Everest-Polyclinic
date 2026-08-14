@@ -49,7 +49,7 @@ const SLIDE_MS = 3500;
    enough to clear the subject of the photograph before the right edge.
    Only used from lg, where the copy actually sits on the image. */
 const SCRIM_DESKTOP =
-  "linear-gradient(90deg, rgba(11,41,81,0.97) 0%, rgba(11,41,81,0.95) 38%, rgba(11,41,81,0.80) 52%, rgba(11,41,81,0.35) 70%, rgba(11,41,81,0.06) 88%, rgba(11,41,81,0) 100%)";
+  "linear-gradient(90deg, rgba(11,41,81,1) 0%, rgba(11,41,81,1) 34%, rgba(11,41,81,0.97) 44%, rgba(11,41,81,0.72) 58%, rgba(11,41,81,0.30) 74%, rgba(11,41,81,0.05) 90%, rgba(11,41,81,0) 100%)";
 
 export default function Hero() {
   const [bookingOpen, setBookingOpen] = useState(false);

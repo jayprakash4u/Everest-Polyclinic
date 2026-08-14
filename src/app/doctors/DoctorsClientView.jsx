@@ -15,6 +15,7 @@ import {
   Stethoscope,
 } from "lucide-react";
 import Button from "@/components/ui/Button";
+import DoctorsHero from "@/components/sections/DoctorsHero";
 import {
   DOCTOR_PAGE_STATS,
   DOCTOR_SPECIALISTS,
@@ -170,63 +171,8 @@ export default function DoctorsClientView({
 
   return (
     <main className="min-h-screen bg-background-light">
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#061d2e] via-[#0c3347] to-primary-700 px-4 py-10 sm:py-16 md:py-24">
-        <div
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-          }}
-        />
-        <div className="relative container mx-auto max-w-6xl px-0 sm:px-6">
-          <nav className="mb-4 flex items-center gap-1.5 text-xs text-primary-200/80 sm:mb-6 sm:gap-2 sm:text-sm">
-            <Link href="/" className="transition-colors hover:text-white">
-              Home
-            </Link>
-            <ChevronRight size={14} className="text-primary-400" />
-            <span className="font-medium text-white">Doctors</span>
-          </nav>
+      <DoctorsHero stats={stats} />
 
-          <div className="max-w-3xl">
-            <h1 className="text-lg font-bold uppercase tracking-tight text-white sm:text-2xl md:text-3xl">
-              Our Specialists
-            </h1>
-            <div className="mt-1.5 flex items-center gap-2 sm:mt-2">
-              <div className="h-0.5 w-8 bg-secondary-400" />
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-200 sm:text-[11px]">
-                Expert care for your health
-              </p>
-            </div>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-primary-100 sm:mt-4 sm:text-base md:text-lg">
-              Board-certified professionals delivering evidence-based,
-              compassionate care for you and your family.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats strip */}
-      <section className="relative z-10 -mt-5 px-4 sm:-mt-8">
-        <div className="container mx-auto max-w-6xl px-0">
-          <div className="grid grid-cols-2 gap-2 rounded-xl border border-primary-100 bg-white p-2.5 shadow-card sm:grid-cols-4 sm:gap-0 sm:rounded-2xl sm:p-0 sm:divide-x sm:divide-slate-100">
-            {stats.map((stat) => (
-              <div
-                key={stat.label}
-                className="rounded-lg bg-slate-50/80 px-2 py-2.5 text-center sm:rounded-none sm:bg-transparent sm:px-4 sm:py-6"
-              >
-                <p className="font-heading text-xl font-bold text-primary-700 sm:text-3xl">
-                  {stat.value}
-                </p>
-                <p className="mt-0.5 text-[9px] font-medium uppercase tracking-wider text-slate-500 sm:mt-1 sm:text-xs">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Filters & grid */}
       <section className="py-10 sm:py-16 md:py-20">

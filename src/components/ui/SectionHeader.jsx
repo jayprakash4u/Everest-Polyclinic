@@ -11,6 +11,16 @@ import Reveal from "./Reveal";
  * `action` holds the right-hand slot — a "View all" link, carousel arrows —
  * so each section stops re-inventing that row.
  */
+/**
+ * Eyebrow colour. Blue is the default structural accent; `secondary` switches
+ * the eyebrow to the brand green so a section whose title carries a green
+ * accent word reads as one colour idea rather than two competing ones.
+ */
+const accents = {
+  primary: { text: "text-primary-600", rule: "bg-primary-300" },
+  secondary: { text: "text-secondary-600", rule: "bg-secondary-400" },
+};
+
 export default function SectionHeader({
   eyebrow,
   title,
@@ -18,11 +28,13 @@ export default function SectionHeader({
   action,
   align = "left",
   light = false,
+  accent = "primary",
   as: Heading = "h2",
   className,
   titleClassName,
 }) {
   const centered = align === "center";
+  const tone = accents[accent] ?? accents.primary;
 
   return (
     <Reveal
@@ -40,16 +52,28 @@ export default function SectionHeader({
             className={cn(
               "flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.16em]",
               centered && "justify-center",
-              light ? "text-secondary-300" : "text-primary-600",
+              light ? "text-secondary-300" : tone.text,
             )}
           >
             <span
               className={cn(
                 "h-px w-6",
-                light ? "bg-secondary-300/50" : "bg-primary-300",
+                light ? "bg-secondary-300/50" : tone.rule,
               )}
             />
             {eyebrow}
+            {/* A centred eyebrow with a rule on one side only sits visibly
+                off-axis — the label reads centred but the pair does not. The
+                mirrored rule is rendered for centred headers only, so
+                left-aligned ones keep their single leading rule. */}
+            {centered ? (
+              <span
+                className={cn(
+                  "h-px w-6",
+                  light ? "bg-secondary-300/50" : tone.rule,
+                )}
+              />
+            ) : null}
           </p>
         ) : null}
 
