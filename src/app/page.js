@@ -1,7 +1,7 @@
 import Hero from "@/components/sections/Hero";
 import CenterOfExcellenceSection from "@/components/sections/CenterOfExcellenceSection";
 import LatestDiseases from "@/components/sections/LatestDiseases";
-import AboutEverest from "@/components/sections/AboutEverest";
+import DiagnosticCare from "@/components/sections/DiagnosticCare";
 import DoctorsSection from "@/components/sections/DoctorsSection";
 import ContactBooking from "@/components/sections/ContactBooking";
 import Services from "@/components/sections/Services";
@@ -50,7 +50,7 @@ export default async function HomePage() {
     <>
       <Hero slides={heroSlides} />
       <CenterOfExcellenceSection items={centers} />
-      <AboutEverest />
+      <DiagnosticCare />
       <LatestDiseases packages={healthPackages} />
       <DoctorsSection image={homeSettings.careTeamImage} />
       <ContactBooking />
