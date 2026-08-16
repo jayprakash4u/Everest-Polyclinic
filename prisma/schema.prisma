@@ -219,3 +219,26 @@ model GalleryImage {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 }
+
+model CenterOfExcellence {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.NVarChar(200)
+  description String   @db.NVarChar(Max)
+  image       String   @db.NVarChar(500)
+  slug        String?  @db.NVarChar(150)
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model WhyChooseUsItem {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.NVarChar(200)
+  description String   @db.NVarChar(Max)
+  icon        String   @db.NVarChar(100)
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

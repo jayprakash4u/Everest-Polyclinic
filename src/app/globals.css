@@ -4,24 +4,18 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #1a3a5c;
-  --primary: #2FA84F;
-  --secondary: #1E5FA8;
-  --accent: #17b3d0;
-  --white: #FFFFFF;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #ffffff;
-    --foreground: #1a3a5c;
-  }
+  --foreground: #0b2951;
+  /* Mirrors tailwind.config.js — blue structures, green acts. */
+  --primary: #1e5fa8;
+  --secondary: #2fa84f;
+  --white: #ffffff;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Inter", system-ui, sans-serif;
+  /* Font comes from `font-sans` on <body> in layout.js — do not hardcode a
+     family here, it would shadow the theme. */
 }
 
 /* Lenis smooth scroll */
@@ -55,9 +49,14 @@ html.lenis body {
 
 /* Health package card test list scrollbar */
 .package-test-list {
-  max-height: 240px;
+  max-height: 96px;
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 transparent;
+}
+@media (min-width: 640px) {
+  .package-test-list {
+    max-height: 240px;
+  }
 }
 .package-test-list::-webkit-scrollbar {
   width: 4px;

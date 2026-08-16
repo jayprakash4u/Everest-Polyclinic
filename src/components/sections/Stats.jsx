@@ -1,16 +1,18 @@
 import { STATS } from "@/constants";
 
-export default function Stats() {
+export default function Stats({ stats = STATS }) {
+  const items = stats?.length ? stats : STATS;
+
   return (
-    <section className="py-14 bg-primary-700">
+    <section className="bg-primary-700 py-14">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-          {STATS.map((stat) => (
+        <div className="grid grid-cols-2 gap-6 text-center lg:grid-cols-4">
+          {items.map((stat) => (
             <div key={stat.label} className="text-white">
-              <p className="font-heading text-4xl md:text-5xl font-bold mb-2">
+              <p className="mb-2 font-heading text-4xl font-bold md:text-5xl">
                 {stat.value}
               </p>
-              <p className="text-primary-200 text-sm font-medium">{stat.label}</p>
+              <p className="text-sm font-medium text-primary-200">{stat.label}</p>
             </div>
           ))}
         </div>

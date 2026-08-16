@@ -19,9 +19,24 @@ function readGap(container) {
   return parseFloat(styles.columnGap) || parseFloat(styles.gap) || 16;
 }
 
-function computeLayout(containerWidth, itemCount, gap, minCardWidth, maxColumns) {
+/**
+ * Phones show one whole card plus a slice of the next.
+ *
+ * Two full cards fit, but they finish flush with the edge and give no hint that
+ * anything follows — the row reads as a pair, not as a scroller. A half card
+ * bleeding off the edge is the cue that there is more to swipe to.
+ */
+const MOBILE_CARDS_IN_VIEW = 1.5;
+
+function computeLayout(containerWidth, itemCount, gap, minCardWidth, maxColumns, isPhone = false) {
   if (containerWidth <= 0 || itemCount === 0) {
     return { cardWidth: minCardWidth, visibleCount: 1 };
+  }
+
+  if (isPhone && itemCount >= 2) {
+    // One card plus its gap, then half of the next.
+    const cardWidth = (containerWidth - gap) / MOBILE_CARDS_IN_VIEW;
+    return { cardWidth, visibleCount: 1 };
   }
 
   let visibleCount = Math.floor(
@@ -101,12 +116,17 @@ export default function HorizontalSnapCarousel({
     if (!el) return;
 
     const gap = readGap(el);
+    const isPhone =
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 639px)").matches;
+
     const next = computeLayout(
       el.clientWidth,
       itemCount,
       gap,
       minCardWidth,
       maxColumns,
+      isPhone,
     );
     setLayout(next);
   }, [itemCount, minCardWidth, maxColumns]);
@@ -178,7 +198,8 @@ export default function HorizontalSnapCarousel({
               disabled={!canScrollLeft}
               aria-label={prevLabel}
               className={cn(
-                "absolute -left-2 top-1/2 z-20 flex -translate-y-1/2 rounded-full border border-slate-200 bg-white p-2.5 shadow-md transition hover:border-primary-200 disabled:cursor-not-allowed disabled:opacity-40 sm:p-3",
+                // h-11/w-11 = 44px, the minimum comfortable touch target.
+                "absolute -left-2 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white shadow-md transition hover:border-primary-300 hover:bg-primary-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 disabled:cursor-not-allowed disabled:opacity-40",
                 !canScrollLeft && "opacity-30",
                 arrowsClassName,
               )}
@@ -206,7 +227,7 @@ export default function HorizontalSnapCarousel({
           ref={scrollRef}
           onScroll={updateScrollState}
           className={cn(
-            "hide-scrollbar flex snap-x snap-mandatory scroll-smooth gap-4 overflow-x-auto pb-2 pt-1 md:gap-5",
+            "hide-scrollbar flex snap-x snap-mandatory scroll-smooth gap-2.5 overflow-x-auto pb-2 pt-1 sm:gap-4 md:gap-5",
             trackClassName,
           )}
         >

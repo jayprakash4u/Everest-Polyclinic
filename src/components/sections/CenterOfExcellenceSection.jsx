@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import Section from "@/components/ui/Section";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Button from "@/components/ui/Button";
 import BrandIconImage from "@/components/ui/BrandIconImage";
@@ -14,7 +15,7 @@ function ExcellenceItem({ item, layout = "horizontal" }) {
     <Link
       href={href}
       className={cn(
-        "group flex h-full rounded-xl border border-transparent transition-colors hover:border-slate-200 hover:bg-slate-50/80",
+        "group flex h-full rounded-xl border border-transparent transition-colors hover:border-slate-200 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2",
         isCompact
           ? "flex-col items-center p-3 text-center"
           : "items-start gap-4 p-4 sm:gap-5 sm:p-5",
@@ -22,18 +23,18 @@ function ExcellenceItem({ item, layout = "horizontal" }) {
     >
       <BrandIconImage
         src={item.image}
-        alt={item.title}
-        size={isCompact ? 52 : 72}
+        alt=""
+        size={isCompact ? 48 : 64}
         rounded="full"
-        variant="brand"
-        className="shrink-0 shadow-md ring-4 ring-primary-100/80"
+        variant="white"
+        className="shrink-0 shadow-e1 ring-1 ring-slate-200 transition-colors group-hover:ring-primary-200"
       />
 
-      <div className={cn("min-w-0 flex-1", isCompact ? "mt-2" : "pt-1")}>
+      <div className={cn("min-w-0 flex-1", isCompact ? "mt-3" : "pt-0.5")}>
         <h3
           className={cn(
-            "font-heading font-bold leading-snug text-slate-900",
-            isCompact ? "text-sm" : "text-base sm:text-[17px]",
+            "font-semibold leading-snug tracking-[-0.01em] text-slate-900 transition-colors group-hover:text-primary-700",
+            isCompact ? "text-sm" : "text-base sm:text-lg",
           )}
         >
           {item.title}
@@ -41,82 +42,68 @@ function ExcellenceItem({ item, layout = "horizontal" }) {
         <p
           className={cn(
             "leading-relaxed text-slate-600",
-            isCompact
-              ? "mt-1 line-clamp-2 text-[11px]"
-              : "mt-1.5 text-sm",
+            isCompact ? "mt-1 line-clamp-2 text-xs" : "mt-1.5 text-sm",
           )}
         >
           {item.description}
         </p>
-        {!isCompact ? (
-          <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-primary-600 opacity-0 transition group-hover:opacity-100 sm:text-[13px]">
-            {item.slug ? "View service" : "Contact us"}
-            <ArrowRight size={14} />
-          </span>
-        ) : null}
       </div>
     </Link>
   );
 }
 
-export default function CenterOfExcellenceSection() {
-  return (
-    <section className="bg-white py-16 md:py-20">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,380px)_1fr] lg:gap-16 xl:gap-20">
-          <div className="lg:sticky lg:top-24">
-            <SectionHeader
-              badge="Specialist departments"
-              badgeVariant="secondary"
-              title="Center of Excellence"
-              subtitle="Focused specialty care with experienced clinicians, modern diagnostics, and coordinated treatment under one roof."
-              centered={false}
-              className="mb-0"
-            />
+export default function CenterOfExcellenceSection({
+  items = CENTERS_OF_EXCELLENCE,
+}) {
+  const centers = items?.length ? items : CENTERS_OF_EXCELLENCE;
 
-            <div className="mt-8 hidden lg:block">
-              <Button href="/services" variant="outline" size="md">
-                Browse all services
-                <ArrowRight size={16} className="ml-2" />
-              </Button>
-            </div>
+  return (
+    <Section tone="muted">
+      <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-16">
+        <div className="lg:sticky lg:top-28">
+          <SectionHeader
+            eyebrow="Specialist departments"
+            title="Centers of Excellence"
+            subtitle="Focused specialty care with experienced clinicians, modern diagnostics and coordinated treatment under one roof."
+            className="mb-0 md:flex-col md:items-start"
+          />
+
+          <div className="mt-8 hidden lg:block">
+            <Button href="/services" variant="outline">
+              Browse all services
+              <ArrowRight size={16} />
+            </Button>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-2 sm:p-3">
+          <div className="grid grid-cols-2 gap-2 sm:hidden">
+            {centers.map((item) => (
+              <ExcellenceItem key={item.title} item={item} layout="compact" />
+            ))}
           </div>
 
-          <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-2 sm:p-3">
-            {/* Mobile: 2 cards per row */}
-            <div className="grid grid-cols-2 gap-2 sm:hidden">
-              {CENTERS_OF_EXCELLENCE.map((item) => (
-                <ExcellenceItem
-                  key={item.title}
-                  item={item}
-                  layout="compact"
-                />
+          <div className="hidden grid-cols-2 divide-x divide-slate-100 sm:grid">
+            <div className="flex flex-col divide-y divide-slate-100">
+              {centers.slice(0, 3).map((item) => (
+                <ExcellenceItem key={item.title} item={item} />
               ))}
             </div>
-
-            {/* Tablet+: two columns of three */}
-            <div className="hidden grid-cols-2 divide-x divide-slate-200/70 sm:grid">
-              <div className="flex flex-col divide-y divide-slate-200/70">
-                {CENTERS_OF_EXCELLENCE.slice(0, 3).map((item) => (
-                  <ExcellenceItem key={item.title} item={item} />
-                ))}
-              </div>
-              <div className="flex flex-col divide-y divide-slate-200/70">
-                {CENTERS_OF_EXCELLENCE.slice(3).map((item) => (
-                  <ExcellenceItem key={item.title} item={item} />
-                ))}
-              </div>
+            <div className="flex flex-col divide-y divide-slate-100">
+              {centers.slice(3).map((item) => (
+                <ExcellenceItem key={item.title} item={item} />
+              ))}
             </div>
           </div>
         </div>
-
-        <div className="mt-8 text-center lg:hidden">
-          <Button href="/services" variant="outline" size="md">
-            Browse all services
-            <ArrowRight size={16} className="ml-2" />
-          </Button>
-        </div>
       </div>
-    </section>
+
+      <div className="mt-8 lg:hidden">
+        <Button href="/services" variant="outline" fullWidth>
+          Browse all services
+          <ArrowRight size={16} />
+        </Button>
+      </div>
+    </Section>
   );
 }

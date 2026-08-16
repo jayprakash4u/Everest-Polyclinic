@@ -1,21 +1,24 @@
 import { headers } from "next/headers";
-import { Inter, Poppins } from "next/font/google";
+import { Inter, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import WhatsAppButton from "@/components/layout/WhatsAppButton";
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import { getSiteSettings } from "@/lib/data/site";
 
+// Both are variable fonts — no `weight` array needed, and the CSS variable is the
+// only stable handle next/font exposes (the family name it generates is hashed).
+// tailwind.config.js reads these same variables for `font-sans` / `font-heading`.
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-sans",
   display: "swap",
 });
 
-const poppins = Poppins({
+const sourceSerif = Source_Serif_4({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-poppins",
+  variable: "--font-heading",
   display: "swap",
 });
 
@@ -32,7 +35,8 @@ export async function generateMetadata() {
       "polyclinic",
       "hospital",
       "Nepal",
-      "Kathmandu",
+      "Nepalgunj",
+      "Nepalganj",
       "healthcare",
       "doctors",
       "lab tests",
@@ -50,7 +54,7 @@ export default async function RootLayout({ children }) {
   const isAdmin = pathname.startsWith("/admin");
 
   return (
-    <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
+    <html lang="en" className={`${inter.variable} ${sourceSerif.variable}`}>
       <body className="font-sans antialiased bg-white text-slate-800">
         {isAdmin ? (
           children
@@ -59,6 +63,7 @@ export default async function RootLayout({ children }) {
             <Navbar />
             <main>{children}</main>
             <Footer />
+            <WhatsAppButton />
           </SmoothScroll>
         )}
       </body>

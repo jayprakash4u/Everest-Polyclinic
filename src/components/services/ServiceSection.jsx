@@ -16,7 +16,11 @@ export default function ServiceSection({
   return (
     <section
       id={id}
-      className={cn("py-16 md:py-20 lg:py-24", TONE_CLASSES[tone], className)}
+      className={cn(
+        "py-10 sm:py-14 md:py-20 lg:py-24",
+        TONE_CLASSES[tone],
+        className,
+      )}
     >
       <div
         className={cn(

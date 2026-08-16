@@ -8,7 +8,7 @@ import ServiceSectionHeader from "./ServiceSectionHeader";
 function FAQItem({ faq, isOpen, onToggle }) {
   return (
     <div
-      className={`overflow-hidden rounded-2xl border bg-white transition-colors ${
+      className={`overflow-hidden rounded-xl border bg-white transition-colors sm:rounded-2xl ${
         isOpen
           ? "border-primary-200 shadow-sm"
           : "border-slate-200/80 shadow-sm"
@@ -18,17 +18,21 @@ function FAQItem({ faq, isOpen, onToggle }) {
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
-        className="flex w-full items-start justify-between gap-4 px-5 py-5 text-left md:px-6"
+        className="flex w-full items-start justify-between gap-3 px-3.5 py-3.5 text-left sm:gap-4 sm:px-5 sm:py-5 md:px-6"
       >
-        <span className="font-heading text-base font-semibold leading-snug text-slate-900 md:text-lg">
+        <span className="font-heading text-sm font-semibold leading-snug text-slate-900 sm:text-base md:text-lg">
           {faq.question}
         </span>
         <span
-          className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors ${
+          className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-colors sm:h-8 sm:w-8 ${
             isOpen ? "bg-primary-600 text-white" : "bg-slate-100 text-slate-600"
           }`}
         >
-          {isOpen ? <Minus size={16} /> : <Plus size={16} />}
+          {isOpen ? (
+            <Minus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          ) : (
+            <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          )}
         </span>
       </button>
       <div
@@ -37,7 +41,7 @@ function FAQItem({ faq, isOpen, onToggle }) {
         }`}
       >
         <div className="overflow-hidden">
-          <p className="border-t border-slate-100 px-5 pb-5 pt-4 text-sm leading-relaxed text-slate-600 md:px-6 md:text-[15px]">
+          <p className="border-t border-slate-100 px-3.5 pb-3.5 pt-3 text-[13px] leading-relaxed text-slate-600 sm:px-5 sm:pb-5 sm:pt-4 sm:text-sm md:px-6 md:text-[15px]">
             {faq.answer}
           </p>
         </div>
@@ -62,7 +66,7 @@ export default function FAQSection({ page }) {
           subtitle={meta.subtitle}
         />
 
-        <div className="mt-10 space-y-3">
+        <div className="mt-6 space-y-2.5 sm:mt-10 sm:space-y-3">
           {faqs.map((faq, index) => (
             <FAQItem
               key={faq.question}

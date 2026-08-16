@@ -1,5 +1,14 @@
+import clsx from "clsx";
+import { twMerge } from "tailwind-merge";
+
+/**
+ * Joins class names and resolves Tailwind conflicts, so a `className` prop
+ * reliably beats a component's own defaults. Without twMerge, `px-2` passed to
+ * a component whose variant sets `px-6` loses — CSS source order decides, not
+ * the order in the string.
+ */
 export function cn(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return twMerge(clsx(classes));
 }
 
 export const colorVariants = {

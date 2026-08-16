@@ -173,13 +173,51 @@ export const SERVICE_PAGE_CONTENT = {
         description: "Convenient scheduling with minimal waiting time for your visit.",
       },
     ],
+    /* Entries may be a plain string or an object with a description and icon.
+       AboutConditions renders both as the same card — a string simply has no
+       second line. */
     conditions: [
-      "Fever and infections",
-      "Diabetes",
-      "Hypertension",
-      "Respiratory conditions",
-      "Digestive issues",
-      "Chronic disease management",
+      {
+        title: "Fever and infections",
+        description:
+          "Evaluation and treatment for common infections and recurring fever.",
+        icon: "virusShield",
+        iconSet: "health",
+      },
+      {
+        title: "Diabetes",
+        description:
+          "Comprehensive care for diabetes management and lifestyle support.",
+        icon: "diabetesMeasure",
+        iconSet: "health",
+      },
+      {
+        title: "Hypertension",
+        description:
+          "Diagnosis, monitoring and treatment for high blood pressure.",
+        icon: "heartCardiogram",
+        iconSet: "health",
+      },
+      {
+        title: "Respiratory conditions",
+        description: "Care for asthma, COPD and other respiratory concerns.",
+        icon: "lungs",
+        iconSet: "health",
+      },
+      {
+        title: "Digestive issues",
+        description:
+          "Diagnosis and treatment for stomach, bowel and liver related conditions.",
+        icon: "stomach",
+        iconSet: "health",
+      },
+      {
+        title: "Chronic disease management",
+        description:
+          "Ongoing support and monitoring for long-term health conditions.",
+        icon: "palliativeCare",
+        iconSet: "health",
+      },
     ],
     symptoms: [
       "Persistent fever",

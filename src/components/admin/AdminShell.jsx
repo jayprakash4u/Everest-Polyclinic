@@ -3,50 +3,75 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   BookOpen,
-  HelpCircle,
+  CalendarCheck,
+  ChevronDown,
+  Home,
   ImageIcon,
   Inbox,
   LayoutDashboard,
-  MessageSquareQuote,
-  Package,
-  Settings,
+  Menu,
   Stethoscope,
-  Users,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SITE } from "@/constants";
 
-const NAV_ITEMS = [
-  { href: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
-  { href: "/admin/inbox", label: "Inbox", icon: Inbox },
-  { href: "/admin/doctors", label: "Doctors", icon: Stethoscope },
-  { href: "/admin/homepage-specialists", label: "Homepage Specialists", icon: Users },
-  { href: "/admin/health-packages", label: "Health Packages", icon: Package },
-  { href: "/admin/gallery", label: "Gallery", icon: ImageIcon },
-  { href: "/admin/blog", label: "Blog Posts", icon: BookOpen },
-  { href: "/admin/testimonials", label: "Patient Trust", icon: MessageSquareQuote },
-  { href: "/admin/faqs", label: "FAQs", icon: HelpCircle },
-  { href: "/admin/site-settings", label: "Site Settings", icon: Settings },
+/**
+ * Grouped page-first, so the menu mirrors the website rather than the database.
+ *
+ * Deliberately small: the day-to-day dashboard, and the pages themselves edited
+ * section by section. The old per-entity screens (doctors, gallery, blog,
+ * testimonials and so on) were removed — content is reached through the page it
+ * appears on instead. Their API routes are untouched, so any of them can be
+ * brought back under the page that owns them.
+ */
+const NAV_GROUPS = [
+  {
+    label: "Dashboard",
+    items: [
+      { href: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
+      { href: "/admin/inbox", label: "Inbox", icon: Inbox },
+      { href: "/admin/appointments", label: "Appointments", icon: CalendarCheck },
+    ],
+  },
+  {
+    label: "Pages",
+    items: [
+      {
+        href: "/admin/pages/home",
+        label: "Home page",
+        icon: Home,
+        /* Sections of the page, in the order a visitor meets them. Each one
+           gets its own route as it becomes editable. */
+        children: [
+          { href: "/admin/pages/home/hero", label: "Hero section" },
+          { href: "/admin/pages/home/health-packages", label: "Health packages" },
+          { href: "/admin/pages/home/care-team", label: "Meet your care team" },
+          { href: "/admin/pages/home/testimonials", label: "Patient voices" },
+        ],
+      },
+      { href: "/admin/pages/doctors", label: "Doctors page", icon: Stethoscope },
+      { href: "/admin/pages/gallery", label: "Gallery page", icon: ImageIcon },
+      { href: "/admin/pages/blog", label: "Blog page", icon: BookOpen },
+    ],
+  },
 ];
 
-const PAGE_TITLES = {
-  "/admin": "Overview",
-  "/admin/inbox": "Inbox",
-  "/admin/doctors": "Doctors",
-  "/admin/homepage-specialists": "Homepage Specialists",
-  "/admin/health-packages": "Health Packages",
-  "/admin/gallery": "Gallery",
-  "/admin/blog": "Blog Posts",
-  "/admin/testimonials": "Patient Trust",
-  "/admin/faqs": "FAQs",
-  "/admin/site-settings": "Site Settings",
-};
+const NAV_ITEMS = NAV_GROUPS.flatMap((group) =>
+  group.items.flatMap((item) => [item, ...(item.children ?? [])]),
+);
 
 function getPageTitle(pathname) {
-  if (PAGE_TITLES[pathname]) return PAGE_TITLES[pathname];
-  return "Admin";
+  /* Longest match wins, so /admin/pages/home resolves to the page entry rather
+     than to the /admin overview it also starts with. */
+  const match = NAV_ITEMS.filter((item) =>
+    item.exact ? pathname === item.href : pathname.startsWith(item.href),
+  ).sort((a, b) => b.href.length - a.href.length)[0];
+
+  return match?.label ?? "Admin";
 }
 
 function AdminSidebarBrand() {
@@ -71,31 +96,141 @@ function AdminSidebarBrand() {
   );
 }
 
-function AdminNav({ pathname, onNavigate }) {
-  const linkClass = (active) =>
-    cn(
-      "relative flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold transition-colors",
-      active
-        ? "bg-primary-50 text-primary-800 before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-secondary-500"
-        : "text-slate-600 hover:bg-primary-50/60 hover:text-[#1a3a5c]",
-    );
+const navLinkClass = (active) =>
+  cn(
+    "relative flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold transition-colors",
+    active
+      ? "bg-primary-50 text-primary-800 before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-secondary-500"
+      : "text-slate-600 hover:bg-primary-50/60 hover:text-[#1a3a5c]",
+  );
+
+/**
+ * A parent entry with its sections nested underneath. The row is still a link
+ * to the page overview; the chevron is a separate control so the group can be
+ * opened without navigating, and closed again while you are inside it.
+ */
+function AdminNavParent({ item, pathname, onNavigate }) {
+  const { href, label, icon: Icon, children } = item;
+  const isWithin = pathname.startsWith(href);
+
+  const [open, setOpen] = useState(isWithin);
+  const [lastWithin, setLastWithin] = useState(isWithin);
+
+  /* Navigating into the group opens it — handled during render rather than in
+     an effect, which would cost an extra pass and trip the cascading-render rule. */
+  if (lastWithin !== isWithin) {
+    setLastWithin(isWithin);
+    if (isWithin) setOpen(true);
+  }
+
+  const panelId = `adminnav-${href.replace(/\W+/g, "-")}`;
 
   return (
-    <nav className="space-y-0.5 py-2">
-      {NAV_ITEMS.map(({ href, label, icon: Icon, exact }) => {
-        const active = exact ? pathname === href : pathname.startsWith(href);
-        return (
-          <Link
-            key={href}
-            href={href}
-            onClick={onNavigate}
-            className={linkClass(active)}
-          >
-            <Icon size={16} />
-            {label}
-          </Link>
-        );
-      })}
+    <div>
+      <div className={cn("relative flex items-center", navLinkClass(pathname === href))}>
+        <Link
+          href={href}
+          onClick={onNavigate}
+          className="flex min-w-0 flex-1 items-center gap-2.5"
+        >
+          <Icon size={16} />
+          {label}
+        </Link>
+
+        <button
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          aria-expanded={open}
+          aria-controls={panelId}
+          aria-label={`${open ? "Collapse" : "Expand"} ${label} sections`}
+          className="-mr-1 rounded p-1 text-slate-400 transition-colors hover:bg-primary-100/60 hover:text-primary-700"
+        >
+          <ChevronDown
+            size={15}
+            className={cn("transition-transform duration-200", open ? "rotate-0" : "-rotate-90")}
+          />
+        </button>
+      </div>
+
+      <div
+        id={panelId}
+        className={cn(
+          "grid transition-[grid-template-rows] duration-200 ease-out",
+          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+        )}
+      >
+        <div className="overflow-hidden">
+          <div className="space-y-0.5 py-0.5">
+            {children.map((child) => {
+              const active = pathname === child.href;
+              return (
+                <Link
+                  key={child.href}
+                  href={child.href}
+                  onClick={onNavigate}
+                  className={cn(
+                    "relative flex items-center gap-2 py-2 pl-11 pr-4 text-sm transition-colors",
+                    active
+                      ? "bg-primary-50 font-semibold text-primary-800 before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-secondary-500"
+                      : "font-medium text-slate-500 hover:bg-primary-50/60 hover:text-[#1a3a5c]",
+                  )}
+                >
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "h-1.5 w-1.5 shrink-0 rounded-full",
+                      active ? "bg-secondary-500" : "bg-slate-300",
+                    )}
+                  />
+                  {child.label}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AdminNav({ pathname, onNavigate }) {
+  return (
+    <nav className="pb-4">
+      {NAV_GROUPS.map((group) => (
+        <div key={group.label} className="pt-3 first:pt-0">
+          <p className="px-5 pb-1.5 text-[10px] font-bold uppercase tracking-widest text-primary-600/70">
+            {group.label}
+          </p>
+          <div className="space-y-0.5">
+            {group.items.map((item) => {
+              if (item.children?.length) {
+                return (
+                  <AdminNavParent
+                    key={item.href}
+                    item={item}
+                    pathname={pathname}
+                    onNavigate={onNavigate}
+                  />
+                );
+              }
+
+              const { href, label, icon: Icon, exact } = item;
+              const active = exact ? pathname === href : pathname.startsWith(href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={onNavigate}
+                  className={navLinkClass(active)}
+                >
+                  <Icon size={16} />
+                  {label}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      ))}
     </nav>
   );
 }
@@ -105,6 +240,19 @@ export default function AdminShell({ children, adminName = "Admin" }) {
   const router = useRouter();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const pageTitle = useMemo(() => getPageTitle(pathname), [pathname]);
+
+  useEffect(() => {
+    if (!mobileNavOpen) return;
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setMobileNavOpen(false);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [mobileNavOpen]);
 
   const handleLogout = async () => {
     await fetch("/api/admin/logout", { method: "POST" });
@@ -123,10 +271,9 @@ export default function AdminShell({ children, adminName = "Admin" }) {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto">
-            <p className="px-5 pb-2 pt-4 text-[10px] font-bold uppercase tracking-widest text-primary-600/70">
-              Menu
-            </p>
+          {/* The group headings inside AdminNav replace the old single "Menu"
+              label — two levels of heading in a row read as a mistake. */}
+          <div className="flex-1 overflow-y-auto pt-4">
             <AdminNav pathname={pathname} />
           </div>
         </aside>
@@ -135,7 +282,23 @@ export default function AdminShell({ children, adminName = "Admin" }) {
           <header className="flex flex-wrap items-center justify-between gap-3 border-b border-primary-100 bg-white px-4 py-3 shadow-sm sm:px-6 sm:py-4">
             <div className="flex min-w-0 items-center gap-3">
               <div className="lg:hidden">
-                <AdminSidebarBrand />
+                <Link href="/admin" className="flex items-center gap-2">
+                  <Image
+                    src="/images/logos/logo.jpg"
+                    alt={SITE.shortName}
+                    width={32}
+                    height={32}
+                    className="h-8 w-8 shrink-0 rounded-full ring-2 ring-primary-100"
+                  />
+                  <div className="min-w-0 leading-tight">
+                    <p className="truncate font-heading text-sm font-bold text-slate-800">
+                      Everest Polyclinic
+                    </p>
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-secondary-600">
+                      Admin
+                    </p>
+                  </div>
+                </Link>
               </div>
               <div className="hidden lg:block">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-secondary-600">
@@ -160,9 +323,10 @@ export default function AdminShell({ children, adminName = "Admin" }) {
               <button
                 type="button"
                 onClick={() => setMobileNavOpen((open) => !open)}
-                className="rounded-lg border border-primary-200 px-3 py-2 text-xs font-semibold text-primary-700 lg:hidden"
+                className="rounded-lg border border-primary-200 p-2 text-primary-700 lg:hidden"
+                aria-label="Toggle menu"
               >
-                Menu
+                {mobileNavOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
               <button
                 type="button"
@@ -175,14 +339,34 @@ export default function AdminShell({ children, adminName = "Admin" }) {
           </header>
 
           {mobileNavOpen ? (
-            <div className="border-b border-primary-100 bg-white lg:hidden">
-              <p className="px-4 pb-2 pt-3 text-[10px] font-bold uppercase tracking-widest text-primary-600/70">
-                Menu
-              </p>
-              <AdminNav
-                pathname={pathname}
-                onNavigate={() => setMobileNavOpen(false)}
+            <div className="fixed inset-0 z-50 lg:hidden">
+              <div
+                className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity"
+                onClick={() => setMobileNavOpen(false)}
               />
+              <div className="absolute left-0 top-0 h-full w-[280px] -translate-x-0 bg-white shadow-2xl transition-transform duration-300 ease-out">
+                <div className="border-b border-primary-100">
+                  <div className="h-1 bg-secondary-500" />
+                  <div className="flex items-center justify-between px-5 py-4">
+                    <AdminSidebarBrand />
+                    <button
+                      type="button"
+                      onClick={() => setMobileNavOpen(false)}
+                      className="rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
+                      aria-label="Close menu"
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto py-3">
+                  <AdminNav
+                    pathname={pathname}
+                    onNavigate={() => setMobileNavOpen(false)}
+                  />
+                </div>
+              </div>
             </div>
           ) : null}
 

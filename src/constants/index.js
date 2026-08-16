@@ -4,11 +4,11 @@ export const SITE = {
   tagline: "World-Class Healthcare at the Foot of the Himalayas",
   description:
     "Nepal's most trusted international polyclinic offering comprehensive medical services with cutting-edge technology and compassionate care.",
-  phone: "+977 986-1848382",
-  email: "info@everestpolyclinic.com",
-  address: "Mid-Baneshwor, Kathmandu, Nepal",
+  phone: "+977 985-8021822",
+  email: "everestintel2070@gmail.com",
+  address: "Karkando Chowk, Nepalgunj-18, Nepalganj, Nepal",
   workingHours: "Sun – Fri: 8:00 AM – 8:00 PM",
-  emergencyHotline: "+977 01-4567890",
+  emergencyHotline: "+977 985-8021822",
 };
 
 export const NAV_LINKS = [
@@ -17,6 +17,28 @@ export const NAV_LINKS = [
   { label: "Services", href: "/services" },
   { label: "Doctors", href: "/doctors" },
   { label: "Health Packages", href: "/health-packages" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
+];
+
+/**
+ * The header splits NAV_LINKS across two rows. All eight destinations stay
+ * reachable; putting eight in a single bar forced the desktop menu behind a
+ * hamburger until 1280px, so laptops and landscape tablets lost the nav.
+ *
+ * PRIMARY sits in the main bar — the patient journey.
+ * SECONDARY sits in the utility bar above it — browsing and background.
+ */
+export const PRIMARY_NAV_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Doctors", href: "/doctors" },
+  { label: "Health Packages", href: "/health-packages" },
+];
+
+export const SECONDARY_NAV_LINKS = [
   { label: "Gallery", href: "/gallery" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
@@ -49,7 +71,7 @@ export const WHY_CHOOSE_US = [
   },
   {
     title: "Home Sample Collection",
-    description: "Convenient doorstep blood and sample collection across Kathmandu.",
+    description: "Convenient doorstep blood and sample collection across Nepalgunj.",
     icon: "home",
   },
   {

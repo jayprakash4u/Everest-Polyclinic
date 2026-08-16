@@ -123,42 +123,27 @@ export default async function AdminDashboardPage() {
         </div>
       </section>
 
+      {/* The per-entity screens these used to open were removed, so the cards
+          now point at the page editors that exist. Counts still come from the
+          same stats query. */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         <CatalogCard
-          title="Doctors"
-          count={stats.doctors}
-          href="/admin/doctors"
+          title="Home page sections"
+          count={stats.healthPackages}
+          href="/admin/pages/home"
           accent="bg-primary-600"
         />
         <CatalogCard
           title="Health packages"
           count={stats.healthPackages}
-          href="/admin/health-packages"
+          href="/admin/pages/home/health-packages"
           accent="bg-secondary-500"
         />
         <CatalogCard
-          title="Homepage specialists"
-          count={stats.homepageSpecialists}
-          href="/admin/homepage-specialists"
+          title="Appointments"
+          count={stats.totalAppointments}
+          href="/admin/appointments"
           accent="bg-secondary-600"
-        />
-        <CatalogCard
-          title="Patient trust"
-          count={stats.testimonials}
-          href="/admin/testimonials"
-          accent="bg-primary-500"
-        />
-        <CatalogCard
-          title="Gallery images"
-          count={stats.galleryImages}
-          href="/admin/gallery"
-          accent="bg-secondary-500"
-        />
-        <CatalogCard
-          title="Blog posts"
-          count={stats.blogPosts}
-          href="/admin/blog"
-          accent="bg-primary-700"
         />
       </div>
 
