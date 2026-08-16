@@ -19,17 +19,24 @@ function readGap(container) {
   return parseFloat(styles.columnGap) || parseFloat(styles.gap) || 16;
 }
 
-function computeLayout(containerWidth, itemCount, gap, minCardWidth, maxColumns, forceMobileTwoUp = false) {
+/**
+ * Phones show one whole card plus a slice of the next.
+ *
+ * Two full cards fit, but they finish flush with the edge and give no hint that
+ * anything follows — the row reads as a pair, not as a scroller. A half card
+ * bleeding off the edge is the cue that there is more to swipe to.
+ */
+const MOBILE_CARDS_IN_VIEW = 1.5;
+
+function computeLayout(containerWidth, itemCount, gap, minCardWidth, maxColumns, isPhone = false) {
   if (containerWidth <= 0 || itemCount === 0) {
     return { cardWidth: minCardWidth, visibleCount: 1 };
   }
 
-  // Mobile: always show 2 cards in the row when possible
-  if (forceMobileTwoUp && itemCount >= 2) {
-    const visibleCount = Math.min(2, maxColumns, itemCount);
-    const cardWidth =
-      (containerWidth - (visibleCount - 1) * gap) / visibleCount;
-    return { cardWidth, visibleCount };
+  if (isPhone && itemCount >= 2) {
+    // One card plus its gap, then half of the next.
+    const cardWidth = (containerWidth - gap) / MOBILE_CARDS_IN_VIEW;
+    return { cardWidth, visibleCount: 1 };
   }
 
   let visibleCount = Math.floor(
@@ -109,7 +116,7 @@ export default function HorizontalSnapCarousel({
     if (!el) return;
 
     const gap = readGap(el);
-    const forceMobileTwoUp =
+    const isPhone =
       typeof window !== "undefined" &&
       window.matchMedia("(max-width: 639px)").matches;
 
@@ -119,7 +126,7 @@ export default function HorizontalSnapCarousel({
       gap,
       minCardWidth,
       maxColumns,
-      forceMobileTwoUp,
+      isPhone,
     );
     setLayout(next);
   }, [itemCount, minCardWidth, maxColumns]);

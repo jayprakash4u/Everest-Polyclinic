@@ -61,15 +61,35 @@ export default function OurStory() {
         />
       </div>
 
-      <ol className="mt-10 grid gap-8 sm:mt-12 md:grid-cols-3 md:gap-6 lg:gap-8">
+      {/* Tighter stack on phones — the rail joins the steps, so they no longer
+          need a wide gap to read as separate. */}
+      <ol className="mt-10 grid gap-5 sm:mt-12 md:grid-cols-3 md:gap-6 lg:gap-8">
+        {/*
+          Two arrangements. Below md each step is a row — numbered disc on the
+          left, title and copy beside it, joined by a vertical rail — so it
+          reads as an ordered list. Stacked, the badge and icon floated above
+          the heading with a gap under them and looked detached from their own
+          text. From md it returns to the badge row with the horizontal rail,
+          which is what the three-column layout needs.
+        */}
         {STEPS.map(({ icon: Icon, title, description }, index) => (
-          <li key={title}>
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary-600 font-heading text-sm font-semibold text-white">
+          <li key={title} className="relative flex gap-4 md:block">
+            {index < STEPS.length - 1 ? (
+              <span
+                aria-hidden="true"
+                className="absolute left-5 top-12 h-[calc(100%-1rem)] w-px bg-secondary-200 md:hidden"
+              />
+            ) : null}
+
+            <div className="flex shrink-0 items-center gap-3 md:shrink">
+              <span className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary-600 font-heading text-sm font-semibold text-white">
                 {String(index + 1).padStart(2, "0")}
               </span>
 
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-secondary-600 ring-1 ring-secondary-100">
+              {/* The icon repeats what the heading already says, and on a phone
+                  it is the element that pushed everything apart. Kept for the
+                  wider layout, where there is room for it. */}
+              <span className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-secondary-600 ring-1 ring-secondary-100 md:flex">
                 <Icon className="h-5 w-5" strokeWidth={1.5} />
               </span>
 
@@ -87,12 +107,14 @@ export default function OurStory() {
               ) : null}
             </div>
 
-            <h3 className="mt-5 font-heading text-lg font-semibold tracking-[-0.01em] text-primary-900">
-              {title}
-            </h3>
-            <p className="mt-2.5 text-sm leading-relaxed text-slate-600">
-              {description}
-            </p>
+            <div className="min-w-0 pb-2 md:pb-0">
+              <h3 className="font-heading text-lg font-semibold leading-tight tracking-[-0.01em] text-primary-900 md:mt-5">
+                {title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600 md:mt-2.5">
+                {description}
+              </p>
+            </div>
           </li>
         ))}
       </ol>

@@ -3,6 +3,7 @@ import { Inter, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import WhatsAppButton from "@/components/layout/WhatsAppButton";
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import { getSiteSettings } from "@/lib/data/site";
 
@@ -62,6 +63,7 @@ export default async function RootLayout({ children }) {
             <Navbar />
             <main>{children}</main>
             <Footer />
+            <WhatsAppButton />
           </SmoothScroll>
         )}
       </body>

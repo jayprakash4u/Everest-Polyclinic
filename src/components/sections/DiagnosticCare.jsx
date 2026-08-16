@@ -139,42 +139,53 @@ export default function DiagnosticCare() {
               ))}
             </ul>
 
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5">
+            {/*
+              One action group, not three stacked blocks with their own
+              margins. On a phone both pills go full width so their left and
+              right edges line up and the arrows sit on a common axis — as
+              `w-fit` they were two different widths with ragged ends, which is
+              what made this corner look unfinished. From sm they shrink back to
+              their content and sit on one row with the phone number.
+            */}
+            <div className="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
               <Link
                 href="/services/laboratory"
-                className="group inline-flex w-fit items-center gap-3 rounded-full bg-primary-900 py-2 pl-6 pr-2 text-sm font-semibold text-white transition-colors hover:bg-primary-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-900 focus-visible:ring-offset-2 sm:text-base"
+                className="group inline-flex w-full items-center justify-between gap-3 rounded-full bg-primary-900 py-2 pl-6 pr-2 text-sm font-semibold text-white transition-colors hover:bg-primary-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-900 focus-visible:ring-offset-2 sm:w-auto sm:justify-start sm:text-base"
               >
-                view more
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-primary-900 transition-transform duration-300 group-hover:translate-x-0.5">
+                View more
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-primary-900 transition-transform duration-300 group-hover:translate-x-0.5">
                   <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
                 </span>
               </Link>
-            </div>
 
-            <div className="mt-5 flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
               <button
                 type="button"
                 onClick={() => setBookingOpen(true)}
-                className="group inline-flex w-fit items-center justify-between gap-3 rounded-full bg-primary-900 py-2 pl-6 pr-2 text-sm font-semibold text-white transition-colors hover:bg-primary-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-900 focus-visible:ring-offset-2 sm:text-base"
+                className="group inline-flex w-full items-center justify-between gap-3 rounded-full bg-primary-900 py-2 pl-6 pr-2 text-sm font-semibold text-white transition-colors hover:bg-primary-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-900 focus-visible:ring-offset-2 sm:w-auto sm:justify-start sm:text-base"
               >
-                Book Your Appointment Today
+                Book Appointment
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-primary-900 transition-transform duration-300 group-hover:translate-x-0.5">
                   <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
                 </span>
               </button>
-
-              <a href={telHref} className="group flex items-center gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary-50 text-secondary-600">
-                  <Phone className="h-5 w-5" strokeWidth={2} />
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-xs text-slate-500">Contact us?</span>
-                  <span className="block text-base font-bold text-primary-900 transition-colors group-hover:text-primary-700">
-                    {SITE.phone}
-                  </span>
-                </span>
-              </a>
             </div>
+
+            {/* Given its own row with a hairline above it, so it reads as a
+                separate way to reach the clinic rather than a third button. */}
+            <a
+              href={telHref}
+              className="group mt-6 flex w-fit items-center gap-3 border-t border-slate-200 pt-6 sm:mt-7 sm:border-t-0 sm:pt-0"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary-50 text-secondary-600">
+                <Phone className="h-5 w-5" strokeWidth={2} />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-xs text-slate-500">Contact us?</span>
+                <span className="block text-base font-bold text-primary-900 transition-colors group-hover:text-primary-700">
+                  {SITE.phone}
+                </span>
+              </span>
+            </a>
           </div>
         </div>
       </Container>

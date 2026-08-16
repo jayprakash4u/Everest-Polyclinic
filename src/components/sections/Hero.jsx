@@ -9,6 +9,7 @@ import Container from "@/components/ui/Container";
 import { encodePublicPath } from "@/lib/encode-public-path";
 import { cn } from "@/lib/utils";
 import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
+import { HOME_HERO_SLIDES } from "@/constants/homeHero";
 
 /**
  * Full-bleed carousel: the photography runs the whole viewport width and the
@@ -26,13 +27,8 @@ import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
  * photograph worth showing (the people, the theatre, the scanner) stays bright
  * and untouched.
  */
-const SLIDES = [
-  { src: "/images/hero/firstimage.png", label: "Reception", alt: "Reception area at Everest International Polyclinic" },
-  { src: "/images/hero/second image.png", label: "Consultation", alt: "A doctor consulting with a patient" },
-  { src: "/images/hero/third imge.png", label: "Laboratory", alt: "A technician analysing samples in the laboratory" },
-  { src: "/images/hero/fourth image.png", label: "Operating theatre", alt: "Surgical team at work in the operating theatre" },
-  { src: "/images/hero/fiftth image.png", label: "Imaging suite", alt: "CT scanner in the imaging suite" },
-];
+/* Slides arrive from the database via page.js; the constant is the fallback and
+   the shipped default. Edited under Admin → Pages → Home page. */
 
 const PROOF = [
   { value: "25,000+", label: "Patients treated" },
@@ -51,7 +47,8 @@ const SLIDE_MS = 3500;
 const SCRIM_DESKTOP =
   "linear-gradient(90deg, rgba(11,41,81,1) 0%, rgba(11,41,81,1) 34%, rgba(11,41,81,0.97) 44%, rgba(11,41,81,0.72) 58%, rgba(11,41,81,0.30) 74%, rgba(11,41,81,0.05) 90%, rgba(11,41,81,0) 100%)";
 
-export default function Hero() {
+export default function Hero({ slides = HOME_HERO_SLIDES }) {
+  const SLIDES = slides?.length ? slides : HOME_HERO_SLIDES;
   const [bookingOpen, setBookingOpen] = useState(false);
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -78,7 +75,9 @@ export default function Hero() {
       updated.add(upcoming);
       return updated;
     });
-  }, []);
+    // Slide count is data now, so it has to be a dependency — with `[]` this
+    // would keep wrapping against whatever length the first render happened to see.
+  }, [SLIDES.length]);
 
   /* Reduced motion changes *how* a slide arrives, not whether it does. The
      rotation is the point of the section, so it always runs; what a reduced-
@@ -119,7 +118,7 @@ export default function Hero() {
         ms: Math.max(0, wait - (Date.now() - startedAt)),
       };
     };
-  }, [paused, active, go]);
+  }, [paused, active, go, SLIDES.length]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {

@@ -1,4 +1,5 @@
-import { Check } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import ServicePageIcon from "./ServicePageIcon";
 import ServiceIconFrame from "./ServiceIconFrame";
 import ServiceSection from "./ServiceSection";
@@ -77,23 +78,57 @@ export default function AboutConditions({ page }) {
             align="left"
             className="max-w-xl"
           />
-          <ul className="mt-5 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-3 lg:grid-cols-3">
-            {conditions.map((condition) => (
-              <li
-                key={condition}
-                className="flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-white px-2.5 py-2 sm:gap-3 sm:rounded-xl sm:px-4 sm:py-3.5"
-              >
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary-50 text-primary-600 sm:h-7 sm:w-7">
-                  <Check
-                    className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5"
-                    strokeWidth={2.5}
-                  />
-                </span>
-                <span className="min-w-0 text-[11px] font-medium leading-snug text-slate-700 sm:text-sm md:text-[15px]">
-                  <span className="line-clamp-2">{condition}</span>
-                </span>
-              </li>
-            ))}
+          <ul className="mt-5 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+            {conditions.map((entry) => {
+              /* Entries are plain strings on most services and objects with a
+                 description and icon where the copy has been written. Both
+                 render as the same card; a string simply has no second line. */
+              const condition =
+                typeof entry === "string" ? { title: entry } : entry;
+
+              return (
+                <li
+                  key={condition.title}
+                  className="group flex gap-3.5 rounded-2xl border border-slate-200/80 bg-white p-4 transition duration-300 hover:-translate-y-0.5 hover:border-secondary-200 hover:shadow-e2 sm:gap-4 sm:p-5"
+                >
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-secondary-50 text-secondary-600 transition-colors duration-300 group-hover:bg-secondary-100 sm:h-14 sm:w-14">
+                    <ServicePageIcon
+                      icon={condition.icon ?? "stethoscope"}
+                      iconSet={condition.iconSet ?? "lucide"}
+                      size={24}
+                    />
+                  </span>
+
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-heading text-base font-semibold leading-snug tracking-[-0.01em] text-primary-900">
+                      {condition.title}
+                    </span>
+
+                    {condition.description ? (
+                      <span className="mt-1.5 block text-sm leading-relaxed text-slate-600">
+                        {condition.description}
+                      </span>
+                    ) : null}
+
+                    {/* Only rendered when the entry supplies a destination —
+                        the design shows a "Learn more" on every card, but
+                        without a page to open it would be a dead link. */}
+                    {condition.href ? (
+                      <Link
+                        href={condition.href}
+                        className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-secondary-700 transition-colors hover:text-secondary-800"
+                      >
+                        Learn more
+                        <ArrowRight
+                          className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
+                          strokeWidth={2}
+                        />
+                      </Link>
+                    ) : null}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
         </div>
       ) : null}

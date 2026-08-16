@@ -5,7 +5,9 @@ import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import { encodePublicPath } from "@/lib/encode-public-path";
 
-const SIDE_IMAGE = "/images/sidedoctor.png";
+import { HOME_SETTING_DEFAULTS } from "@/constants/homeSectionDefaults";
+
+const SIDE_IMAGE = HOME_SETTING_DEFAULTS.careTeamImage;
 
 /* Three entry points into the specialist list, each a real service route. */
 const DEPARTMENTS = [
@@ -29,7 +31,7 @@ const DEPARTMENTS = [
   },
 ];
 
-export default function DoctorsSection() {
+export default function DoctorsSection({ image = SIDE_IMAGE }) {
   return (
     <section className="relative isolate overflow-hidden bg-gradient-to-br from-primary-50/60 via-white to-white">
       {/*
@@ -42,7 +44,7 @@ export default function DoctorsSection() {
       */}
       <div className="relative aspect-[3/2] w-full overflow-hidden lg:absolute lg:inset-y-0 lg:right-0 lg:aspect-auto lg:w-[56%]">
         <Image
-          src={encodePublicPath(SIDE_IMAGE)}
+          src={encodePublicPath(image || SIDE_IMAGE)}
           alt="A clinician at Everest International Polyclinic"
           fill
           sizes="(min-width: 1024px) 56vw, 100vw"

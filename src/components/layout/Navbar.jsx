@@ -486,26 +486,23 @@ export default function Navbar() {
               </ul>
             </nav>
 
-            {/* Booking CTA + mobile trigger. The phone number lives in the
-                utility bar above, so it isn't repeated here. */}
-            <div className="flex shrink-0 items-center gap-2">
-              {/* Below md the utility bar is hidden, so the number needs a home. */}
-              <a
-                href={telHref}
-                aria-label={`Call ${SITE.phone}`}
-                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-700 sm:h-11 sm:w-11 transition-colors hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 md:hidden"
-              >
-                <Phone size={18} strokeWidth={2.25} />
-              </a>
+            {/*
+              Booking CTA + mobile trigger.
 
+              Below lg the bar carries the logo and the menu button only. The
+              call icon and the booking button are gone from that width — both
+              actions still sit at the foot of the drawer the menu button opens,
+              so nothing is unreachable, and the row stops competing with the
+              brand lockup on a narrow screen.
+            */}
+            <div className="flex shrink-0 items-center gap-2">
               <button
                 type="button"
                 onClick={openBooking}
-                className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl bg-secondary-600 px-3 py-2.5 text-[13px] font-semibold text-white sm:gap-2 sm:px-4 sm:py-3 sm:text-sm transition-colors hover:bg-secondary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary-600 focus-visible:ring-offset-2 lg:px-5"
+                className="hidden shrink-0 items-center gap-2 whitespace-nowrap rounded-xl bg-secondary-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-secondary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary-600 focus-visible:ring-offset-2 lg:inline-flex lg:px-5"
               >
                 <CalendarDays size={16} strokeWidth={2.25} />
-                <span className="hidden sm:inline">Book Appointment</span>
-                <span className="sm:hidden">Book</span>
+                Book Appointment
               </button>
 
               <button

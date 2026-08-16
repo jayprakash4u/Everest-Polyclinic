@@ -91,7 +91,11 @@ export default function HealthPackagesHero() {
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-4 sm:gap-5">
-              <Button href="#packages" size="lg" className="group">
+              <Button
+                href="#packages"
+                size="lg"
+                className="group w-full justify-center sm:w-auto"
+              >
                 Explore Our Packages
                 <ArrowRight
                   size={18}
@@ -100,12 +104,19 @@ export default function HealthPackagesHero() {
                 />
               </Button>
 
+              {/*
+                Decorative sign-off, and only from sm. On a phone the divider
+                beside it is hidden and it wraps onto its own line under the
+                button, where it reads as a stray fragment of copy rather than a
+                flourish attached to anything.
+
+                The reference sets this in a handwriting face; rather than load a
+                script font for two words it uses the heading serif in italic —
+                same "signed off" register, no extra payload.
+              */}
               <span aria-hidden="true" className="hidden h-10 w-px bg-slate-200 sm:block" />
 
-              {/* The reference sets this in a handwriting face. Rather than
-                  load a script font for four words, it uses the heading serif
-                  in italic — same "signed off" register, no extra payload. */}
-              <p className="font-heading text-lg italic leading-tight text-secondary-600">
+              <p className="hidden font-heading text-lg italic leading-tight text-secondary-600 sm:block">
                 Healthier
                 <br />
                 Tomorrow
