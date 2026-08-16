@@ -1,6 +1,4 @@
 import Module from "node:module";
-import { PrismaClient } from "@prisma/client";
-import { PrismaMssql } from "@prisma/adapter-mssql";
 
 const originalRequire = Module.prototype.require;
 
@@ -12,7 +10,10 @@ Module.prototype.require = function patchedRequire(request) {
   return originalRequire.call(this, request);
 };
 
-export function createPrismaClient() {
+export async function createPrismaClient() {
+  const { PrismaClient } = await import("@prisma/client");
+  const { PrismaMssql } = await import("@prisma/adapter-mssql");
+
   const connectionString =
     process.env.SQLSERVER_CONNECTION_STRING ??
     "Driver={ODBC Driver 17 for SQL Server};Server=localhost\\SQLEXPRESS;Database=EverestPolyclinic;Trusted_Connection=Yes;TrustServerCertificate=Yes;";

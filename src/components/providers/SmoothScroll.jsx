@@ -70,7 +70,15 @@ export default function SmoothScroll({ children }) {
 
     document.addEventListener("click", handleAnchorClick);
 
+    // Images resize the page as they decode, which leaves ScrollTrigger start
+    // positions stale — a reveal whose trigger has drifted past the viewport
+    // would never fire and its content would stay at opacity 0. Recomputing
+    // once everything has loaded closes that window.
+    const refreshTriggers = () => ScrollTrigger.refresh();
+    window.addEventListener("load", refreshTriggers);
+
     return () => {
+      window.removeEventListener("load", refreshTriggers);
       document.removeEventListener("click", handleAnchorClick);
       gsap.ticker.remove(ticker);
       lenis.destroy();

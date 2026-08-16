@@ -33,9 +33,12 @@ const initialForm = {
   message: "",
 };
 
-function FieldLabel({ children, required }) {
+function FieldLabel({ children, required, htmlFor }) {
   return (
-    <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-primary-700">
+    <label
+      htmlFor={htmlFor}
+      className="mb-2 block text-xs font-semibold uppercase tracking-[0.08em] text-slate-600"
+    >
       {children}
       {required && <span className="text-alert-500"> *</span>}
     </label>
@@ -43,12 +46,13 @@ function FieldLabel({ children, required }) {
 }
 
 const inputClass =
-  "w-full rounded-xl border border-primary-100 bg-slate-50 px-4 py-3 text-sm text-text-dark transition-all placeholder:text-slate-400 focus:border-primary-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-200";
+  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 transition-colors placeholder:text-slate-400 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-600/30";
 
 export default function BookAppointmentModal({
   isOpen,
   onClose,
   bookingPackage = null,
+  bookingDoctor = null,
 }) {
   const [form, setForm] = useState(initialForm);
   const [submitted, setSubmitted] = useState(false);
@@ -91,8 +95,22 @@ export default function BookAppointmentModal({
       return;
     }
 
+    /* Booking from a specialist card. There is no doctor field on the
+       appointments API, so the chosen clinician rides along in the message the
+       way the package does — the department is what the desk actually routes on. */
+    if (bookingDoctor) {
+      setForm({
+        ...initialForm,
+        department: bookingDoctor.specialist ?? initialForm.department,
+        message: `I would like to book an appointment with ${bookingDoctor.name}${
+          bookingDoctor.specialist ? ` (${bookingDoctor.specialist})` : ""
+        }.`,
+      });
+      return;
+    }
+
     setForm(initialForm);
-  }, [isOpen, bookingPackage]);
+  }, [isOpen, bookingPackage, bookingDoctor]);
 
   if (!isOpen) return null;
 
@@ -154,7 +172,7 @@ export default function BookAppointmentModal({
         onClick={onClose}
       />
 
-      <div className="relative z-10 flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-[1.5rem] border border-primary-100 bg-white shadow-[0_24px_60px_rgba(15,23,42,0.22)] sm:max-h-[90vh] sm:rounded-card">
+      <div className="relative z-10 flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-2xl border border-slate-200 bg-white shadow-[0_24px_60px_rgba(15,23,42,0.22)] sm:max-h-[90vh] sm:rounded-2xl">
         {/* Header */}
         <div className="relative shrink-0 bg-gradient-to-r from-primary-700 to-primary-600 px-5 py-5 sm:px-6">
           <div className="absolute inset-0 opacity-10">
@@ -224,8 +242,8 @@ export default function BookAppointmentModal({
               </p>
               <Button
                 onClick={onClose}
-                variant="secondary"
-                className="mt-6 rounded-full px-8"
+                variant="primary"
+                className="mt-6"
               >
                 Done
               </Button>
@@ -247,7 +265,7 @@ export default function BookAppointmentModal({
               )}
 
               <div>
-                <FieldLabel required>Full Name</FieldLabel>
+                <FieldLabel required htmlFor="appt-name">Full Name</FieldLabel>
                 <div className="relative">
                   <User
                     size={16}
@@ -255,6 +273,7 @@ export default function BookAppointmentModal({
                   />
                   <input
                     type="text"
+                    id="appt-name"
                     name="name"
                     required
                     value={form.name}
@@ -267,7 +286,7 @@ export default function BookAppointmentModal({
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <FieldLabel required>Phone</FieldLabel>
+                  <FieldLabel required htmlFor="appt-phone">Phone</FieldLabel>
                   <div className="relative">
                     <Phone
                       size={16}
@@ -275,6 +294,7 @@ export default function BookAppointmentModal({
                     />
                     <input
                       type="tel"
+                      id="appt-phone"
                       name="phone"
                       required
                       value={form.phone}
@@ -285,7 +305,7 @@ export default function BookAppointmentModal({
                   </div>
                 </div>
                 <div>
-                  <FieldLabel>Email</FieldLabel>
+                  <FieldLabel htmlFor="appt-email">Email</FieldLabel>
                   <div className="relative">
                     <Mail
                       size={16}
@@ -293,6 +313,7 @@ export default function BookAppointmentModal({
                     />
                     <input
                       type="email"
+                      id="appt-email"
                       name="email"
                       value={form.email}
                       onChange={handleChange}
@@ -304,7 +325,7 @@ export default function BookAppointmentModal({
               </div>
 
               <div>
-                <FieldLabel required>
+                <FieldLabel required htmlFor="appt-department">
                   {bookingPackage ? "Service" : "Department"}
                 </FieldLabel>
                 {bookingPackage ? (
@@ -315,6 +336,7 @@ export default function BookAppointmentModal({
                     />
                     <input
                       type="text"
+                      id="appt-department"
                       readOnly
                       value="Health Checkup Packages"
                       className={cn(
@@ -330,6 +352,7 @@ export default function BookAppointmentModal({
                       className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
                     />
                     <select
+                      id="appt-department"
                       name="department"
                       required
                       value={form.department}
@@ -349,7 +372,7 @@ export default function BookAppointmentModal({
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <FieldLabel required>Preferred Date</FieldLabel>
+                  <FieldLabel required htmlFor="appt-date">Preferred Date</FieldLabel>
                   <div className="relative">
                     <Calendar
                       size={16}
@@ -357,6 +380,7 @@ export default function BookAppointmentModal({
                     />
                     <input
                       type="date"
+                      id="appt-date"
                       name="date"
                       required
                       value={form.date}
@@ -367,13 +391,14 @@ export default function BookAppointmentModal({
                   </div>
                 </div>
                 <div>
-                  <FieldLabel required>Preferred Time</FieldLabel>
+                  <FieldLabel required htmlFor="appt-time">Preferred Time</FieldLabel>
                   <div className="relative">
                     <Clock
                       size={16}
                       className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
                     />
                     <select
+                      id="appt-time"
                       name="time"
                       required
                       value={form.time}
@@ -392,8 +417,9 @@ export default function BookAppointmentModal({
               </div>
 
               <div>
-                <FieldLabel>Additional Notes</FieldLabel>
+                <FieldLabel htmlFor="appt-message">Additional Notes</FieldLabel>
                 <textarea
+                  id="appt-message"
                   name="message"
                   rows={3}
                   value={form.message}
@@ -411,10 +437,10 @@ export default function BookAppointmentModal({
 
               <Button
                 type="submit"
-                variant="secondary"
+                variant="primary"
                 fullWidth
                 size="lg"
-                className="rounded-xl uppercase tracking-wider"
+                className=""
                 disabled={submitting}
               >
                 {submitting

@@ -8,29 +8,34 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Both families are anchored at 600 — the step actually used for buttons
+        // and links — and the ramp is generated around it at a fixed hue, so
+        // tints (100/200) belong to the same family as the solids.
         primary: {
-          50: "#f0f7fa",
-          100: "#d4e4ee",
-          200: "#a8c9dc",
-          300: "#7aafca",
-          400: "#4c95b8",
-          500: "#1E5FA8",
-          600: "#1a5594",
-          700: "#14457a",
-          800: "#103560",
-          900: "#0a2342",
+          // hue ~212°, anchored on the logo's blue core
+          50: "#F1F6FC",
+          100: "#DFEAF7",
+          200: "#C0D6EF",
+          300: "#97BAE2",
+          400: "#6597D0",
+          500: "#3576BE",
+          600: "#1E5FA8", // brand blue — 6.45:1 on white
+          700: "#174E8C",
+          800: "#113B6F",
+          900: "#0B2951",
         },
         secondary: {
-          50: "#f0fdfa",
-          100: "#e0faf1",
-          200: "#c1f5dd",
-          300: "#a1f0ca",
-          400: "#66e9b0",
-          500: "#2FA84F",
-          600: "#289143",
-          700: "#1f7436",
-          800: "#17572a",
-          900: "#0d381a",
+          // hue ~136°, anchored on the logo's green ring
+          50: "#F2FBF4",
+          100: "#DFF3E5",
+          200: "#BEE7CB",
+          300: "#92D5A8",
+          400: "#5CBF7C",
+          500: "#2FA84F", // logo green — accents, rules, icons
+          600: "#1F843C", // action green — 4.75:1 on white, AA at button sizes
+          700: "#196A31",
+          800: "#145226",
+          900: "#0D371A",
         },
         accent: {
           50: "#f0fafa",
@@ -72,8 +77,10 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        heading: ["Poppins", "system-ui", "sans-serif"],
+        // These must stay as var() — next/font generates hashed family names,
+        // so the CSS variable set in layout.js is the only stable reference.
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        heading: ["var(--font-heading)", "Georgia", "serif"],
       },
       spacing: {
         section: "5rem",
@@ -84,6 +91,28 @@ module.exports = {
       boxShadow: {
         card: "0 4px 24px rgba(0,0,0,0.07)",
         "card-hover": "0 8px 40px rgba(0,0,0,0.13)",
+        // Two elevation levels for the redesigned surfaces: a hairline at rest,
+        // one lift on hover. Anything heavier reads as a template.
+        e1: "0 1px 2px rgba(15,23,42,0.04)",
+        e2: "0 18px 38px -20px rgba(15,23,42,0.28)",
+      },
+      keyframes: {
+        "rise-in": {
+          from: { opacity: "0", transform: "translateY(8px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        // Hero carousel timer bar. Duration is set inline from the same
+        // constant that drives the interval, so the two can't drift apart.
+        "hero-progress": {
+          from: { transform: "scaleX(0)" },
+          to: { transform: "scaleX(1)" },
+        },
+      },
+      animation: {
+        "rise-in": "rise-in 400ms cubic-bezier(0.22, 1, 0.36, 1) both",
+        // Duration here is a placeholder — Hero.jsx overrides it inline from
+        // SLIDE_MS so the bar and the slide timer can never drift apart.
+        "hero-progress": "hero-progress 3500ms linear forwards",
       },
     },
   },

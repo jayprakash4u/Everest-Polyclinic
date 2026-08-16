@@ -19,13 +19,13 @@ export default function ServiceSectionHeader({
       )}
     >
       {badge ? (
-        <Badge variant={light ? "neutral" : "primary"} className="mb-4">
+        <Badge variant={light ? "neutral" : "primary"} className="mb-2.5 sm:mb-4">
           {badge}
         </Badge>
       ) : null}
       <h2
         className={cn(
-          "font-heading text-3xl font-bold leading-tight tracking-tight md:text-4xl",
+          "font-heading text-2xl font-bold leading-tight tracking-tight sm:text-3xl md:text-4xl",
           light ? "text-white" : "text-slate-900",
         )}
       >
@@ -34,7 +34,7 @@ export default function ServiceSectionHeader({
       {subtitle ? (
         <p
           className={cn(
-            "mt-4 text-base leading-relaxed md:text-lg",
+            "mt-2.5 text-sm leading-relaxed sm:mt-4 sm:text-base md:text-lg",
             light ? "text-white/85" : "text-slate-600",
           )}
         >

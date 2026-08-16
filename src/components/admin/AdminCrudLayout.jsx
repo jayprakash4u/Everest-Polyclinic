@@ -28,7 +28,7 @@ export function AdminCrudFormPanel({
       <form onSubmit={onSubmit} className="space-y-3">
         {children}
         <div className="flex flex-wrap gap-2 pt-1">
-          <Button type="submit" variant="secondary" size="sm">
+          <Button type="submit" variant="primary" size="sm">
             {isEditing ? updateLabel : submitLabel}
           </Button>
           {isEditing && onCancel ? (
@@ -104,13 +104,15 @@ export function AdminCrudListRow({
         >
           {editLabel}
         </button>
-        <button
-          type="button"
-          onClick={onDelete}
-          className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50"
-        >
-          {deleteLabel}
-        </button>
+        {onDelete ? (
+          <button
+            type="button"
+            onClick={onDelete}
+            className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50"
+          >
+            {deleteLabel}
+          </button>
+        ) : null}
       </div>
     </li>
   );

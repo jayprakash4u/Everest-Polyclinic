@@ -1,4 +1,7 @@
 import crypto from "node:crypto";
+import { execFileSync } from "node:child_process";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { createPrismaClient } from "./create-prisma-client.mjs";
 import {
   BLOG_POSTS,
@@ -7,7 +10,8 @@ import {
   toBlogSlug,
 } from "../src/constants/blogPosts.js";
 
-const prisma = createPrismaClient();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const prisma = await createPrismaClient();
 
 function hashPassword(password) {
   return crypto.createHash("sha256").update(password).digest("hex");
@@ -22,6 +26,9 @@ async function main() {
   );
   const { SERVICES: CATALOG_SERVICES } = await import(
     "../src/constants/services/catalog.js"
+  );
+  const { getHomepageServiceImage } = await import(
+    "../src/constants/services/homepageServiceImages.js"
   );
   const { HEALTH_PACKAGES } = await import(
     "../src/constants/healthPackages.js"
@@ -100,9 +107,11 @@ async function main() {
       },
     });
 
+    const homepageImage = getHomepageServiceImage(service.slug);
     const contentJson = JSON.stringify({
       shortDescription: service.shortDescription,
       overview: service.overview,
+      about: service.about ?? service.overview,
       treatments: service.treatments,
       benefits: service.benefits,
       faqs: service.faqs,
@@ -110,22 +119,30 @@ async function main() {
       symptoms: service.symptoms ?? [],
       consultationSteps: service.consultationSteps ?? [],
       sections: service.sections ?? null,
+      hero: service.hero ?? null,
+      aboutBenefits: service.aboutBenefits ?? [],
+      serviceOfferings: service.serviceOfferings ?? null,
+      whyChooseUs: service.whyChooseUs ?? null,
+      highlights: service.highlights ?? null,
+      cta: service.cta ?? null,
+      homepageImage: homepageImage ?? null,
+      heroSideImage: service.heroSideImage ?? null,
     });
 
     await prisma.serviceDetail.upsert({
       where: { specialtyServiceId: saved.id },
       update: {
         title: service.title,
-        description: service.overview,
-        headerImage: service.heroImage ?? null,
+        description: service.overview || service.shortDescription || service.title,
+        headerImage: service.hero?.image ?? service.heroSideImage ?? homepageImage ?? null,
         color: "primary",
         contentJson,
       },
       create: {
         specialtyServiceId: saved.id,
         title: service.title,
-        description: service.overview,
-        headerImage: service.heroImage ?? null,
+        description: service.overview || service.shortDescription || service.title,
+        headerImage: service.hero?.image ?? service.heroSideImage ?? homepageImage ?? null,
         color: "primary",
         contentJson,
       },
@@ -357,6 +374,13 @@ async function main() {
   }
 
   console.log("Seed completed successfully.");
+
+  console.log("Seeding homepage centers / why-choose-us / site stats...");
+  execFileSync(
+    process.execPath,
+    [path.join(__dirname, "scripts/seed-homepage-content.mjs")],
+    { stdio: "inherit", env: process.env },
+  );
 }
 
 main()

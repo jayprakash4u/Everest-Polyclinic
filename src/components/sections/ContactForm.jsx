@@ -89,7 +89,7 @@ export default function ContactForm() {
         </p>
         <Button
           type="button"
-          variant="secondary"
+          variant="primary"
           className="mt-6 rounded-full px-8"
           onClick={() => {
             setSubmitted(false);
@@ -208,7 +208,7 @@ export default function ContactForm() {
 
       <Button
         type="submit"
-        variant="secondary"
+        variant="primary"
         fullWidth
         size="lg"
         className="rounded-xl uppercase tracking-wider"

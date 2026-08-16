@@ -1,7 +1,9 @@
 import {
   getAllServiceSlugs as catalogSlugs,
   getServiceBySlug as getCatalogService,
+  SERVICES as CATALOG_SERVICES,
 } from "@/constants/services/catalog";
+import { getHomepageServiceImage } from "@/constants/services/homepageServiceImages";
 import { prisma } from "@/lib/db";
 
 function parseContentJson(raw) {
@@ -15,24 +17,60 @@ function parseContentJson(raw) {
 
 function mergeServiceRecord(catalog, dbRow, dbDetail) {
   const stored = parseContentJson(dbDetail?.contentJson);
+  const base = catalog ?? {
+    id: dbRow?.legacyId ?? dbRow?.id,
+    slug: dbRow?.slug,
+    title: dbRow?.title,
+    icon: dbRow?.icon,
+    category: "specialty",
+  };
+
+  const homepageImage =
+    stored.homepageImage ??
+    dbDetail?.headerImage ??
+    getHomepageServiceImage(base.slug) ??
+    null;
 
   return {
-    id: catalog.id,
-    slug: catalog.slug,
-    title: dbDetail?.title ?? dbRow?.title ?? catalog.title,
-    icon: dbRow?.icon ?? catalog.icon,
-    category: "specialty",
-    ...(dbRow?.detail && stored.overview ? { overview: stored.overview } : {}),
-    ...(dbRow?.detail && stored.shortDescription ? { shortDescription: stored.shortDescription } : {}),
-    ...(dbRow?.detail && stored.treatments?.length ? { treatments: stored.treatments } : {}),
-    ...(dbRow?.detail && stored.benefits?.length ? { benefits: stored.benefits } : {}),
-    ...(dbRow?.detail && stored.faqs?.length ? { faqs: stored.faqs } : {}),
-    ...(dbRow?.detail && stored.conditions?.length ? { conditions: stored.conditions } : {}),
-    ...(dbRow?.detail && stored.symptoms?.length ? { symptoms: stored.symptoms } : {}),
-    ...(dbRow?.detail && stored.highlights?.length ? { highlights: stored.highlights } : {}),
-    ...(dbRow?.detail && stored.sections ? { sections: stored.sections } : {}),
+    ...base,
+    id: base.id ?? dbRow?.legacyId ?? dbRow?.id,
+    slug: dbRow?.slug ?? base.slug,
+    title: dbDetail?.title ?? dbRow?.title ?? base.title,
+    icon: dbRow?.icon ?? base.icon,
+    shortDescription:
+      stored.shortDescription ?? base.shortDescription ?? "",
+    overview: stored.overview ?? stored.about ?? base.overview ?? "",
+    about: stored.about ?? stored.overview ?? base.about ?? "",
+    treatments: stored.treatments ?? base.treatments ?? [],
+    benefits: stored.benefits ?? base.benefits ?? [],
+    faqs: stored.faqs ?? base.faqs ?? [],
+    conditions: stored.conditions ?? base.conditions ?? [],
+    symptoms: stored.symptoms ?? base.symptoms ?? [],
+    consultationSteps:
+      stored.consultationSteps ?? base.consultationSteps ?? [],
+    sections: stored.sections ?? base.sections ?? null,
+    hero: stored.hero ?? base.hero ?? null,
+    aboutBenefits: stored.aboutBenefits ?? base.aboutBenefits ?? [],
+    serviceOfferings:
+      stored.serviceOfferings ?? base.serviceOfferings ?? null,
+    whyChooseUs: stored.whyChooseUs ?? base.whyChooseUs ?? null,
+    highlights: stored.highlights ?? base.highlights ?? null,
+    cta: stored.cta ?? base.cta ?? null,
+    heroSideImage:
+      stored.heroSideImage ??
+      dbDetail?.headerImage ??
+      base.heroSideImage ??
+      null,
+    homepageImage,
+    sortOrder: dbRow?.sortOrder ?? 0,
     isActive: dbRow?.isActive ?? true,
+    dbId: dbRow?.id ?? null,
   };
+}
+
+function mapDbServiceRow(row) {
+  const catalog = row.slug ? getCatalogService(row.slug) : null;
+  return mergeServiceRecord(catalog, row, row.detail);
 }
 
 export async function getAllServices() {
@@ -43,28 +81,24 @@ export async function getAllServices() {
       orderBy: [{ sortOrder: "asc" }, { legacyId: "asc" }],
     });
 
-    const bySlug = new Map(
-      rows.filter((row) => row.slug).map((row) => [row.slug, row]),
-    );
-
-    return rows
-      .filter((row) => row.slug)
-      .map((row) => {
-        const catalog = getCatalogService(row.slug);
-        if (!catalog) return null;
-        const merged = mergeServiceRecord(catalog, row, row.detail);
-        return merged.isActive !== false ? merged : null;
-      })
-      .filter(Boolean);
+    if (rows.length) {
+      return rows
+        .filter((row) => row.slug)
+        .map(mapDbServiceRow)
+        .filter((service) => service.isActive !== false);
+    }
   } catch (error) {
     console.warn("[db] Services list fallback:", error.message);
-    return [];
   }
+
+  return CATALOG_SERVICES.map((service) => ({
+    ...service,
+    homepageImage: getHomepageServiceImage(service.slug),
+  }));
 }
 
 export async function getServiceBySlug(slug) {
   const catalog = getCatalogService(slug);
-  if (!catalog) return null;
 
   try {
     const row = await prisma.specialtyService.findFirst({
@@ -72,14 +106,19 @@ export async function getServiceBySlug(slug) {
       include: { detail: true },
     });
 
-    if (row?.detail) {
-      return mergeServiceRecord(catalog, row, row.detail);
+    if (row) {
+      return mapDbServiceRow(row);
     }
   } catch (error) {
     console.warn("[db] Service by slug fallback:", error.message);
   }
 
-  return catalog;
+  if (!catalog) return null;
+
+  return {
+    ...catalog,
+    homepageImage: getHomepageServiceImage(slug),
+  };
 }
 
 export async function getAllServiceSlugs() {
@@ -108,39 +147,22 @@ export async function getSpecialtyServicesAdminList() {
       orderBy: [{ sortOrder: "asc" }, { legacyId: "asc" }],
     });
 
-    const bySlug = new Map(rows.filter((r) => r.slug).map((r) => [r.slug, r]));
-
-    return rows
-      .filter((row) => row.slug)
-      .map((row) => {
-        const catalog = getCatalogService(row.slug);
-        if (!catalog) return null;
-        const merged = mergeServiceRecord(catalog, row, row.detail);
-        return merged.isActive !== false ? merged : null;
-      })
-      .filter(Boolean);
+    if (rows.length) {
+      return rows.filter((row) => row.slug).map(mapDbServiceRow);
+    }
   } catch (error) {
     console.warn("[db] Services admin list fallback:", error.message);
-    return [];
   }
+
+  return CATALOG_SERVICES.map((service, index) => ({
+    ...service,
+    homepageImage: getHomepageServiceImage(service.slug),
+    sortOrder: index,
+    isActive: true,
+    dbId: null,
+  }));
 }
 
 export async function getSpecialtyServiceBySlug(slug) {
-  const catalog = getCatalogService(slug);
-  if (!catalog) return null;
-
-  try {
-    const row = await prisma.specialtyService.findFirst({
-      where: { slug },
-      include: { detail: true },
-    });
-
-    if (row) {
-      return mergeServiceRecord(catalog, row, row.detail);
-    }
-  } catch (error) {
-    console.warn("[db] Admin service fallback:", error.message);
-  }
-
-  return catalog;
+  return getServiceBySlug(slug);
 }

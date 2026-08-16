@@ -5,59 +5,37 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Menu, Phone, Search, X } from "lucide-react";
-import { NAV_LINKS, SITE } from "@/constants";
-import Button from "@/components/ui/Button";
+import {
+  ArrowRight,
+  CalendarDays,
+  ChevronDown,
+  Clock,
+  Mail,
+  Menu,
+  Phone,
+  PhoneCall,
+  X,
+} from "lucide-react";
+import {
+  NAV_LINKS,
+  PRIMARY_NAV_LINKS,
+  SECONDARY_NAV_LINKS,
+  SITE,
+} from "@/constants";
 import ServicesOptionsMenu from "@/components/layout/ServicesOptionsMenu";
+import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
 import { cn } from "@/lib/utils";
 
-const SOCIAL_LINKS = [
-  {
-    label: "Facebook",
-    href: "#",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-      </svg>
-    ),
-  },
-  {
-    label: "Instagram",
-    href: "#",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-      </svg>
-    ),
-  },
-  {
-    label: "Twitter",
-    href: "#",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
-      </svg>
-    ),
-  },
-  {
-    label: "Pinterest",
-    href: "#",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14h.1a8.38 8.38 0 0 1 3.8.9L21 3z" />
-      </svg>
-    ),
-  },
-];
-
-function closeMobileMenu(setIsOpen, setMobileServicesOpen) {
-  setIsOpen(false);
-  setMobileServicesOpen(false);
-}
-
 const SERVICES_MENU_WIDTH = 860;
+const VIEWPORT_PADDING = 16;
+
+/** Shared by every top-level nav item, including the "More" trigger. */
+const labelClass =
+  "relative flex items-center gap-1 py-2 text-[15px] font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2";
+
+function isActiveLink(pathname, href) {
+  return href === "/" ? pathname === "/" : pathname.startsWith(href);
+}
 
 function getServicesDropdownPosition(triggerEl) {
   if (!triggerEl || typeof window === "undefined") {
@@ -66,36 +44,184 @@ function getServicesDropdownPosition(triggerEl) {
 
   const rect = triggerEl.getBoundingClientRect();
   const menuWidth = Math.min(window.innerWidth * 0.94, SERVICES_MENU_WIDTH);
-  const viewportPadding = 16;
   let left = rect.left + rect.width / 2 - menuWidth / 2;
 
-  if (left < viewportPadding) {
-    left = viewportPadding;
+  left = Math.max(VIEWPORT_PADDING, left);
+  left = Math.min(left, window.innerWidth - menuWidth - VIEWPORT_PADDING);
+
+  return { top: rect.bottom, left };
+}
+
+/** Shared shape for a utility-strip entry: outline icon, quiet label, bold value. */
+function UtilityItem({ icon: Icon, label, value, href, onClick, arrow }) {
+  const body = (
+    <>
+      <Icon
+        size={30}
+        strokeWidth={1.25}
+        className="shrink-0 text-secondary-400 transition-colors group-hover:text-secondary-300"
+      />
+      <span className="min-w-0">
+        <span className="block text-[11px] leading-tight text-secondary-300">
+          {label}
+        </span>
+        <span className="flex items-center gap-1.5 truncate text-sm font-bold leading-tight text-white transition-colors group-hover:text-secondary-200">
+          {value}
+          {arrow ? <ArrowRight size={14} strokeWidth={2.5} className="shrink-0" /> : null}
+        </span>
+      </span>
+    </>
+  );
+
+  const className =
+    "group flex min-w-0 items-center gap-3 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900";
+
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={`${className} text-left`}>
+        {body}
+      </button>
+    );
   }
 
-  if (left + menuWidth > window.innerWidth - viewportPadding) {
-    left = window.innerWidth - menuWidth - viewportPadding;
-  }
+  return (
+    <a href={href} className={className}>
+      {body}
+    </a>
+  );
+}
 
-  return {
-    top: rect.bottom,
-    left,
-  };
+/**
+ * Navy utility strip carrying the four things a clinic is asked for
+ * constantly, each as icon + quiet label + bold value. Keeping it navy above
+ * the white navigation preserves the existing top edge — the two rows separate
+ * on tone without needing a divider.
+ * Not sticky — it scrolls away and the navigation alone follows the reader.
+ */
+function UtilityBar({ onBook }) {
+  return (
+    <div className="hidden bg-primary-900 md:block">
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-6 gap-y-4 px-4 py-3.5 sm:px-6 lg:grid-cols-4 lg:px-8">
+        <UtilityItem
+          icon={PhoneCall}
+          label="Contact Us"
+          value={SITE.phone}
+          href={`tel:${SITE.phone.replace(/\s/g, "")}`}
+        />
+        <UtilityItem
+          icon={Mail}
+          label="Email"
+          value={SITE.email}
+          href={`mailto:${SITE.email}`}
+        />
+        <UtilityItem
+          icon={CalendarDays}
+          label="Online Appointment"
+          value="Book Now"
+          onClick={onBook}
+          arrow
+        />
+        <UtilityItem
+          icon={Clock}
+          label="Opening Hours"
+          value={SITE.workingHours}
+          href="/contact"
+        />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The logo badge already carries the full registered name around its ring, so
+ * the old three-line stack beside it (EVEREST / INTERNATIONAL / POLYCLINIC &
+ * DIAGNOSTIC CENTER) repeated the mark word for word. Two lines is enough:
+ * the name, then the descriptor.
+ */
+function BrandLockup({ compact, onClick }) {
+  return (
+    // min-w-0 is what lets this shrink instead of shoving the booking CTA off
+    // the right edge on a 360-390px screen.
+    <Link
+      href="/"
+      onClick={onClick}
+      className="flex min-w-0 items-center gap-2.5 rounded-lg transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 sm:gap-3"
+    >
+      <Image
+        src="/images/logos/logo.jpg"
+        alt=""
+        width={160}
+        height={160}
+        preload
+        sizes="64px"
+        className={cn(
+          "shrink-0 rounded-full object-cover transition-all duration-300",
+          compact ? "h-10 w-10 sm:h-11 sm:w-11" : "h-10 w-10 sm:h-12 sm:w-12 lg:h-[58px] lg:w-[58px]",
+        )}
+      />
+      <span className="flex min-w-0 flex-col">
+        <span
+          className={cn(
+            "truncate font-heading font-semibold leading-tight tracking-[-0.01em] text-primary-900 transition-all duration-300",
+            compact
+              ? "text-[15px] sm:text-lg lg:text-xl"
+              : "text-[15px] sm:text-lg lg:text-[26px]",
+          )}
+        >
+          Everest International
+        </span>
+        <span
+          className={cn(
+            "truncate font-medium uppercase leading-tight tracking-[0.12em] text-slate-500 transition-all duration-300",
+            compact ? "mt-1 text-[8px] sm:text-[9px]" : "mt-1 text-[8px] sm:text-[9px] lg:text-[10px]",
+          )}
+        >
+          Polyclinic &amp; Diagnostic Center
+        </span>
+      </span>
+    </Link>
+  );
 }
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
-  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
-  const [servicesDropdownPos, setServicesDropdownPos] = useState({ top: 0, left: 0 });
-  const [isMounted, setIsMounted] = useState(false);
-  const servicesTriggerRef = useRef(null);
-  const servicesDropdownRef = useRef(null);
-  const servicesCloseTimerRef = useRef(null);
   const pathname = usePathname();
 
-  const updateServicesDropdownPosition = useCallback(() => {
-    setServicesDropdownPos(getServicesDropdownPosition(servicesTriggerRef.current));
+  const [isOpen, setIsOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
+  const [scrolled, setScrolled] = useState(false);
+  const [renderedPath, setRenderedPath] = useState(pathname);
+
+  const servicesTriggerRef = useRef(null);
+  const servicesCloseTimerRef = useRef(null);
+  const moreCloseTimerRef = useRef(null);
+
+  /* Route changed — drop every open menu during render, not in an effect. */
+  if (renderedPath !== pathname) {
+    setRenderedPath(pathname);
+    setIsOpen(false);
+    setMobileServicesOpen(false);
+    setServicesOpen(false);
+    setMoreOpen(false);
+  }
+
+  const closeMobile = useCallback(() => {
+    setIsOpen(false);
+    setMobileServicesOpen(false);
+  }, []);
+
+  const openBooking = useCallback(() => {
+    setBookingOpen(true);
+    setIsOpen(false);
+    setMobileServicesOpen(false);
+    setServicesOpen(false);
+  }, []);
+
+  const syncDropdownPosition = useCallback(() => {
+    setDropdownPos(getServicesDropdownPosition(servicesTriggerRef.current));
   }, []);
 
   const openServicesMenu = useCallback(() => {
@@ -104,9 +230,29 @@ export default function Navbar() {
       servicesCloseTimerRef.current = null;
     }
 
-    updateServicesDropdownPosition();
+    syncDropdownPosition();
     setServicesOpen(true);
-  }, [updateServicesDropdownPosition]);
+  }, [syncDropdownPosition]);
+
+  const openMoreMenu = useCallback(() => {
+    if (moreCloseTimerRef.current) {
+      clearTimeout(moreCloseTimerRef.current);
+      moreCloseTimerRef.current = null;
+    }
+    setMoreOpen(true);
+  }, []);
+
+  /* Same 140ms grace as the services menu — closing the instant the pointer
+     leaves makes the gap between trigger and panel unusable. */
+  const scheduleCloseMoreMenu = useCallback(() => {
+    if (moreCloseTimerRef.current) {
+      clearTimeout(moreCloseTimerRef.current);
+    }
+    moreCloseTimerRef.current = setTimeout(() => {
+      setMoreOpen(false);
+      moreCloseTimerRef.current = null;
+    }, 140);
+  }, []);
 
   const scheduleCloseServicesMenu = useCallback(() => {
     if (servicesCloseTimerRef.current) {
@@ -116,42 +262,55 @@ export default function Navbar() {
     servicesCloseTimerRef.current = setTimeout(() => {
       setServicesOpen(false);
       servicesCloseTimerRef.current = null;
-    }, 120);
+    }, 140);
   }, []);
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    const onScroll = () => setScrolled(window.scrollY > 8);
 
-  useEffect(() => {
-    closeMobileMenu(setIsOpen, setMobileServicesOpen);
-    setServicesOpen(false);
-  }, [pathname]);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (!servicesOpen) return undefined;
 
-    updateServicesDropdownPosition();
+    syncDropdownPosition();
 
-    const handleResize = () => updateServicesDropdownPosition();
-    const handleWheel = (event) => {
-      if (servicesDropdownRef.current?.contains(event.target)) return;
-      setServicesOpen(false);
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") setServicesOpen(false);
     };
 
-    window.addEventListener("resize", handleResize);
-    window.addEventListener("wheel", handleWheel, { passive: true });
+    window.addEventListener("resize", syncDropdownPosition);
+    window.addEventListener("scroll", syncDropdownPosition, { passive: true });
+    window.addEventListener("keydown", onKeyDown);
 
     return () => {
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("resize", syncDropdownPosition);
+      window.removeEventListener("scroll", syncDropdownPosition);
+      window.removeEventListener("keydown", onKeyDown);
     };
-  }, [servicesOpen, updateServicesDropdownPosition]);
+  }, [servicesOpen, syncDropdownPosition]);
+
+  useEffect(() => {
+    if (!moreOpen) return undefined;
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") setMoreOpen(false);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [moreOpen]);
 
   useEffect(
     () => () => {
       if (servicesCloseTimerRef.current) {
         clearTimeout(servicesCloseTimerRef.current);
+      }
+      if (moreCloseTimerRef.current) {
+        clearTimeout(moreCloseTimerRef.current);
       }
     },
     [],
@@ -164,9 +323,7 @@ export default function Navbar() {
     document.body.style.overflow = "hidden";
 
     const onKeyDown = (event) => {
-      if (event.key === "Escape") {
-        closeMobileMenu(setIsOpen, setMobileServicesOpen);
-      }
+      if (event.key === "Escape") closeMobile();
     };
 
     window.addEventListener("keydown", onKeyDown);
@@ -175,209 +332,194 @@ export default function Navbar() {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [isOpen]);
+  }, [isOpen, closeMobile]);
 
-  const handleCloseMobile = () => closeMobileMenu(setIsOpen, setMobileServicesOpen);
+  const telHref = `tel:${SITE.phone.replace(/\s/g, "")}`;
 
   return (
-    <div className="sticky top-0 z-50 w-full bg-transparent">
-      <div className="relative w-full">
-        {/* LOGO SECTION — desktop only */}
-        <div
-          className="absolute left-0 top-0 z-30 hidden h-[130px] w-[25%] items-center justify-center bg-white shadow-xl lg:flex"
-          style={{ clipPath: "polygon(0 0, 100% 0, 82% 100%, 0% 100%)" }}
-        >
-          <Link href="/" className="flex flex-col items-center pr-12">
-            <Image
-              src="/images/logos/logo.jpg"
-              alt="Everest Polyclinic"
-              width={75}
-              height={75}
-              className="rounded-full"
-            />
-            <div className="mt-2 text-center">
-              <p className="font-heading text-lg font-bold leading-tight text-slate-800">
-                Everest International
-              </p>
-              <p className="text-sm font-medium text-primary-600">Polyclinic</p>
-            </div>
-          </Link>
-        </div>
+    <>
+      <UtilityBar onBook={openBooking} />
 
-        {/* Mobile emergency strip */}
-        <div className="relative z-10 bg-primary-700 px-4 py-2 lg:hidden">
-          <a
-            href={`tel:${SITE.emergencyHotline.replace(/\s/g, "")}`}
-            className="flex items-center justify-center gap-2 text-xs font-semibold text-white"
+      <div className="sticky top-0 z-50 w-full">
+      <header
+        className={cn(
+          "border-b bg-white transition-all duration-300",
+          scrolled
+            ? "border-slate-200 shadow-[0_4px_20px_rgba(15,23,42,0.07)]"
+            : "border-slate-100 shadow-none",
+        )}
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div
+            className={cn(
+              "flex items-center justify-between gap-2 transition-all duration-300 sm:gap-4 lg:gap-6",
+              scrolled ? "h-[68px] sm:h-[76px]" : "h-[68px] sm:h-[84px] lg:h-[100px]",
+            )}
           >
-            <Phone size={14} strokeWidth={2.5} />
-            <span>24/7 Emergency: {SITE.emergencyHotline}</span>
-          </a>
-        </div>
+            <BrandLockup compact={scrolled} onClick={closeMobile} />
 
-        {/* TOP CONTACT BAR — desktop only */}
-        <div
-          className="relative z-10 ml-auto hidden w-full bg-primary-600 py-2.5 text-[13px] text-white lg:block lg:w-[80%]"
-          style={{ clipPath: "polygon(4% 0, 100% 0, 100% 100%, 0 100%)" }}
-        >
-          <div className="container mx-auto flex items-center justify-between px-4 lg:pl-28">
-            <div className="flex items-center gap-6">
-              <a
-                href={`tel:${SITE.phone.replace(/\s/g, "")}`}
-                className="flex items-center gap-2 transition-colors hover:text-secondary-200"
-              >
-                <Phone size={14} strokeWidth={2.5} />
-                <span className="font-semibold tracking-wide">{SITE.phone}</span>
-              </a>
+            {/* Centre navigation */}
+            <nav aria-label="Main" className="hidden lg:block">
+              <ul className="flex items-center gap-4 xl:gap-6">
+                {PRIMARY_NAV_LINKS.map((link) => {
+                  const isActive = isActiveLink(pathname, link.href);
+                  const indicator = (
+                    <span
+                      className={cn(
+                        "absolute -bottom-0.5 left-0 right-0 h-[2.5px] rounded-full bg-primary-600 transition-transform duration-200 ease-out",
+                        isActive ? "scale-x-100" : "scale-x-0",
+                      )}
+                    />
+                  );
 
-              <div className="flex max-w-[250px] items-center gap-2 border-l border-white/20 pl-6 text-white/90">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-                <span className="truncate">{SITE.address}</span>
-              </div>
-
-              <div className="flex items-center gap-2 border-l border-white/20 pl-6 text-white/90">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
-                <span>24 Hours Service</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 pr-6">
-              {SOCIAL_LINKS.map(({ label, href, icon }) => (
-                <Link
-                  key={label}
-                  href={href}
-                  aria-label={label}
-                  className="transition-colors hover:text-secondary-300"
-                >
-                  {icon}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* MAIN NAVIGATION BAR */}
-        <header className="relative z-20 overflow-visible bg-white shadow-md">
-          <nav className="ml-auto w-full overflow-visible px-4 py-3 sm:py-4 lg:w-[78%] lg:py-5 lg:pl-16">
-            <div className="flex items-center justify-between gap-3">
-              {/* Mobile logo */}
-              <Link
-                href="/"
-                className="flex min-w-0 items-center gap-2.5 lg:hidden"
-                onClick={handleCloseMobile}
-              >
-                <Image
-                  src="/images/logos/logo.jpg"
-                  alt={SITE.shortName}
-                  width={44}
-                  height={44}
-                  className="h-10 w-10 shrink-0 rounded-full ring-2 ring-primary-100 sm:h-11 sm:w-11"
-                />
-                <div className="min-w-0 leading-tight">
-                  <p className="truncate font-heading text-sm font-bold text-slate-800 sm:text-[15px]">
-                    Everest International
-                  </p>
-                  <p className="text-[11px] font-medium text-primary-600 sm:text-xs">
-                    Polyclinic
-                  </p>
-                </div>
-              </Link>
-
-              {/* Desktop navigation */}
-              <div className="hidden flex-1 items-center justify-center overflow-visible lg:flex">
-                <div className="overflow-visible rounded-xl bg-primary-600 px-6 py-2 shadow-lg">
-                  <ul className="flex items-center overflow-visible">
-                    {NAV_LINKS.map((link, index) => (
-                      <li key={link.href} className="relative flex items-center overflow-visible">
-                        {link.href === "/services" ? (
-                          <div
-                            ref={servicesTriggerRef}
-                            className="relative"
-                            onMouseEnter={openServicesMenu}
-                            onMouseLeave={scheduleCloseServicesMenu}
-                          >
-                            <button
-                              type="button"
-                              className={cn(
-                                "relative flex items-center gap-1 px-4 py-2 text-xs font-semibold uppercase tracking-tight text-white transition-colors hover:text-secondary-200",
-                                servicesOpen &&
-                                  "text-secondary-200 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-0.5 after:rounded-full after:bg-secondary-400",
-                              )}
-                            >
-                              {link.label}
-                              <ChevronDown size={12} />
-                            </button>
-                          </div>
-                        ) : (
-                          <Link
-                            href={link.href}
+                  if (link.href === "/services") {
+                    return (
+                      <li key={link.href}>
+                        <div
+                          ref={servicesTriggerRef}
+                          onMouseEnter={openServicesMenu}
+                          onMouseLeave={scheduleCloseServicesMenu}
+                        >
+                          <button
+                            type="button"
+                            onClick={() =>
+                              servicesOpen ? setServicesOpen(false) : openServicesMenu()
+                            }
+                            aria-expanded={servicesOpen}
+                            aria-haspopup="true"
                             className={cn(
-                              "px-4 py-2 text-xs font-semibold uppercase tracking-tight text-white transition-colors hover:text-secondary-200",
-                              pathname === link.href && "text-secondary-300",
+                              labelClass,
+                              isActive || servicesOpen
+                                ? "text-primary-700"
+                                : "text-slate-600 hover:text-primary-700",
+                            )}
+                          >
+                            {link.label}
+                            <ChevronDown
+                              size={14}
+                              strokeWidth={2.5}
+                              className={cn(
+                                "transition-transform duration-200",
+                                servicesOpen && "rotate-180",
+                              )}
+                            />
+                            {indicator}
+                          </button>
+                        </div>
+                      </li>
+                    );
+                  }
+
+                  return (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        aria-current={isActive ? "page" : undefined}
+                        className={cn(
+                          labelClass,
+                          isActive
+                            ? "text-primary-700"
+                            : "text-slate-600 hover:text-primary-700",
+                        )}
+                      >
+                        {link.label}
+                        {indicator}
+                      </Link>
+                    </li>
+                  );
+                })}
+
+                {/* Secondary destinations tuck in here so the main bar stays
+                    short enough to survive 1024px without a hamburger. */}
+                <li
+                  className="relative"
+                  onMouseEnter={openMoreMenu}
+                  onMouseLeave={scheduleCloseMoreMenu}
+                >
+                  <button
+                    type="button"
+                    onClick={() => (moreOpen ? setMoreOpen(false) : openMoreMenu())}
+                    aria-expanded={moreOpen}
+                    aria-haspopup="true"
+                    className={cn(
+                      labelClass,
+                      moreOpen
+                        ? "text-primary-700"
+                        : "text-slate-600 hover:text-primary-700",
+                    )}
+                  >
+                    More
+                    <ChevronDown
+                      size={14}
+                      strokeWidth={2.5}
+                      className={cn(
+                        "transition-transform duration-200",
+                        moreOpen && "rotate-180",
+                      )}
+                    />
+                  </button>
+
+                  {moreOpen ? (
+                    <div className="absolute right-0 top-full z-50 mt-3 w-48 rounded-xl border border-slate-200 bg-white p-1.5 shadow-e2">
+                      {SECONDARY_NAV_LINKS.map((link) => {
+                        const isActive = isActiveLink(pathname, link.href);
+                        return (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            aria-current={isActive ? "page" : undefined}
+                            onClick={() => setMoreOpen(false)}
+                            className={cn(
+                              "block rounded-lg px-3 py-2.5 text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600",
+                              isActive
+                                ? "bg-primary-50 font-semibold text-primary-700"
+                                : "text-slate-600 hover:bg-slate-50 hover:text-primary-700",
                             )}
                           >
                             {link.label}
                           </Link>
-                        )}
-                        {index < NAV_LINKS.length - 1 && (
-                          <span className="mx-0.5 text-white/20">|</span>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+                        );
+                      })}
+                    </div>
+                  ) : null}
+                </li>
+              </ul>
+            </nav>
 
-              {/* Actions */}
-              <div className="flex shrink-0 items-center gap-2 sm:gap-3 lg:gap-4 lg:pr-2">
-                <button
-                  type="button"
-                  className="hidden rounded-lg p-2 text-slate-600 transition-colors hover:bg-slate-50 hover:text-primary-600 sm:block"
-                  aria-label="Search"
-                >
-                  <Search size={20} strokeWidth={2} />
-                </button>
+            {/*
+              Booking CTA + mobile trigger.
 
-                <Button
-                  href="/contact"
-                  size="sm"
-                  variant="secondary"
-                  className="hidden px-4 text-[11px] font-bold uppercase tracking-wider shadow-md sm:inline-flex sm:px-5 sm:text-xs"
-                >
-                  Book Appointment
-                </Button>
+              Below lg the bar carries the logo and the menu button only. The
+              call icon and the booking button are gone from that width — both
+              actions still sit at the foot of the drawer the menu button opens,
+              so nothing is unreachable, and the row stops competing with the
+              brand lockup on a narrow screen.
+            */}
+            <div className="flex shrink-0 items-center gap-2">
+              <button
+                type="button"
+                onClick={openBooking}
+                className="hidden shrink-0 items-center gap-2 whitespace-nowrap rounded-xl bg-secondary-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-secondary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary-600 focus-visible:ring-offset-2 lg:inline-flex lg:px-5"
+              >
+                <CalendarDays size={16} strokeWidth={2.25} />
+                Book Appointment
+              </button>
 
-                <Button
-                  href="/contact"
-                  size="xs"
-                  variant="secondary"
-                  className="px-3 text-[10px] font-bold uppercase tracking-wide shadow-sm sm:hidden"
-                >
-                  Book
-                </Button>
-
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(true)}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-800 transition-colors hover:border-primary-200 hover:bg-primary-50 hover:text-primary-700 lg:hidden"
-                  aria-label="Open menu"
-                  aria-expanded={isOpen}
-                >
-                  <Menu size={22} strokeWidth={2} />
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => setIsOpen(true)}
+                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-700 sm:h-11 sm:w-11 transition-colors hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700 lg:hidden"
+                aria-label="Open menu"
+                aria-expanded={isOpen}
+              >
+                <Menu size={22} strokeWidth={2} />
+              </button>
             </div>
-          </nav>
-        </header>
-      </div>
+          </div>
+        </div>
+      </header>
 
-      {/* MOBILE DRAWER */}
+      {/* ─── MOBILE DRAWER ─── */}
       <div
         className={cn(
           "fixed inset-0 z-[60] lg:hidden",
@@ -388,7 +530,8 @@ export default function Navbar() {
         <button
           type="button"
           aria-label="Close menu overlay"
-          onClick={handleCloseMobile}
+          tabIndex={isOpen ? 0 : -1}
+          onClick={closeMobile}
           className={cn(
             "absolute inset-0 bg-slate-900/50 backdrop-blur-[2px] transition-opacity duration-300",
             isOpen ? "opacity-100" : "opacity-0",
@@ -397,63 +540,41 @@ export default function Navbar() {
 
         <aside
           className={cn(
-            "absolute right-0 top-0 flex h-[100dvh] w-[80vw] flex-col bg-white shadow-2xl transition-transform duration-300 ease-out",
+            "absolute right-0 top-0 flex h-[100dvh] w-[min(86vw,360px)] flex-col bg-white shadow-2xl transition-transform duration-300 ease-out",
             isOpen ? "translate-x-0" : "translate-x-full",
           )}
           role="dialog"
           aria-modal="true"
-          aria-label="Mobile navigation"
+          aria-label="Site navigation"
         >
-          {/* Drawer header */}
-          <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3.5">
-            <Link
-              href="/"
-              onClick={handleCloseMobile}
-              className="flex min-w-0 items-center gap-2.5"
-            >
-              <Image
-                src="/images/logos/logo.jpg"
-                alt={SITE.shortName}
-                width={40}
-                height={40}
-                className="h-9 w-9 shrink-0 rounded-full"
-              />
-              <div className="min-w-0">
-                <p className="truncate font-heading text-sm font-bold text-slate-800">
-                  {SITE.shortName}
-                </p>
-                <p className="text-[10px] font-medium text-primary-600">
-                  Menu
-                </p>
-              </div>
-            </Link>
+          <div className="flex items-center justify-between border-b border-slate-100 px-4 py-4">
+            <BrandLockup compact onClick={closeMobile} />
             <button
               type="button"
-              onClick={handleCloseMobile}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
+              onClick={closeMobile}
+              tabIndex={isOpen ? 0 : -1}
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
               aria-label="Close menu"
             >
               <X size={22} strokeWidth={2} />
             </button>
           </div>
 
-          {/* Scrollable nav */}
-          <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4">
-            <ul className="space-y-1">
+          <div className="flex-1 overflow-y-auto overscroll-contain px-3 py-3">
+            <ul className="space-y-0.5">
               {NAV_LINKS.map((link) => {
-                const isActive =
-                  link.href === "/"
-                    ? pathname === "/"
-                    : pathname.startsWith(link.href);
+                const isActive = isActiveLink(pathname, link.href);
 
                 if (link.href === "/services") {
                   return (
                     <li key={link.href}>
                       <button
                         type="button"
+                        tabIndex={isOpen ? 0 : -1}
                         onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
+                        aria-expanded={mobileServicesOpen}
                         className={cn(
-                          "flex w-full items-center justify-between rounded-xl px-4 py-3 text-[15px] font-semibold transition-colors",
+                          "flex w-full items-center justify-between rounded-lg px-3 py-3 text-[15px] font-medium transition-colors",
                           isActive || mobileServicesOpen
                             ? "bg-primary-50 text-primary-700"
                             : "text-slate-700 hover:bg-slate-50",
@@ -463,7 +584,7 @@ export default function Navbar() {
                         <ChevronDown
                           size={18}
                           className={cn(
-                            "shrink-0 transition-transform duration-200",
+                            "shrink-0 text-slate-400 transition-transform duration-200",
                             mobileServicesOpen && "rotate-180",
                           )}
                         />
@@ -475,10 +596,10 @@ export default function Navbar() {
                         )}
                       >
                         <div className="overflow-hidden">
-                          <div className="pb-2 pt-1 pl-1">
+                          <div className="pb-2 pt-1">
                             <ServicesOptionsMenu
                               variant="mobile"
-                              onNavigate={handleCloseMobile}
+                              onNavigate={closeMobile}
                             />
                           </div>
                         </div>
@@ -491,9 +612,11 @@ export default function Navbar() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      onClick={handleCloseMobile}
+                      onClick={closeMobile}
+                      tabIndex={isOpen ? 0 : -1}
+                      aria-current={isActive ? "page" : undefined}
                       className={cn(
-                        "flex items-center rounded-xl px-4 py-3 text-[15px] font-semibold transition-colors",
+                        "flex items-center rounded-lg px-3 py-3 text-[15px] font-medium transition-colors",
                         isActive
                           ? "bg-primary-50 text-primary-700"
                           : "text-slate-700 hover:bg-slate-50",
@@ -507,39 +630,39 @@ export default function Navbar() {
             </ul>
           </div>
 
-          {/* Drawer footer CTAs */}
-          <div className="border-t border-slate-100 bg-slate-50/80 p-4">
-            <Button
-              href="/contact"
-              variant="secondary"
-              size="md"
-              fullWidth
-              className="rounded-xl font-bold uppercase tracking-wide"
-              onClick={handleCloseMobile}
+          <div className="border-t border-slate-100 bg-slate-50/70 p-4">
+            <button
+              type="button"
+              onClick={openBooking}
+              tabIndex={isOpen ? 0 : -1}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-secondary-600 py-3.5 text-sm font-semibold text-white shadow-[0_6px_20px_rgba(47,168,79,0.28)] transition-colors hover:bg-secondary-700"
             >
+              <CalendarDays size={17} strokeWidth={2.5} />
               Book Appointment
-            </Button>
+            </button>
             <a
-              href={`tel:${SITE.phone.replace(/\s/g, "")}`}
-              className="mt-2 flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-3 text-sm font-semibold text-slate-700 transition-colors hover:border-primary-200 hover:text-primary-700"
+              href={telHref}
+              tabIndex={isOpen ? 0 : -1}
+              className="mt-2 flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white py-3 text-sm font-semibold text-primary-900 transition-colors hover:border-primary-300 hover:text-primary-700"
             >
-              <Phone size={16} />
+              <Phone size={16} strokeWidth={2.5} className="text-primary-600" />
               {SITE.phone}
             </a>
           </div>
         </aside>
       </div>
 
-      {isMounted &&
-        servicesOpen &&
+      <BookAppointmentModal
+        isOpen={bookingOpen}
+        onClose={() => setBookingOpen(false)}
+      />
+
+      {/* servicesOpen only flips via a client event, so no mount guard is needed. */}
+      {servicesOpen &&
         createPortal(
           <div
-            ref={servicesDropdownRef}
-            className="fixed z-[100] hidden pt-1.5 lg:block"
-            style={{
-              top: servicesDropdownPos.top,
-              left: servicesDropdownPos.left,
-            }}
+            className="fixed z-[100] hidden pt-2 xl:block"
+            style={{ top: dropdownPos.top, left: dropdownPos.left }}
             onMouseEnter={openServicesMenu}
             onMouseLeave={scheduleCloseServicesMenu}
           >
@@ -547,6 +670,7 @@ export default function Navbar() {
           </div>,
           document.body,
         )}
-    </div>
+      </div>
+    </>
   );
 }
