@@ -4,7 +4,7 @@ import {
   SERVICES as CATALOG_SERVICES,
 } from "@/constants/services/catalog";
 import { getHomepageServiceImage } from "@/constants/services/homepageServiceImages";
-import { prisma } from "@/lib/db";
+import { querySql } from "@/lib/sql";
 
 function parseContentJson(raw) {
   if (!raw) return {};
@@ -68,6 +68,44 @@ function mergeServiceRecord(catalog, dbRow, dbDetail) {
   };
 }
 
+/* Reads over ODBC rather than Prisma — see lib/data/whyChooseUs.js. Prisma's
+   `include: { detail: true }` becomes a LEFT JOIN whose detail columns are
+   aliased (both tables have `id` and `title`) and re-nested by `shapeRow`, so
+   `mergeServiceRecord` above sees exactly the shape it always did. */
+
+const SERVICE_COLUMNS = `s.id, s.legacyId, s.slug, s.title, s.icon, s.sortOrder, s.isActive,
+       d.id AS detailId, d.title AS detailTitle, d.description AS detailDescription,
+       d.headerImage AS detailHeaderImage, d.color AS detailColor,
+       d.contentJson AS detailContentJson`;
+
+const SERVICE_FROM = `FROM SpecialtyService s
+     LEFT JOIN ServiceDetail d ON d.specialtyServiceId = s.id`;
+
+function shapeRow(row) {
+  return {
+    id: Number(row.id),
+    legacyId: row.legacyId == null ? null : Number(row.legacyId),
+    slug: row.slug,
+    title: row.title,
+    icon: row.icon,
+    sortOrder: Number(row.sortOrder),
+    // ODBC hands back 1/0 where Prisma handed back a boolean, and callers
+    // compare against `false` directly.
+    isActive: Boolean(Number(row.isActive)),
+    detail:
+      row.detailId == null
+        ? null
+        : {
+            id: Number(row.detailId),
+            title: row.detailTitle,
+            description: row.detailDescription,
+            headerImage: row.detailHeaderImage,
+            color: row.detailColor,
+            contentJson: row.detailContentJson,
+          },
+  };
+}
+
 function mapDbServiceRow(row) {
   const catalog = row.slug ? getCatalogService(row.slug) : null;
   return mergeServiceRecord(catalog, row, row.detail);
@@ -75,11 +113,13 @@ function mapDbServiceRow(row) {
 
 export async function getAllServices() {
   try {
-    const rows = await prisma.specialtyService.findMany({
-      where: { isActive: true },
-      include: { detail: true },
-      orderBy: [{ sortOrder: "asc" }, { legacyId: "asc" }],
-    });
+    const rows = (
+      await querySql(
+        `SELECT ${SERVICE_COLUMNS} ${SERVICE_FROM}
+         WHERE s.isActive = 1
+         ORDER BY s.sortOrder ASC, s.legacyId ASC`,
+      )
+    ).map(shapeRow);
 
     if (rows.length) {
       return rows
@@ -101,13 +141,15 @@ export async function getServiceBySlug(slug) {
   const catalog = getCatalogService(slug);
 
   try {
-    const row = await prisma.specialtyService.findFirst({
-      where: { slug, isActive: true },
-      include: { detail: true },
-    });
+    const rows = await querySql(
+      `SELECT ${SERVICE_COLUMNS} ${SERVICE_FROM}
+       WHERE s.slug = ? AND s.isActive = 1
+       LIMIT 1`,
+      [slug],
+    );
 
-    if (row) {
-      return mapDbServiceRow(row);
+    if (rows[0]) {
+      return mapDbServiceRow(shapeRow(rows[0]));
     }
   } catch (error) {
     console.warn("[db] Service by slug fallback:", error.message);
@@ -123,11 +165,11 @@ export async function getServiceBySlug(slug) {
 
 export async function getAllServiceSlugs() {
   try {
-    const rows = await prisma.specialtyService.findMany({
-      where: { isActive: true, slug: { not: null } },
-      select: { slug: true },
-      orderBy: [{ sortOrder: "asc" }],
-    });
+    const rows = await querySql(
+      `SELECT slug FROM SpecialtyService
+       WHERE isActive = 1 AND slug IS NOT NULL
+       ORDER BY sortOrder ASC, id ASC`,
+    );
 
     if (rows.length) {
       return rows.map((row) => row.slug).filter(Boolean);
@@ -142,10 +184,12 @@ export async function getAllServiceSlugs() {
 /** Admin: list all services with DB merge for dashboard/editor */
 export async function getSpecialtyServicesAdminList() {
   try {
-    const rows = await prisma.specialtyService.findMany({
-      include: { detail: true },
-      orderBy: [{ sortOrder: "asc" }, { legacyId: "asc" }],
-    });
+    const rows = (
+      await querySql(
+        `SELECT ${SERVICE_COLUMNS} ${SERVICE_FROM}
+         ORDER BY s.sortOrder ASC, s.legacyId ASC`,
+      )
+    ).map(shapeRow);
 
     if (rows.length) {
       return rows.filter((row) => row.slug).map(mapDbServiceRow);

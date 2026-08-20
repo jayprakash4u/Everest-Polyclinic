@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import Section from "@/components/ui/Section";
 import SectionHeader from "@/components/ui/SectionHeader";
@@ -11,7 +12,43 @@ import HorizontalSnapCarousel, {
   scrollCarouselToIndex,
 } from "@/components/ui/HorizontalSnapCarousel";
 import { TESTIMONIALS } from "@/constants";
+import { encodePublicPath } from "@/lib/encode-public-path";
 import { cn } from "@/lib/utils";
+
+/**
+ * The patient's photo, or their initial on a tinted circle.
+ *
+ * Initials are not a placeholder to apologise for — most reviews will never
+ * carry a photo, and a circle with a letter in it is a finished card. The
+ * photo is the exception, uploaded per review under Admin → Pages → Home Page.
+ *
+ * `failed` matters: the avatar is a stored string, and a row can outlive the
+ * file it names — an upload deleted from disk, or the /avatars/*.jpg paths this
+ * project seeded before it had an uploader. A broken-image glyph inside a
+ * testimonial reads as a broken site, so a failed load drops to the initial.
+ */
+function TestimonialAvatar({ testimonial }) {
+  const [failed, setFailed] = useState(false);
+
+  if (testimonial.avatar && !failed) {
+    return (
+      <Image
+        src={encodePublicPath(testimonial.avatar)}
+        alt=""
+        width={40}
+        height={40}
+        onError={() => setFailed(true)}
+        className="h-10 w-10 shrink-0 rounded-full object-cover"
+      />
+    );
+  }
+
+  return (
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-sm font-semibold text-primary-700">
+      {testimonial.name.charAt(0)}
+    </span>
+  );
+}
 
 function TestimonialCard({ testimonial }) {
   return (
@@ -41,11 +78,7 @@ function TestimonialCard({ testimonial }) {
       </blockquote>
 
       <figcaption className="mt-5 flex items-center gap-3 border-t border-slate-100 pt-4">
-        {/* The `avatar` field points at /avatars/*.jpg, a directory that does
-            not exist — initials are the real rendering path, so own it. */}
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-50 text-sm font-semibold text-primary-700">
-          {testimonial.name.charAt(0)}
-        </span>
+        <TestimonialAvatar testimonial={testimonial} />
         <span className="min-w-0">
           <span className="block truncate text-sm font-semibold text-slate-900">
             {testimonial.name}

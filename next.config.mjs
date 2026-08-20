@@ -9,13 +9,8 @@ const nextConfig = {
       { protocol: "http", hostname: "localhost" },
     ],
   },
-  serverExternalPackages: [
-    "odbc",
-    "msnodesqlv8",
-    "mssql",
-    "@prisma/adapter-mssql",
-    "@prisma/client",
-  ],
+  // mysql2 is a native driver and the Prisma engine is CJS: keep both out of the bundle.
+  serverExternalPackages: ["mysql2", "@prisma/client"],
 };
 
 export default nextConfig;

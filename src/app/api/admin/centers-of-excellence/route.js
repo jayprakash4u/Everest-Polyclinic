@@ -3,26 +3,35 @@ import { requireAdminSession } from "@/lib/admin-auth";
 import { prisma } from "@/lib/db";
 
 /**
- * The "Why Choose Us" trust grid on the home page.
+ * Centres of excellence — the icon grid near the top of the home page.
  *
- * Written against the Prisma client rather than $queryRaw. The raw form was a
- * workaround for the old SQL Server adapter, which could not run parameterised
- * queries; on MySQL that limitation is gone, and the client returns the saved
- * record so the admin screen can show it without a second request.
+ * Every handler returns the affected record rather than a bare `{ ok: true }`,
+ * so the admin screen can update its list from the response instead of
+ * refetching the whole collection after each save.
  */
 
+function clean(value, maxLength) {
+  if (typeof value !== "string") return "";
+  return value.trim().slice(0, maxLength);
+}
+
+/** A blank slug means "no detail page" — the card then links to /contact. */
 function readBody(body) {
-  const title = String(body.title ?? "").trim().slice(0, 200);
-  const description = String(body.description ?? "").trim().slice(0, 2000);
+  const title = clean(body.title, 200);
+  const description = clean(body.description, 2000);
+  const image = clean(body.image, 500);
+  const slug = clean(body.slug, 150);
 
   if (!title) return { error: "Title is required." };
   if (!description) return { error: "Description is required." };
+  if (!image) return { error: "An icon image is required." };
 
   return {
     data: {
       title,
       description,
-      icon: String(body.icon || "globe").trim().slice(0, 100),
+      image,
+      slug: slug || null,
       sortOrder: Number(body.sortOrder) || 0,
       isActive: body.isActive ?? true,
     },
@@ -33,7 +42,7 @@ export async function GET() {
   const { response } = await requireAdminSession();
   if (response) return response;
 
-  const items = await prisma.whyChooseUsItem.findMany({
+  const items = await prisma.centerOfExcellence.findMany({
     orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
   });
 
@@ -47,7 +56,7 @@ export async function POST(request) {
   const { data, error } = readBody(await request.json());
   if (error) return NextResponse.json({ error }, { status: 400 });
 
-  const item = await prisma.whyChooseUsItem.create({ data });
+  const item = await prisma.centerOfExcellence.create({ data });
   return NextResponse.json(item, { status: 201 });
 }
 
@@ -62,7 +71,7 @@ export async function PUT(request) {
   const { data, error } = readBody(body);
   if (error) return NextResponse.json({ error }, { status: 400 });
 
-  const item = await prisma.whyChooseUsItem.update({ where: { id }, data });
+  const item = await prisma.centerOfExcellence.update({ where: { id }, data });
   return NextResponse.json(item);
 }
 
@@ -73,6 +82,6 @@ export async function DELETE(request) {
   const id = Number(new URL(request.url).searchParams.get("id"));
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
-  await prisma.whyChooseUsItem.delete({ where: { id } });
+  await prisma.centerOfExcellence.delete({ where: { id } });
   return NextResponse.json({ ok: true });
 }

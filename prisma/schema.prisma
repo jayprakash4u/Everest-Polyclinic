@@ -3,31 +3,31 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlserver"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 model SiteSetting {
   id               Int      @id @default(1)
-  name             String   @db.NVarChar(200)
-  shortName        String   @db.NVarChar(100)
-  tagline          String   @db.NVarChar(300)
-  description      String   @db.NVarChar(Max)
-  phone            String   @db.NVarChar(50)
-  email            String   @db.NVarChar(200)
-  address          String   @db.NVarChar(500)
-  workingHours     String   @db.NVarChar(200)
-  emergencyHotline String   @db.NVarChar(50)
+  name             String   @db.VarChar(200)
+  shortName        String   @db.VarChar(100)
+  tagline          String   @db.VarChar(300)
+  description      String   @db.Text
+  phone            String   @db.VarChar(50)
+  email            String   @db.VarChar(200)
+  address          String   @db.VarChar(500)
+  workingHours     String   @db.VarChar(200)
+  emergencyHotline String   @db.VarChar(50)
   updatedAt        DateTime @updatedAt
 }
 
 model AdminUser {
   id           Int      @id @default(autoincrement())
-  name         String   @db.NVarChar(150)
-  username     String   @unique @db.NVarChar(100)
-  email        String   @unique @db.NVarChar(200)
-  passwordHash String   @db.NVarChar(500)
-  role         String   @default("admin") @db.NVarChar(50)
+  name         String   @db.VarChar(150)
+  username     String   @unique @db.VarChar(100)
+  email        String   @unique @db.VarChar(200)
+  passwordHash String   @db.VarChar(500)
+  role         String   @default("admin") @db.VarChar(50)
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -35,8 +35,8 @@ model AdminUser {
 
 model DoctorCategory {
   id        Int      @id @default(autoincrement())
-  name      String   @db.NVarChar(150)
-  slug      String   @unique @db.NVarChar(150)
+  name      String   @db.VarChar(150)
+  slug      String   @unique @db.VarChar(150)
   sortOrder Int      @default(0)
   isActive  Boolean  @default(true)
   doctors   Doctor[]
@@ -45,12 +45,12 @@ model DoctorCategory {
 model Doctor {
   id         Int            @id @default(autoincrement())
   categoryId Int
-  name       String         @db.NVarChar(200)
-  education  String         @db.NVarChar(300)
-  experience String         @db.NVarChar(100)
-  image      String         @db.NVarChar(500)
-  phone      String?        @db.NVarChar(50)
-  timing     String?        @db.NVarChar(200)
+  name       String         @db.VarChar(200)
+  education  String         @db.VarChar(300)
+  experience String         @db.VarChar(100)
+  image      String         @db.VarChar(500)
+  phone      String?        @db.VarChar(50)
+  timing     String?        @db.VarChar(200)
   showOnHomepage Boolean    @default(false)
   sortOrder  Int            @default(0)
   isActive   Boolean        @default(true)
@@ -62,10 +62,10 @@ model Doctor {
 model Department {
   id          Int     @id @default(autoincrement())
   legacyId    Int?    @unique
-  title       String  @db.NVarChar(200)
-  description String  @db.NVarChar(Max)
-  icon        String  @db.NVarChar(100)
-  color       String  @db.NVarChar(50)
+  title       String  @db.VarChar(200)
+  description String  @db.Text
+  icon        String  @db.VarChar(100)
+  color       String  @db.VarChar(50)
   sortOrder   Int     @default(0)
   isActive    Boolean @default(true)
 }
@@ -73,9 +73,9 @@ model Department {
 model SpecialtyService {
   id          Int            @id @default(autoincrement())
   legacyId    Int?           @unique
-  slug        String?        @unique @db.NVarChar(150)
-  title       String         @db.NVarChar(200)
-  icon        String         @db.NVarChar(100)
+  slug        String?        @unique @db.VarChar(150)
+  title       String         @db.VarChar(200)
+  icon        String         @db.VarChar(100)
   sortOrder   Int            @default(0)
   isActive    Boolean        @default(true)
   detail      ServiceDetail?
@@ -84,18 +84,18 @@ model SpecialtyService {
 model ServiceDetail {
   id                 Int              @id @default(autoincrement())
   specialtyServiceId Int              @unique
-  title              String           @db.NVarChar(200)
-  description        String           @db.NVarChar(Max)
-  headerImage        String?          @db.NVarChar(500)
-  color              String?          @db.NVarChar(50)
-  contentJson        String?          @db.NVarChar(Max)
+  title              String           @db.VarChar(200)
+  description        String           @db.Text
+  headerImage        String?          @db.VarChar(500)
+  color              String?          @db.VarChar(50)
+  contentJson        String?          @db.LongText
   specialtyService   SpecialtyService @relation(fields: [specialtyServiceId], references: [id], onDelete: Cascade)
 }
 
 model HealthPackageSection {
   id        Int             @id @default(autoincrement())
-  section   String          @db.NVarChar(200)
-  icon      String          @db.NVarChar(100)
+  section   String          @db.VarChar(200)
+  icon      String          @db.VarChar(100)
   sortOrder Int             @default(0)
   packages  HealthPackage[]
 }
@@ -104,11 +104,11 @@ model HealthPackage {
   id            Int                  @id @default(autoincrement())
   sectionId     Int
   legacyId      Int?
-  name          String               @db.NVarChar(200)
+  name          String               @db.VarChar(200)
   price         Int
   originalPrice Int?
-  badge         String?              @db.NVarChar(100)
-  testsJson     String               @db.NVarChar(Max)
+  badge         String?              @db.VarChar(100)
+  testsJson     String               @db.LongText
   showOnHomepage Boolean             @default(false)
   sortOrder     Int                  @default(0)
   isActive      Boolean              @default(true)
@@ -117,18 +117,18 @@ model HealthPackage {
 
 model BlogCategory {
   id    Int        @id @default(autoincrement())
-  name  String     @unique @db.NVarChar(150)
-  slug  String     @unique @db.NVarChar(150)
+  name  String     @unique @db.VarChar(150)
+  slug  String     @unique @db.VarChar(150)
   posts BlogPost[]
 }
 
 model BlogPost {
   id              Int          @id @default(autoincrement())
-  title           String       @db.NVarChar(300)
-  slug            String       @unique @db.NVarChar(300)
-  excerpt         String       @db.NVarChar(Max)
-  body            String?      @db.NVarChar(Max)
-  image           String       @db.NVarChar(500)
+  title           String       @db.VarChar(300)
+  slug            String       @unique @db.VarChar(300)
+  excerpt         String       @db.Text
+  body            String?      @db.LongText
+  image           String       @db.VarChar(500)
   categoryId      Int
   readTimeMinutes Int          @default(5)
   featured        Boolean      @default(false)
@@ -141,11 +141,11 @@ model BlogPost {
 
 model Testimonial {
   id        Int      @id @default(autoincrement())
-  name      String   @db.NVarChar(150)
-  location  String   @db.NVarChar(150)
+  name      String   @db.VarChar(150)
+  location  String   @db.VarChar(150)
   rating    Int      @default(5)
-  review    String   @db.NVarChar(Max)
-  avatar    String?  @db.NVarChar(500)
+  review    String   @db.Text
+  avatar    String?  @db.VarChar(500)
   sortOrder Int      @default(0)
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -153,68 +153,68 @@ model Testimonial {
 
 model Faq {
   id        Int     @id @default(autoincrement())
-  question  String  @db.NVarChar(500)
-  answer    String  @db.NVarChar(Max)
+  question  String  @db.VarChar(500)
+  answer    String  @db.Text
   sortOrder Int     @default(0)
   isActive  Boolean @default(true)
 }
 
 model Statistic {
   id        Int     @id @default(autoincrement())
-  value     String  @db.NVarChar(50)
-  label     String  @db.NVarChar(200)
-  context   String  @default("site") @db.NVarChar(50)
+  value     String  @db.VarChar(50)
+  label     String  @db.VarChar(200)
+  context   String  @default("site") @db.VarChar(50)
   sortOrder Int     @default(0)
   isActive  Boolean @default(true)
 }
 
 model ContactSubmission {
   id        Int      @id @default(autoincrement())
-  name      String   @db.NVarChar(200)
-  email     String   @db.NVarChar(200)
-  phone     String?  @db.NVarChar(50)
-  subject   String?  @db.NVarChar(300)
-  message   String   @db.NVarChar(Max)
+  name      String   @db.VarChar(200)
+  email     String   @db.VarChar(200)
+  phone     String?  @db.VarChar(50)
+  subject   String?  @db.VarChar(300)
+  message   String   @db.Text
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 
 model AppointmentRequest {
   id           Int      @id @default(autoincrement())
-  name         String   @db.NVarChar(200)
-  phone        String   @db.NVarChar(50)
-  email        String?  @db.NVarChar(200)
-  department   String?  @db.NVarChar(200)
+  name         String   @db.VarChar(200)
+  phone        String   @db.VarChar(50)
+  email        String?  @db.VarChar(200)
+  department   String?  @db.VarChar(200)
   preferredDate DateTime?
-  timeSlot     String?  @db.NVarChar(50)
-  packageName  String?  @db.NVarChar(200)
-  packagePrice String?  @db.NVarChar(50)
-  message      String?  @db.NVarChar(Max)
-  status       String   @default("pending") @db.NVarChar(50)
+  timeSlot     String?  @db.VarChar(50)
+  packageName  String?  @db.VarChar(200)
+  packagePrice String?  @db.VarChar(50)
+  message      String?  @db.Text
+  status       String   @default("pending") @db.VarChar(50)
   createdAt    DateTime @default(now())
 }
 
 model NewsletterSubscriber {
   id        Int      @id @default(autoincrement())
-  email     String   @unique @db.NVarChar(200)
+  email     String   @unique @db.VarChar(200)
   createdAt DateTime @default(now())
 }
 
 model MediaAsset {
   id        Int      @id @default(autoincrement())
-  filename  String   @db.NVarChar(300)
-  url       String   @db.NVarChar(500)
-  alt       String?  @db.NVarChar(300)
-  mimeType  String?  @db.NVarChar(100)
+  filename  String   @db.VarChar(300)
+  url       String   @db.VarChar(500)
+  alt       String?  @db.VarChar(300)
+  mimeType  String?  @db.VarChar(100)
   sizeBytes Int?
   createdAt DateTime @default(now())
 }
 
 model GalleryImage {
   id        Int      @id @default(autoincrement())
-  src       String   @db.NVarChar(500)
-  alt       String   @db.NVarChar(300)
-  caption   String?  @db.NVarChar(300)
+  src       String   @db.VarChar(500)
+  alt       String   @db.VarChar(300)
+  caption   String?  @db.VarChar(300)
   sortOrder Int      @default(0)
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -222,10 +222,10 @@ model GalleryImage {
 
 model CenterOfExcellence {
   id          Int      @id @default(autoincrement())
-  title       String   @db.NVarChar(200)
-  description String   @db.NVarChar(Max)
-  image       String   @db.NVarChar(500)
-  slug        String?  @db.NVarChar(150)
+  title       String   @db.VarChar(200)
+  description String   @db.Text
+  image       String   @db.VarChar(500)
+  slug        String?  @db.VarChar(150)
   sortOrder   Int      @default(0)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -234,11 +234,29 @@ model CenterOfExcellence {
 
 model WhyChooseUsItem {
   id          Int      @id @default(autoincrement())
-  title       String   @db.NVarChar(200)
-  description String   @db.NVarChar(Max)
-  icon        String   @db.NVarChar(100)
+  title       String   @db.VarChar(200)
+  description String   @db.Text
+  icon        String   @db.VarChar(100)
   sortOrder   Int      @default(0)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+/// One admin-managed image slot on a public page, addressed by page + section.
+/// Sections holding a single image (the care-team photo) keep one row; repeaters
+/// (the hero carousel) keep one row per frame ordered by sortOrder.
+model PageSectionImage {
+  id        Int      @id @default(autoincrement())
+  page      String   @db.VarChar(60)
+  section   String   @db.VarChar(60)
+  image     String   @db.VarChar(500)
+  label     String?  @db.VarChar(150)
+  alt       String?  @db.VarChar(300)
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([page, section, sortOrder])
 }

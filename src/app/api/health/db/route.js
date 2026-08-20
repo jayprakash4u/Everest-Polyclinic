@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isDatabaseAvailable, prisma } from "@/lib/db";
-import { sqlServerConfig } from "@/lib/env";
+import { mysqlConfig } from "@/lib/env";
 
 export async function GET() {
   const available = await isDatabaseAvailable();
@@ -9,10 +9,10 @@ export async function GET() {
     return NextResponse.json(
       {
         ok: false,
-        database: sqlServerConfig.database,
-        host: sqlServerConfig.host,
+        database: mysqlConfig.database,
+        host: `${mysqlConfig.host}:${mysqlConfig.port}`,
         message:
-          "Database connection failed. Copy .env.example to .env and run npm run db:push && npm run db:seed",
+          "Database connection failed. Check MYSQL_* in .env, then run npm run db:push && npm run db:seed",
       },
       { status: 503 },
     );
@@ -27,8 +27,8 @@ export async function GET() {
 
   return NextResponse.json({
     ok: true,
-    database: sqlServerConfig.database,
-    host: sqlServerConfig.host,
+    database: mysqlConfig.database,
+    host: `${mysqlConfig.host}:${mysqlConfig.port}`,
     counts: {
       doctors,
       blogPosts,

@@ -1,8 +1,21 @@
-import odbc from "odbc";
+/**
+ * Seeds the homepage-only content: centers of excellence, the "why choose us"
+ * grid, the site statistics strip, and the admin-managed image slots.
+ *
+ * Written against the Prisma client rather than raw SQL so it carries no
+ * dialect of its own — it followed the database from SQL Server to MySQL
+ * without changing a line of its logic.
+ */
+import { createPrismaClient } from "../create-prisma-client.mjs";
+import {
+  CARE_TEAM_SECTION,
+  HERO_SECTION,
+  HOME_CARE_TEAM_IMAGE,
+  HOME_HERO_SLIDES,
+  HOME_PAGE,
+} from "../../src/constants/homepageSections.js";
 
-const connectionString =
-  process.env.SQLSERVER_CONNECTION_STRING ??
-  "Driver={ODBC Driver 17 for SQL Server};Server=localhost\\SQLEXPRESS;Database=EverestPolyclinic;Trusted_Connection=Yes;TrustServerCertificate=Yes;";
+const prisma = await createPrismaClient();
 
 const CENTERS_OF_EXCELLENCE = [
   {
@@ -94,86 +107,89 @@ const STATS = [
   { value: "500+", label: "Lab Tests Available" },
 ];
 
-function sqlString(value) {
-  if (value == null) return "NULL";
-  return `N'${String(value).replace(/'/g, "''")}'`;
+/**
+ * Image slots are seeded only when the section is empty.
+ *
+ * The others above are reference content and safe to replace on every run, but
+ * these are the one thing on the homepage an admin edits directly — re-running
+ * the seed must not overwrite a photograph someone uploaded.
+ */
+async function seedSectionImages(section, rows) {
+  const existing = await prisma.pageSectionImage.count({
+    where: { page: HOME_PAGE, section },
+  });
+
+  if (existing > 0) {
+    console.log(`  ${section}: ${existing} row(s) already present — left alone.`);
+    return;
+  }
+
+  await prisma.pageSectionImage.createMany({
+    data: rows.map((row, index) => ({
+      page: HOME_PAGE,
+      section,
+      image: row.image,
+      label: row.label ?? null,
+      alt: row.alt ?? null,
+      sortOrder: index,
+      isActive: true,
+    })),
+  });
+
+  console.log(`  ${section}: seeded ${rows.length} row(s).`);
 }
 
 async function main() {
-  console.log("Seeding homepage content via ODBC...");
-  const connection = await odbc.connect(connectionString);
-  const now = new Date().toISOString();
+  console.log("Seeding homepage content...");
 
-  await connection.query("DELETE FROM [dbo].[CenterOfExcellence]");
-  for (const [index, item] of CENTERS_OF_EXCELLENCE.entries()) {
-    await connection.query(`
-      INSERT INTO [dbo].[CenterOfExcellence]
-        ([title], [description], [image], [slug], [sortOrder], [isActive], [createdAt], [updatedAt])
-      VALUES (
-        ${sqlString(item.title)},
-        ${sqlString(item.description)},
-        ${sqlString(item.image)},
-        ${item.slug ? sqlString(item.slug) : "NULL"},
-        ${index},
-        1,
-        ${sqlString(now)},
-        ${sqlString(now)}
-      )
-    `);
-  }
+  await prisma.centerOfExcellence.deleteMany();
+  await prisma.centerOfExcellence.createMany({
+    data: CENTERS_OF_EXCELLENCE.map((item, index) => ({
+      ...item,
+      sortOrder: index,
+      isActive: true,
+    })),
+  });
 
-  await connection.query("DELETE FROM [dbo].[WhyChooseUsItem]");
-  for (const [index, item] of WHY_CHOOSE_US.entries()) {
-    await connection.query(`
-      INSERT INTO [dbo].[WhyChooseUsItem]
-        ([title], [description], [icon], [sortOrder], [isActive], [createdAt], [updatedAt])
-      VALUES (
-        ${sqlString(item.title)},
-        ${sqlString(item.description)},
-        ${sqlString(item.icon)},
-        ${index},
-        1,
-        ${sqlString(now)},
-        ${sqlString(now)}
-      )
-    `);
-  }
+  await prisma.whyChooseUsItem.deleteMany();
+  await prisma.whyChooseUsItem.createMany({
+    data: WHY_CHOOSE_US.map((item, index) => ({
+      ...item,
+      sortOrder: index,
+      isActive: true,
+    })),
+  });
 
-  await connection.query(
-    "DELETE FROM [dbo].[Statistic] WHERE [context] = N'site'",
-  );
-  for (const [index, item] of STATS.entries()) {
-    await connection.query(`
-      INSERT INTO [dbo].[Statistic]
-        ([value], [label], [context], [sortOrder], [isActive])
-      VALUES (
-        ${sqlString(item.value)},
-        ${sqlString(item.label)},
-        N'site',
-        ${index},
-        1
-      )
-    `);
-  }
+  await prisma.statistic.deleteMany({ where: { context: "site" } });
+  await prisma.statistic.createMany({
+    data: STATS.map((item, index) => ({
+      ...item,
+      context: "site",
+      sortOrder: index,
+      isActive: true,
+    })),
+  });
 
-  const centers = await connection.query(
-    "SELECT COUNT(*) AS count FROM [dbo].[CenterOfExcellence]",
-  );
-  const why = await connection.query(
-    "SELECT COUNT(*) AS count FROM [dbo].[WhyChooseUsItem]",
-  );
-  const stats = await connection.query(
-    "SELECT COUNT(*) AS count FROM [dbo].[Statistic] WHERE [context] = N'site'",
-  );
+  await seedSectionImages(HERO_SECTION, HOME_HERO_SLIDES);
+  await seedSectionImages(CARE_TEAM_SECTION, [HOME_CARE_TEAM_IMAGE]);
+
+  const [centers, why, stats, images] = await Promise.all([
+    prisma.centerOfExcellence.count(),
+    prisma.whyChooseUsItem.count(),
+    prisma.statistic.count({ where: { context: "site" } }),
+    prisma.pageSectionImage.count(),
+  ]);
 
   console.log(
-    `Seeded centers=${centers[0].count}, whyChooseUs=${why[0].count}, siteStats=${stats[0].count}`,
+    `Seeded centers=${centers}, whyChooseUs=${why}, siteStats=${stats}, sectionImages=${images}`,
   );
-
-  await connection.close();
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+main()
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

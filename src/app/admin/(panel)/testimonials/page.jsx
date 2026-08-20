@@ -6,6 +6,7 @@ import {
   adminInputClass,
   adminLabelClass,
 } from "@/components/admin/AdminShell";
+import AdminImageUpload from "@/components/admin/AdminImageUpload";
 import {
   AdminCrudFormPanel,
   AdminCrudListPanel,
@@ -18,6 +19,7 @@ const emptyForm = {
   location: "",
   rating: 5,
   review: "",
+  avatar: "",
   sortOrder: 0,
   isActive: true,
 };
@@ -57,6 +59,7 @@ export default function TestimonialsAdminPage() {
       location: item.location,
       rating: item.rating,
       review: item.review,
+      avatar: item.avatar ?? "",
       sortOrder: item.sortOrder,
       isActive: item.isActive,
     });
@@ -118,6 +121,12 @@ export default function TestimonialsAdminPage() {
               required
             />
           </div>
+          <AdminImageUpload
+            label="Patient photo"
+            optional
+            value={form.avatar}
+            onChange={(url) => setForm((prev) => ({ ...prev, avatar: url }))}
+          />
           <label className="flex items-center gap-2 text-sm text-slate-600">
             <input
               type="checkbox"

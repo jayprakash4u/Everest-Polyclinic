@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SmoothScroll from "@/components/providers/SmoothScroll";
+import { SiteProvider } from "@/components/providers/SiteProvider";
 import { getSiteSettings } from "@/lib/data/site";
 
 // Both are variable fonts — no `weight` array needed, and the CSS variable is the
@@ -50,6 +51,8 @@ export async function generateMetadata() {
 
 export default async function RootLayout({ children }) {
   const pathname = (await headers()).get("x-pathname") || "";
+  /* Deduped with generateMetadata above by cache() in lib/data/site.js. */
+  const site = await getSiteSettings();
   const isAdmin = pathname.startsWith("/admin");
 
   return (
@@ -58,11 +61,13 @@ export default async function RootLayout({ children }) {
         {isAdmin ? (
           children
         ) : (
-          <SmoothScroll>
-            <Navbar />
-            <main>{children}</main>
-            <Footer />
-          </SmoothScroll>
+          <SiteProvider site={site}>
+            <SmoothScroll>
+              <Navbar />
+              <main>{children}</main>
+              <Footer site={site} />
+            </SmoothScroll>
+          </SiteProvider>
         )}
       </body>
     </html>

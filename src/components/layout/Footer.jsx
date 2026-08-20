@@ -9,7 +9,7 @@ import {
   PhoneCall,
 } from "lucide-react";
 import Button from "@/components/ui/Button";
-import { SITE, FOOTER_LINKS, NAV_LINKS, SERVICES } from "@/constants";
+import { SITE as FALLBACK_SITE, FOOTER_LINKS, NAV_LINKS, SERVICES } from "@/constants";
 import { cn } from "@/lib/utils";
 
 // Set `href` to the real profile URL to switch each of these on — anything
@@ -129,7 +129,9 @@ function ContactItem({ icon: Icon, href, children, external }) {
   return <div className={className}>{inner}</div>;
 }
 
-export default function Footer() {
+export default function Footer({ site }) {
+  /* Admin-editable contact details, falling back to the shipped constant. */
+  const SITE = { ...FALLBACK_SITE, ...(site ?? {}) };
   const year = new Date().getFullYear();
   const exploreLinks = NAV_LINKS.filter((link) => link.href !== "/");
 

@@ -4,8 +4,7 @@ import { ArrowRight, Baby, Stethoscope, Users, Venus } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import { encodePublicPath } from "@/lib/encode-public-path";
-
-const SIDE_IMAGE = "/images/sidedoctor.png";
+import { HOME_CARE_TEAM_IMAGE } from "@/constants/homepageSections";
 
 /* Three entry points into the specialist list, each a real service route. */
 const DEPARTMENTS = [
@@ -29,7 +28,12 @@ const DEPARTMENTS = [
   },
 ];
 
-export default function DoctorsSection() {
+/* The photograph is admin-managed (Admin → Pages → Home Page).
+   HOME_CARE_TEAM_IMAGE is what the site shipped with and the fallback. */
+export default function DoctorsSection({ sideImage, sideImageAlt }) {
+  const image = sideImage || HOME_CARE_TEAM_IMAGE.image;
+  const alt = sideImageAlt || HOME_CARE_TEAM_IMAGE.alt;
+
   return (
     <section className="relative isolate overflow-hidden bg-gradient-to-br from-primary-50/60 via-white to-white">
       {/*
@@ -42,8 +46,8 @@ export default function DoctorsSection() {
       */}
       <div className="relative aspect-[3/2] w-full overflow-hidden lg:absolute lg:inset-y-0 lg:right-0 lg:aspect-auto lg:w-[56%]">
         <Image
-          src={encodePublicPath(SIDE_IMAGE)}
-          alt="A clinician at Everest International Polyclinic"
+          src={encodePublicPath(image)}
+          alt={alt}
           fill
           sizes="(min-width: 1024px) 56vw, 100vw"
           className="object-cover object-[62%_center] lg:object-center"

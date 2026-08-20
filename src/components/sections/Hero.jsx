@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ArrowRight, CalendarDays } from "lucide-react";
@@ -9,6 +9,7 @@ import Container from "@/components/ui/Container";
 import { encodePublicPath } from "@/lib/encode-public-path";
 import { cn } from "@/lib/utils";
 import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
+import { HOME_HERO_SLIDES } from "@/constants/homepageSections";
 
 /**
  * Full-bleed carousel: the photography runs the whole viewport width and the
@@ -26,13 +27,8 @@ import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
  * photograph worth showing (the people, the theatre, the scanner) stays bright
  * and untouched.
  */
-const SLIDES = [
-  { src: "/images/hero/firstimage.png", label: "Reception", alt: "Reception area at Everest International Polyclinic" },
-  { src: "/images/hero/second image.png", label: "Consultation", alt: "A doctor consulting with a patient" },
-  { src: "/images/hero/third imge.png", label: "Laboratory", alt: "A technician analysing samples in the laboratory" },
-  { src: "/images/hero/fourth image.png", label: "Operating theatre", alt: "Surgical team at work in the operating theatre" },
-  { src: "/images/hero/fiftth image.png", label: "Imaging suite", alt: "CT scanner in the imaging suite" },
-];
+/* The frames are admin-managed (Admin → Pages → Home Page). HOME_HERO_SLIDES
+   is what the site shipped with and what renders if nothing is stored. */
 
 const PROOF = [
   { value: "25,000+", label: "Patients treated" },
@@ -51,7 +47,14 @@ const SLIDE_MS = 3500;
 const SCRIM_DESKTOP =
   "linear-gradient(90deg, rgba(11,41,81,1) 0%, rgba(11,41,81,1) 34%, rgba(11,41,81,0.97) 44%, rgba(11,41,81,0.72) 58%, rgba(11,41,81,0.30) 74%, rgba(11,41,81,0.05) 90%, rgba(11,41,81,0) 100%)";
 
-export default function Hero() {
+export default function Hero({ slides }) {
+  /* An admin can delete their way down to nothing. Falling back here rather
+     than rendering an empty carousel keeps the top of the page from collapsing. */
+  const SLIDES = useMemo(
+    () => (slides?.length ? slides : HOME_HERO_SLIDES),
+    [slides],
+  );
+
   const [bookingOpen, setBookingOpen] = useState(false);
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -78,7 +81,7 @@ export default function Hero() {
       updated.add(upcoming);
       return updated;
     });
-  }, []);
+  }, [SLIDES.length]);
 
   /* Reduced motion changes *how* a slide arrives, not whether it does. The
      rotation is the point of the section, so it always runs; what a reduced-
@@ -119,7 +122,7 @@ export default function Hero() {
         ms: Math.max(0, wait - (Date.now() - startedAt)),
       };
     };
-  }, [paused, active, go]);
+  }, [paused, active, go, SLIDES.length]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -170,11 +173,11 @@ export default function Hero() {
         {SLIDES.map((slide, i) =>
           mounted.has(i) ? (
             <Image
-              key={slide.src}
+              key={`${slide.image}-${i}`}
               ref={(node) => {
                 slideRefs.current[i] = node;
               }}
-              src={encodePublicPath(slide.src)}
+              src={encodePublicPath(slide.image)}
               alt={i === active ? slide.alt : ""}
               aria-hidden={i !== active}
               fill
@@ -209,7 +212,7 @@ export default function Hero() {
         <div className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-slate-900/45 px-2 py-1.5 ring-1 ring-inset ring-white/20 backdrop-blur-sm sm:bottom-4 sm:right-4 lg:hidden">
           {SLIDES.map((slide, i) => (
             <button
-              key={slide.src}
+              key={`${slide.image}-${i}`}
               type="button"
               onClick={() => go(i)}
               aria-label={`Show ${slide.label}`}
@@ -325,7 +328,7 @@ export default function Hero() {
 
               return (
                 <button
-                  key={slide.src}
+                  key={`${slide.image}-${i}`}
                   type="button"
                   onClick={() => go(i)}
                   aria-current={isActive}

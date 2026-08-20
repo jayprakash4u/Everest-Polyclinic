@@ -3,18 +3,22 @@ import {
   DOCTOR_SPECIALISTS,
   HOMEPAGE_SPECIALISTS,
 } from "@/constants/doctorsPage";
-import { prisma } from "@/lib/db";
+import { querySql } from "@/lib/sql";
 
-function mapDoctorToHomepageCard(doctor) {
+/* Reads over ODBC rather than Prisma — see lib/data/whyChooseUs.js. Prisma's
+   `include` becomes an explicit JOIN plus grouping in JS; the shape returned to
+   callers is unchanged. */
+
+function mapDoctorToHomepageCard(row) {
   return {
-    id: doctor.id,
-    name: doctor.name,
-    degree: doctor.education,
-    experience: doctor.experience,
-    specialist: doctor.category?.name ?? "Specialist",
-    timing: doctor.timing ?? "By appointment",
-    phone: doctor.phone ?? "",
-    image: doctor.image,
+    id: Number(row.id),
+    name: row.name,
+    degree: row.education,
+    experience: row.experience,
+    specialist: row.categoryName ?? "Specialist",
+    timing: row.timing ?? "By appointment",
+    phone: row.phone ?? "",
+    image: row.image,
   };
 }
 
@@ -34,34 +38,54 @@ function mapStaticDoctors() {
 
 export async function getDoctorsPageData() {
   try {
-    const categories = await prisma.doctorCategory.findMany({
-      where: { isActive: true },
-      orderBy: { sortOrder: "asc" },
-      include: {
-        doctors: {
-          where: { isActive: true },
-          orderBy: { sortOrder: "asc" },
-        },
-      },
-    });
+    /* One flat join, grouped below. A category with no active doctors still
+       has to appear — Prisma's include returned it with an empty array — so
+       the join is LEFT and the doctor filter lives in the ON clause, not the
+       WHERE clause, where it would drop the category row entirely. */
+    const rows = await querySql(
+      `SELECT c.id AS categoryId, c.name AS categoryName, c.slug AS categorySlug,
+              c.sortOrder AS categorySort,
+              d.id AS doctorId, d.name AS doctorName, d.education, d.experience,
+              d.image, d.sortOrder AS doctorSort
+       FROM DoctorCategory c
+       LEFT JOIN Doctor d ON d.categoryId = c.id AND d.isActive = 1
+       WHERE c.isActive = 1
+       ORDER BY c.sortOrder ASC, c.id ASC, d.sortOrder ASC, d.id ASC`,
+    );
 
-    if (categories.length > 0) {
-      const specialists = categories.map((category) => ({
-        category: category.name,
-        slug: category.slug,
-        doctors: category.doctors.map((doctor) => ({
-          id: doctor.id,
-          name: doctor.name,
-          education: doctor.education,
-          experience: doctor.experience,
-          image: doctor.image,
-        })),
-      }));
+    if (rows.length > 0) {
+      const byCategory = new Map();
 
-      const stats = await prisma.statistic.findMany({
-        where: { context: "doctors", isActive: true },
-        orderBy: { sortOrder: "asc" },
-      });
+      for (const row of rows) {
+        const key = Number(row.categoryId);
+        if (!byCategory.has(key)) {
+          byCategory.set(key, {
+            category: row.categoryName,
+            slug: row.categorySlug,
+            doctors: [],
+          });
+        }
+
+        // LEFT JOIN pads a doctorless category with a null doctor row.
+        if (row.doctorId == null) continue;
+
+        byCategory.get(key).doctors.push({
+          id: Number(row.doctorId),
+          name: row.doctorName,
+          education: row.education,
+          experience: row.experience,
+          image: row.image,
+        });
+      }
+
+      const specialists = [...byCategory.values()];
+
+      const stats = await querySql(
+        `SELECT value, label FROM Statistic
+         WHERE context = ? AND isActive = 1
+         ORDER BY sortOrder ASC, id ASC`,
+        ["doctors"],
+      );
 
       return {
         specialists,
@@ -91,14 +115,17 @@ export async function getDoctorsPageData() {
 
 export async function getHomepageSpecialists() {
   try {
-    const doctors = await prisma.doctor.findMany({
-      where: { isActive: true, showOnHomepage: true },
-      include: { category: true },
-      orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
-    });
+    const rows = await querySql(
+      `SELECT d.id, d.name, d.education, d.experience, d.image, d.phone, d.timing,
+              c.name AS categoryName
+       FROM Doctor d
+       INNER JOIN DoctorCategory c ON c.id = d.categoryId
+       WHERE d.isActive = 1 AND d.showOnHomepage = 1
+       ORDER BY d.sortOrder ASC, d.id ASC`,
+    );
 
-    if (doctors.length > 0) {
-      return doctors.map(mapDoctorToHomepageCard);
+    if (rows.length > 0) {
+      return rows.map(mapDoctorToHomepageCard);
     }
   } catch (error) {
     console.warn("[db] Homepage specialists fallback:", error.message);
