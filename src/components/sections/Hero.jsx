@@ -1,15 +1,24 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import gsap from "gsap";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import { encodePublicPath } from "@/lib/encode-public-path";
+import { loadGsap } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
-import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
 import { HOME_HERO_SLIDES } from "@/constants/homepageSections";
+
+/* Loaded on demand. The booking modal is ~470 lines of form, date handling and
+   scroll-locking that only matters once somebody presses Book, and it pulls in
+   lenis with it — none of which needs to be in the first-load bundle of every
+   page that happens to show the button. */
+const BookAppointmentModal = dynamic(
+  () => import("@/components/modals/BookAppointmentModal"),
+  { ssr: false },
+);
 
 /**
  * Full-bleed carousel: the photography runs the whole viewport width and the
@@ -124,19 +133,33 @@ export default function Hero({ slides }) {
     };
   }, [paused, active, go, SLIDES.length]);
 
+  /* GSAP is fetched on first use rather than imported at the top of the file.
+     This is the hero, so its bundle is on the critical path for the LCP — and
+     the first crossfade cannot happen until the slide timer has run for several
+     seconds, which is far longer than the library takes to arrive. */
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      slideRefs.current.forEach((node, i) => {
-        if (!node) return;
-        gsap.to(node, {
-          opacity: i === active ? 1 : 0,
-          duration: reduceMotion ? 0 : 0.6,
-          ease: "power2.inOut",
-        });
-      });
-    }, rootRef);
+    let cancelled = false;
+    let ctx;
 
-    return () => ctx.revert();
+    loadGsap().then(({ gsap }) => {
+      if (cancelled) return;
+
+      ctx = gsap.context(() => {
+        slideRefs.current.forEach((node, i) => {
+          if (!node) return;
+          gsap.to(node, {
+            opacity: i === active ? 1 : 0,
+            duration: reduceMotion ? 0 : 0.6,
+            ease: "power2.inOut",
+          });
+        });
+      }, rootRef);
+    });
+
+    return () => {
+      cancelled = true;
+      ctx?.revert();
+    };
   }, [active, mounted, reduceMotion]);
 
   const activeSlide = SLIDES[active];
@@ -374,10 +397,11 @@ export default function Hero({ slides }) {
         </Container>
       </div>
 
-      <BookAppointmentModal
-        isOpen={bookingOpen}
-        onClose={() => setBookingOpen(false)}
-      />
+      {bookingOpen ? (
+        <BookAppointmentModal isOpen onClose={() => setBookingOpen(false)} />
+
+
+      ) : null}
     </section>
   );
 }

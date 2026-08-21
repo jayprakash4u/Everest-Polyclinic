@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/admin-auth";
+import { CACHE_TAGS, revalidatePublic } from "@/lib/cache";
 import { prisma } from "@/lib/db";
 
 /**
@@ -57,6 +58,9 @@ export async function POST(request) {
   if (error) return NextResponse.json({ error }, { status: 400 });
 
   const item = await prisma.centerOfExcellence.create({ data });
+  // The database changed, so the public site must stop serving its cached copy.
+  revalidatePublic(CACHE_TAGS.centersOfExcellence);
+
   return NextResponse.json(item, { status: 201 });
 }
 
@@ -72,6 +76,9 @@ export async function PUT(request) {
   if (error) return NextResponse.json({ error }, { status: 400 });
 
   const item = await prisma.centerOfExcellence.update({ where: { id }, data });
+  // The database changed, so the public site must stop serving its cached copy.
+  revalidatePublic(CACHE_TAGS.centersOfExcellence);
+
   return NextResponse.json(item);
 }
 
@@ -83,5 +90,8 @@ export async function DELETE(request) {
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
   await prisma.centerOfExcellence.delete({ where: { id } });
+  // The database changed, so the public site must stop serving its cached copy.
+  revalidatePublic(CACHE_TAGS.centersOfExcellence);
+
   return NextResponse.json({ ok: true });
 }

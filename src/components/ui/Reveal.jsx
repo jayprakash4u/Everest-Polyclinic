@@ -1,11 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cn } from "@/lib/utils";
-
-gsap.registerPlugin(ScrollTrigger);
+import { loadGsap } from "@/lib/gsap";
 
 /**
  * One quiet entrance, used site-wide: a 12px rise and fade as the block reaches
@@ -31,33 +28,47 @@ export default function Reveal({
 
   useEffect(() => {
     const node = ref.current;
-    if (!node) return;
+    if (!node) return undefined;
 
-    const ctx = gsap.context(() => {
-      const mm = gsap.matchMedia();
+    /* GSAP arrives asynchronously now, so the element can unmount before the
+       library resolves. `cancelled` stops us building an animation against a
+       detached node, and `ctx` is captured so the cleanup can still revert one
+       that was created a moment too late. */
+    let cancelled = false;
+    let ctx;
 
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const targets = stagger ? gsap.utils.toArray(node.children) : node;
+    loadGsap().then(({ gsap }) => {
+      if (cancelled) return;
 
-        gsap.from(targets, {
-          opacity: 0,
-          y: 12,
-          duration: 0.6,
-          ease: "power2.out",
-          delay,
-          stagger: stagger ? 0.08 : 0,
-          scrollTrigger: {
-            trigger: node,
-            start: "top 88%",
-            once: true,
-          },
+      ctx = gsap.context(() => {
+        const mm = gsap.matchMedia();
+
+        mm.add("(prefers-reduced-motion: no-preference)", () => {
+          const targets = stagger ? gsap.utils.toArray(node.children) : node;
+
+          gsap.from(targets, {
+            opacity: 0,
+            y: 12,
+            duration: 0.6,
+            ease: "power2.out",
+            delay,
+            stagger: stagger ? 0.08 : 0,
+            scrollTrigger: {
+              trigger: node,
+              start: "top 88%",
+              once: true,
+            },
+          });
         });
-      });
 
-      return () => mm.revert();
-    }, node);
+        return () => mm.revert();
+      }, node);
+    });
 
-    return () => ctx.revert();
+    return () => {
+      cancelled = true;
+      ctx?.revert();
+    };
   }, [stagger, delay]);
 
   return (

@@ -1,3 +1,4 @@
+import { CACHE_TAGS, cachedRead } from "@/lib/cache";
 import {
   CARE_TEAM_SECTION,
   HERO_SECTION,
@@ -39,7 +40,7 @@ async function getSectionImages(page, section) {
 }
 
 /** Hero carousel frames. Falls back to the shipped five when nothing is stored. */
-export async function getHomeHeroSlides() {
+async function getHomeHeroSlidesUncached() {
   const rows = await getSectionImages(HOME_PAGE, HERO_SECTION);
   if (!rows.length) return HOME_HERO_SLIDES;
 
@@ -53,7 +54,7 @@ export async function getHomeHeroSlides() {
 }
 
 /** The single "Meet your care team" photo. */
-export async function getHomeCareTeamImage() {
+async function getHomeCareTeamImageUncached() {
   const [row] = await getSectionImages(HOME_PAGE, CARE_TEAM_SECTION);
   if (!row?.image) return HOME_CARE_TEAM_IMAGE;
 
@@ -62,3 +63,16 @@ export async function getHomeCareTeamImage() {
     alt: row.alt || HOME_CARE_TEAM_IMAGE.alt,
   };
 }
+
+/* Cached across requests; the admin write routes invalidate these tags. */
+export const getHomeHeroSlides = cachedRead(
+  getHomeHeroSlidesUncached,
+  ["getHomeHeroSlides"],
+  CACHE_TAGS.pageSections,
+);
+
+export const getHomeCareTeamImage = cachedRead(
+  getHomeCareTeamImageUncached,
+  ["getHomeCareTeamImage"],
+  CACHE_TAGS.pageSections,
+);

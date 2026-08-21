@@ -1,14 +1,23 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check, Clock, Phone } from "lucide-react";
 import Container from "@/components/ui/Container";
 import SectionHeader from "@/components/ui/SectionHeader";
-import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
-import { SITE } from "@/constants";
+import { useSite } from "@/components/providers/SiteProvider";
 import { encodePublicPath } from "@/lib/encode-public-path";
+
+/* Loaded on demand. The booking modal is ~470 lines of form, date handling and
+   scroll-locking that only matters once somebody presses Book, and it pulls in
+   lenis with it — none of which needs to be in the first-load bundle of every
+   page that happens to show the button. */
+const BookAppointmentModal = dynamic(
+  () => import("@/components/modals/BookAppointmentModal"),
+  { ssr: false },
+);
 
 const MAIN_IMAGE = "/images/services/laboratory/laboratory1.jpg";
 const INSET_IMAGE = "/images/services/laboratory/laboratory 2.jpg";
@@ -34,6 +43,8 @@ const OPEN_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Frid
 const OPEN_TIME = "8:00am - 8:00pm";
 
 export default function DiagnosticCare() {
+  /* Contact details come from Admin -> Site Settings. */
+  const SITE = useSite();
   const [bookingOpen, setBookingOpen] = useState(false);
   const telHref = `tel:${SITE.phone.replace(/\s/g, "")}`;
 
@@ -125,37 +136,46 @@ export default function DiagnosticCare() {
               className="mb-7 sm:mb-8"
             />
 
-            <ul className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
-              {TESTS.map((test) => (
-                <li key={test} className="flex items-start gap-2.5">
-                  <Check
-                    className="mt-0.5 h-4 w-4 shrink-0 text-secondary-600"
-                    strokeWidth={3}
-                  />
-                  <span className="text-sm leading-snug text-slate-700 sm:text-[15px]">
-                    {test}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            {/*
+              Each test gets its own surface rather than being a line in a
+              bulleted list. On a phone the column is one item wide, and eight
+              unbroken check-and-label rows read as a paragraph of text — the
+              tile gives every test an edge, so the eye can count them.
+            */}
+            <div>
+              <p className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.14em] text-secondary-600">
+                Popular tests
+                <span aria-hidden="true" className="h-px flex-1 bg-slate-200" />
+              </p>
 
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5">
-              <Link
-                href="/services/laboratory"
-                className="group inline-flex w-fit items-center gap-3 rounded-full bg-primary-900 py-2 pl-6 pr-2 text-sm font-semibold text-white transition-colors hover:bg-primary-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-900 focus-visible:ring-offset-2 sm:text-base"
-              >
-                view more
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-primary-900 transition-transform duration-300 group-hover:translate-x-0.5">
-                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
-                </span>
-              </Link>
+              <ul className="mt-4 grid gap-2.5 sm:grid-cols-2 sm:gap-x-4">
+                {TESTS.map((test) => (
+                  <li
+                    key={test}
+                    className="flex items-center gap-3 rounded-xl border border-slate-200/80 bg-slate-50/70 px-3.5 py-3 transition-colors hover:border-secondary-200 hover:bg-secondary-50/60"
+                  >
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-secondary-100 text-secondary-700">
+                      <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                    </span>
+                    <span className="text-[13px] font-medium leading-snug text-slate-700 sm:text-sm">
+                      {test}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            <div className="mt-5 flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
+            {/*
+              One action row, not two. Booking is the thing this section is for,
+              so it takes the solid fill and comes first; "view more" drops to an
+              outline. Two identical navy pills stacked on a phone gave the two
+              equal weight and made the block look like it repeated itself.
+            */}
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
               <button
                 type="button"
                 onClick={() => setBookingOpen(true)}
-                className="group inline-flex w-fit items-center justify-between gap-3 rounded-full bg-primary-900 py-2 pl-6 pr-2 text-sm font-semibold text-white transition-colors hover:bg-primary-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-900 focus-visible:ring-offset-2 sm:text-base"
+                className="group inline-flex w-full items-center justify-between gap-3 rounded-full bg-primary-900 py-2 pl-6 pr-2 text-sm font-semibold text-white transition-colors hover:bg-primary-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-900 focus-visible:ring-offset-2 sm:w-auto sm:text-base"
               >
                 Book Your Appointment Today
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-primary-900 transition-transform duration-300 group-hover:translate-x-0.5">
@@ -163,26 +183,51 @@ export default function DiagnosticCare() {
                 </span>
               </button>
 
-              <a href={telHref} className="group flex items-center gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary-50 text-secondary-600">
-                  <Phone className="h-5 w-5" strokeWidth={2} />
+              <Link
+                href="/services/laboratory"
+                className="group inline-flex w-full items-center justify-between gap-3 rounded-full border border-slate-300 bg-white py-2 pl-6 pr-2 text-sm font-semibold text-primary-900 transition-colors hover:border-primary-300 hover:bg-primary-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-900 focus-visible:ring-offset-2 sm:w-auto sm:text-base"
+              >
+                View all tests
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-900 text-white transition-transform duration-300 group-hover:translate-x-0.5">
+                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
                 </span>
-                <span className="min-w-0">
-                  <span className="block text-xs text-slate-500">Contact us?</span>
-                  <span className="block text-base font-bold text-primary-900 transition-colors group-hover:text-primary-700">
-                    {SITE.phone}
-                  </span>
-                </span>
-              </a>
+              </Link>
             </div>
+
+            {/*
+              A tappable card on a phone, where it needs its own edge to read as
+              a control; from sm it relaxes back into the inline icon-and-number
+              treatment that sits under the buttons on a wide column.
+            */}
+            <a
+              href={telHref}
+              className="group mt-4 flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-3.5 transition-colors hover:border-secondary-200 hover:bg-secondary-50/60 sm:mt-6 sm:border-0 sm:bg-transparent sm:p-0 sm:hover:bg-transparent"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary-100 text-secondary-700 transition-colors group-hover:bg-secondary-600 group-hover:text-white">
+                <Phone className="h-5 w-5" strokeWidth={2} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-xs text-slate-500">
+                  Questions? Talk to us
+                </span>
+                <span className="block text-base font-bold text-primary-900 transition-colors group-hover:text-primary-700">
+                  {SITE.phone}
+                </span>
+              </span>
+              <ArrowRight
+                className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-300 group-hover:translate-x-0.5 sm:hidden"
+                strokeWidth={2.25}
+              />
+            </a>
           </div>
         </div>
       </Container>
 
-      <BookAppointmentModal
-        isOpen={bookingOpen}
-        onClose={() => setBookingOpen(false)}
-      />
+      {bookingOpen ? (
+        <BookAppointmentModal isOpen onClose={() => setBookingOpen(false)} />
+
+
+      ) : null}
     </section>
   );
 }

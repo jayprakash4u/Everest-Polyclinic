@@ -1,3 +1,4 @@
+import { CACHE_TAGS, cachedRead } from "@/lib/cache";
 import { WHY_CHOOSE_US } from "@/constants";
 import { querySql } from "@/lib/sql";
 
@@ -16,7 +17,7 @@ function mapItem(row) {
   };
 }
 
-export async function getWhyChooseUsItems() {
+async function getWhyChooseUsItemsUncached() {
   try {
     const rows = await querySql(
       `SELECT id, title, description, icon, sortOrder, isActive
@@ -32,3 +33,10 @@ export async function getWhyChooseUsItems() {
 
   return WHY_CHOOSE_US;
 }
+
+/* Cached across requests; the admin write routes invalidate these tags. */
+export const getWhyChooseUsItems = cachedRead(
+  getWhyChooseUsItemsUncached,
+  ["getWhyChooseUsItems"],
+  CACHE_TAGS.whyChooseUs,
+);

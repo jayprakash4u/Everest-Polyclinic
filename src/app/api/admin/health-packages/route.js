@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/admin-auth";
+import { CACHE_TAGS, revalidatePublic } from "@/lib/cache";
 import { prisma } from "@/lib/db";
 import { mapPackageForClient, parseTestsInput } from "@/lib/health-package-utils";
 
@@ -54,6 +55,9 @@ export async function POST(request) {
     include: { section: true },
   });
 
+  // The database changed, so the public site must stop serving its cached copy.
+  revalidatePublic(CACHE_TAGS.healthPackages);
+
   return NextResponse.json(mapPackageForClient(item), { status: 201 });
 }
 
@@ -86,6 +90,9 @@ export async function PUT(request) {
     include: { section: true },
   });
 
+  // The database changed, so the public site must stop serving its cached copy.
+  revalidatePublic(CACHE_TAGS.healthPackages);
+
   return NextResponse.json(mapPackageForClient(item));
 }
 
@@ -100,5 +107,8 @@ export async function DELETE(request) {
   }
 
   await prisma.healthPackage.delete({ where: { id } });
+  // The database changed, so the public site must stop serving its cached copy.
+  revalidatePublic(CACHE_TAGS.healthPackages);
+
   return NextResponse.json({ ok: true });
 }

@@ -1,14 +1,14 @@
 import { cache } from "react";
 import { SITE } from "@/constants";
+import { CACHE_TAGS, cachedRead } from "@/lib/cache";
 import { querySql } from "@/lib/sql";
 
 /* Reads over ODBC rather than Prisma — see lib/data/whyChooseUs.js. This one
    runs on every page through the root layout, so it was the loudest of the
    failing calls. */
 
-/* Wrapped in cache() because both generateMetadata and the layout body ask for
-   this on the same request, and it is a database round trip each time. */
-export const getSiteSettings = cache(async () => {
+const getSiteSettingsUncached = cachedRead(
+  async () => {
   try {
     const rows = await querySql(
       `SELECT name, shortName, tagline, description, phone, email,
@@ -42,5 +42,13 @@ export const getSiteSettings = cache(async () => {
     console.warn("[db] Site settings fallback:", error.message);
   }
 
-  return SITE;
-});
+    return SITE;
+  },
+  ["getSiteSettings"],
+  CACHE_TAGS.siteSettings,
+);
+
+/* Two layers, doing different jobs: cachedRead keeps the row between requests,
+   and React cache() dedupes the two calls made within a single request — the
+   layout body and generateMetadata both ask for it. */
+export const getSiteSettings = cache(getSiteSettingsUncached);

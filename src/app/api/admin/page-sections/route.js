@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/admin-auth";
+import { CACHE_TAGS, revalidatePublic } from "@/lib/cache";
 import { querySql, withTransaction } from "@/lib/sql";
 
 /* Raw SQL rather than Prisma, matching the public reader in
@@ -135,6 +136,9 @@ export async function PUT(request) {
       { status: 500 },
     );
   }
+
+  // The database changed, so the public site must stop serving its cached copy.
+  revalidatePublic(CACHE_TAGS.pageSections);
 
   return NextResponse.json({ ok: true, count: items.length });
 }

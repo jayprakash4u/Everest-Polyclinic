@@ -1,9 +1,10 @@
+import { CACHE_TAGS, cachedRead } from "@/lib/cache";
 import { STATIC_FAQS } from "@/constants/blogPosts";
 import { querySql } from "@/lib/sql";
 
 /* Reads over ODBC rather than Prisma — see lib/data/whyChooseUs.js. */
 
-export async function getFaqs() {
+async function getFaqsUncached() {
   try {
     const rows = await querySql(
       `SELECT question, answer FROM Faq
@@ -22,3 +23,10 @@ export async function getFaqs() {
 
   return STATIC_FAQS;
 }
+
+/* Cached across requests; the admin write routes invalidate these tags. */
+export const getFaqs = cachedRead(
+  getFaqsUncached,
+  ["getFaqs"],
+  CACHE_TAGS.faqs,
+);

@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
@@ -23,8 +24,16 @@ import {
 } from "@/constants";
 import { useSite } from "@/components/providers/SiteProvider";
 import ServicesOptionsMenu from "@/components/layout/ServicesOptionsMenu";
-import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
 import { cn } from "@/lib/utils";
+
+/* Loaded on demand. The booking modal is ~470 lines of form, date handling and
+   scroll-locking that only matters once somebody presses Book, and it pulls in
+   lenis with it — none of which needs to be in the first-load bundle of every
+   page that happens to show the button. */
+const BookAppointmentModal = dynamic(
+  () => import("@/components/modals/BookAppointmentModal"),
+  { ssr: false },
+);
 
 const SERVICES_MENU_WIDTH = 860;
 const VIEWPORT_PADDING = 16;
@@ -658,10 +667,11 @@ export default function Navbar() {
         </aside>
       </div>
 
-      <BookAppointmentModal
-        isOpen={bookingOpen}
-        onClose={() => setBookingOpen(false)}
-      />
+      {bookingOpen ? (
+        <BookAppointmentModal isOpen onClose={() => setBookingOpen(false)} />
+
+
+      ) : null}
 
       {/* servicesOpen only flips via a client event, so no mount guard is needed. */}
       {servicesOpen &&

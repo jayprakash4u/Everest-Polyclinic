@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/admin-auth";
+import { CACHE_TAGS, revalidatePublic } from "@/lib/cache";
 import { prisma } from "@/lib/db";
 
 export async function GET() {
@@ -42,6 +43,9 @@ export async function PUT(request) {
       emergencyHotline: body.emergencyHotline,
     },
   });
+
+  // The database changed, so the public site must stop serving its cached copy.
+  revalidatePublic(CACHE_TAGS.siteSettings);
 
   return NextResponse.json(settings);
 }

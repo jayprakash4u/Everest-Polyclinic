@@ -1,3 +1,4 @@
+import { CACHE_TAGS, cachedRead } from "@/lib/cache";
 import {
   DOCTOR_PAGE_STATS,
   DOCTOR_SPECIALISTS,
@@ -36,7 +37,7 @@ function mapStaticDoctors() {
   );
 }
 
-export async function getDoctorsPageData() {
+async function getDoctorsPageDataUncached() {
   try {
     /* One flat join, grouped below. A category with no active doctors still
        has to appear — Prisma's include returned it with an empty array — so
@@ -113,7 +114,7 @@ export async function getDoctorsPageData() {
   };
 }
 
-export async function getHomepageSpecialists() {
+async function getHomepageSpecialistsUncached() {
   try {
     const rows = await querySql(
       `SELECT d.id, d.name, d.education, d.experience, d.image, d.phone, d.timing,
@@ -134,7 +135,26 @@ export async function getHomepageSpecialists() {
   return HOMEPAGE_SPECIALISTS;
 }
 
-export async function getHomepageDoctors(limit = 10) {
+async function getHomepageDoctorsUncached(limit = 10) {
   const specialists = await getHomepageSpecialists();
   return specialists.slice(0, limit);
 }
+
+/* Cached across requests; the admin write routes invalidate these tags. */
+export const getDoctorsPageData = cachedRead(
+  getDoctorsPageDataUncached,
+  ["getDoctorsPageData"],
+  CACHE_TAGS.doctors,
+);
+
+export const getHomepageSpecialists = cachedRead(
+  getHomepageSpecialistsUncached,
+  ["getHomepageSpecialists"],
+  CACHE_TAGS.doctors,
+);
+
+export const getHomepageDoctors = cachedRead(
+  getHomepageDoctorsUncached,
+  ["getHomepageDoctors"],
+  CACHE_TAGS.doctors,
+);

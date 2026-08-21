@@ -1,3 +1,4 @@
+import { CACHE_TAGS, cachedRead } from "@/lib/cache";
 import {
   getAllServiceSlugs as catalogSlugs,
   getServiceBySlug as getCatalogService,
@@ -111,7 +112,7 @@ function mapDbServiceRow(row) {
   return mergeServiceRecord(catalog, row, row.detail);
 }
 
-export async function getAllServices() {
+async function getAllServicesUncached() {
   try {
     const rows = (
       await querySql(
@@ -137,7 +138,7 @@ export async function getAllServices() {
   }));
 }
 
-export async function getServiceBySlug(slug) {
+async function getServiceBySlugUncached(slug) {
   const catalog = getCatalogService(slug);
 
   try {
@@ -163,7 +164,7 @@ export async function getServiceBySlug(slug) {
   };
 }
 
-export async function getAllServiceSlugs() {
+async function getAllServiceSlugsUncached() {
   try {
     const rows = await querySql(
       `SELECT slug FROM SpecialtyService
@@ -210,3 +211,22 @@ export async function getSpecialtyServicesAdminList() {
 export async function getSpecialtyServiceBySlug(slug) {
   return getServiceBySlug(slug);
 }
+
+/* Cached across requests; the admin write routes invalidate these tags. */
+export const getAllServices = cachedRead(
+  getAllServicesUncached,
+  ["getAllServices"],
+  CACHE_TAGS.services,
+);
+
+export const getServiceBySlug = cachedRead(
+  getServiceBySlugUncached,
+  ["getServiceBySlug"],
+  CACHE_TAGS.services,
+);
+
+export const getAllServiceSlugs = cachedRead(
+  getAllServiceSlugsUncached,
+  ["getAllServiceSlugs"],
+  CACHE_TAGS.services,
+);

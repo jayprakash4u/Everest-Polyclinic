@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import {
   Activity,
@@ -12,10 +13,18 @@ import {
 } from "lucide-react";
 import HealthPackageCard from "@/components/sections/HealthPackageCard";
 import HealthPackagesHero from "@/components/sections/HealthPackagesHero";
-import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
 import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { SITE } from "@/constants";
+
+/* Loaded on demand. The booking modal is ~470 lines of form, date handling and
+   scroll-locking that only matters once somebody presses Book, and it pulls in
+   lenis with it — none of which needs to be in the first-load bundle of every
+   page that happens to show the button. */
+const BookAppointmentModal = dynamic(
+  () => import("@/components/modals/BookAppointmentModal"),
+  { ssr: false },
+);
 
 const SECTION_ICONS = {
   activity: Activity,
@@ -202,11 +211,13 @@ export default function HealthPackagesClientView({ packages = [] }) {
         </div>
       </section>
 
-      <BookAppointmentModal
-        isOpen={bookingOpen}
-        onClose={handleCloseBooking}
-        bookingPackage={selectedPackage}
-      />
+      {bookingOpen ? (
+        <BookAppointmentModal
+          isOpen
+          onClose={handleCloseBooking}
+          bookingPackage={selectedPackage}
+        />
+      ) : null}
     </main>
   );
 }
