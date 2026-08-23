@@ -18,7 +18,6 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
-  MessageSquareQuote,
   Package,
   Settings,
   Star,
@@ -68,7 +67,7 @@ const NAV_GROUPS = [
   {
     label: "Content",
     items: [
-      { href: "/admin/doctors", label: "Doctors", icon: Stethoscope },
+      { href: "/admin/pages/doctors", label: "Doctors", icon: Stethoscope },
       {
         href: "/admin/homepage-specialists",
         label: "Homepage Specialists",
@@ -82,17 +81,12 @@ const NAV_GROUPS = [
       { href: "/admin/why-choose-us", label: "Why Choose Us", icon: Star },
       { href: "/admin/stats", label: "Site Stats", icon: BarChart3 },
       {
-        href: "/admin/health-packages",
+        href: "/admin/pages/home/health-packages",
         label: "Health Packages",
         icon: Package,
       },
-      { href: "/admin/gallery", label: "Gallery", icon: ImageIcon },
-      { href: "/admin/blog", label: "Blog Posts", icon: BookOpen },
-      {
-        href: "/admin/testimonials",
-        label: "Patient Trust",
-        icon: MessageSquareQuote,
-      },
+      { href: "/admin/pages/gallery", label: "Gallery", icon: ImageIcon },
+      { href: "/admin/pages/blog", label: "Blog Posts", icon: BookOpen },
       { href: "/admin/faqs", label: "FAQs", icon: HelpCircle },
     ],
   },
