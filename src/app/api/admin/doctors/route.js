@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/admin-auth";
+import { CACHE_TAGS, revalidatePublic } from "@/lib/cache";
 import { prisma } from "@/lib/db";
 
 export async function GET() {
@@ -43,6 +44,9 @@ export async function POST(request) {
     include: { category: true },
   });
 
+  // The database changed, so the public site must stop serving its cached copy.
+  revalidatePublic(CACHE_TAGS.doctors);
+
   return NextResponse.json(doctor, { status: 201 });
 }
 
@@ -68,6 +72,9 @@ export async function PUT(request) {
     include: { category: true },
   });
 
+  // The database changed, so the public site must stop serving its cached copy.
+  revalidatePublic(CACHE_TAGS.doctors);
+
   return NextResponse.json(doctor);
 }
 
@@ -83,5 +90,8 @@ export async function DELETE(request) {
   }
 
   await prisma.doctor.delete({ where: { id } });
+  // The database changed, so the public site must stop serving its cached copy.
+  revalidatePublic(CACHE_TAGS.doctors);
+
   return NextResponse.json({ ok: true });
 }

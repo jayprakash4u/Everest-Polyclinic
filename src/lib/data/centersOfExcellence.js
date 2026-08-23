@@ -1,37 +1,45 @@
+import { CACHE_TAGS, cachedRead } from "@/lib/cache";
 import { CENTERS_OF_EXCELLENCE } from "@/constants/centerOfExcellence";
-import { prisma } from "@/lib/db";
+import { querySql } from "@/lib/sql";
 
-const IMAGE_BY_TITLE = Object.fromEntries(
-  CENTERS_OF_EXCELLENCE.map((item) => [item.title, item.image]),
-);
+/* Raw SQL rather than Prisma — see lib/data/whyChooseUs.js. */
 
 function mapCenter(row) {
   return {
     id: Number(row.id),
     title: row.title,
     description: row.description,
-    image: IMAGE_BY_TITLE[row.title] ?? row.image,
+    /* The stored image wins. This used to be overridden by a title-keyed
+       lookup into the constants, which was harmless while the rows were
+       seed-only but silently discarded anything uploaded through the admin
+       panel. The constant survives as the whole-list fallback below. */
+    image: row.image,
     slug: row.slug ?? null,
     sortOrder: Number(row.sortOrder),
-    isActive: Boolean(row.isActive),
+    isActive: Boolean(Number(row.isActive)),
   };
 }
 
-export async function getCentersOfExcellence() {
+async function getCentersOfExcellenceUncached() {
   try {
-    const rows = await prisma.$queryRaw`
-      SELECT [id], [title], [description], [image], [slug], [sortOrder], [isActive]
-      FROM [dbo].[CenterOfExcellence]
-      WHERE [isActive] = 1
-      ORDER BY [sortOrder] ASC, [id] ASC
-    `;
+    const rows = await querySql(
+      `SELECT id, title, description, image, slug, sortOrder, isActive
+       FROM CenterOfExcellence
+       WHERE isActive = 1
+       ORDER BY sortOrder ASC, id ASC`,
+    );
 
-    if (Array.isArray(rows) && rows.length) {
-      return rows.map(mapCenter);
-    }
+    if (rows.length) return rows.map(mapCenter);
   } catch (error) {
     console.warn("[db] Centers of excellence fallback:", error.message);
   }
 
   return CENTERS_OF_EXCELLENCE;
 }
+
+/* Cached across requests; the admin write routes invalidate these tags. */
+export const getCentersOfExcellence = cachedRead(
+  getCentersOfExcellenceUncached,
+  ["getCentersOfExcellence"],
+  CACHE_TAGS.centersOfExcellence,
+);

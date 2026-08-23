@@ -1,3 +1,4 @@
+import { CACHE_TAGS, cachedRead } from "@/lib/cache";
 import { TESTIMONIALS } from "@/constants";
 import { prisma } from "@/lib/db";
 
@@ -29,7 +30,7 @@ function mergeToMinimum(items, minimum = 6) {
   return merged.length > 0 ? merged : TESTIMONIALS;
 }
 
-export async function getTestimonials() {
+async function getTestimonialsUncached() {
   try {
     const rows = await prisma.testimonial.findMany({
       where: { isActive: true },
@@ -45,3 +46,10 @@ export async function getTestimonials() {
 
   return TESTIMONIALS;
 }
+
+/* Cached across requests; the admin write routes invalidate these tags. */
+export const getTestimonials = cachedRead(
+  getTestimonialsUncached,
+  ["getTestimonials"],
+  CACHE_TAGS.testimonials,
+);

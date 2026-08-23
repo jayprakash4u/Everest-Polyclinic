@@ -1,14 +1,23 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useId, useState } from "react";
 import Image from "next/image";
 import { ArrowRight, ChevronDown, PhoneCall } from "lucide-react";
 import Section from "@/components/ui/Section";
-import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
 import { STATIC_FAQS } from "@/constants/blogPosts";
 import { SITE } from "@/constants";
 import { encodePublicPath } from "@/lib/encode-public-path";
 import { cn } from "@/lib/utils";
+
+/* Loaded on demand. The booking modal is ~470 lines of form, date handling and
+   scroll-locking that only matters once somebody presses Book, and it pulls in
+   lenis with it — none of which needs to be in the first-load bundle of every
+   page that happens to show the button. */
+const BookAppointmentModal = dynamic(
+  () => import("@/components/modals/BookAppointmentModal"),
+  { ssr: false },
+);
 
 const SIDE_IMAGE = "/images/doctors/e1.jpg";
 
@@ -135,10 +144,11 @@ export default function FaqSection({ faqs = STATIC_FAQS }) {
         </div>
       </div>
 
-      <BookAppointmentModal
-        isOpen={bookingOpen}
-        onClose={() => setBookingOpen(false)}
-      />
+      {bookingOpen ? (
+        <BookAppointmentModal isOpen onClose={() => setBookingOpen(false)} />
+
+
+      ) : null}
     </Section>
   );
 }

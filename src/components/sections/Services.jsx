@@ -102,23 +102,29 @@ function ServiceCard({ service }) {
       </span>
 
       {/*
-        The cut. A disc painted in the section's own background colour sits over
-        the corner, carving a concave bite out of the card, and the button drops
-        into it. Doing it this way rather than with a CSS mask keeps the card's
-        border and shadow intact everywhere else.
+        The cut.
 
-        It is tied to the section tone: `Section tone="muted"` resolves to
-        bg-primary-50, so the disc must stay primary-50 to disappear.
+        One disc painted in the section's own background colour with the button
+        nested inside it. Nesting keeps the carved ring even on every side by
+        construction, rather than by keeping two sets of offsets in agreement.
+
+        The pair is pulled outwards so it straddles the card's bottom-right
+        corner — the disc takes a concave bite out of the card and the button
+        sits half outside it. That overhang is what makes the corner read as
+        scooped rather than as a button parked in a corner.
+
+        Doing it this way rather than with a CSS mask keeps the card's border
+        and shadow intact everywhere else. It is tied to the section tone:
+        `Section tone="muted"` resolves to bg-primary-50, so the disc must stay
+        primary-50 to disappear.
       */}
       <span
         aria-hidden="true"
-        className="absolute -bottom-1.5 -right-1.5 h-[72px] w-[72px] rounded-full bg-primary-50 sm:h-[80px] sm:w-[80px]"
-      />
-      <span
-        aria-hidden="true"
-        className="absolute bottom-2.5 right-2.5 flex h-11 w-11 items-center justify-center rounded-full bg-secondary-600 text-white shadow-e1 transition-all duration-300 group-hover:bg-secondary-700 group-hover:scale-105 sm:bottom-3 sm:right-3 sm:h-12 sm:w-12"
+        className="absolute -bottom-4 -right-4 flex h-[76px] w-[76px] items-center justify-center rounded-full bg-primary-50 sm:-bottom-5 sm:-right-5 sm:h-[88px] sm:w-[88px]"
       >
-        <ArrowUpRight className="h-5 w-5" strokeWidth={2.25} />
+        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary-600 text-white shadow-e1 transition-all duration-300 group-hover:scale-105 group-hover:bg-secondary-700 sm:h-12 sm:w-12">
+          <ArrowUpRight className="h-5 w-5" strokeWidth={2.25} />
+        </span>
       </span>
     </Link>
   );

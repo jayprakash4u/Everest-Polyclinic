@@ -1,3 +1,4 @@
+import { CACHE_TAGS, cachedRead } from "@/lib/cache";
 import { prisma } from "@/lib/db";
 
 const FALLBACK_GALLERY = [
@@ -75,7 +76,7 @@ const FALLBACK_GALLERY = [
   },
 ];
 
-export async function getGalleryImages() {
+async function getGalleryImagesUncached() {
   try {
     const items = await prisma.galleryImage.findMany({
       where: { isActive: true },
@@ -96,3 +97,10 @@ export async function getGalleryImages() {
 
   return FALLBACK_GALLERY;
 }
+
+/* Cached across requests; the admin write routes invalidate these tags. */
+export const getGalleryImages = cachedRead(
+  getGalleryImagesUncached,
+  ["getGalleryImages"],
+  CACHE_TAGS.gallery,
+);

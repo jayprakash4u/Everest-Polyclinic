@@ -1,3 +1,4 @@
+import { CACHE_TAGS, cachedRead } from "@/lib/cache";
 import { HEALTH_PACKAGES, HOMEPAGE_HEALTH_PACKAGES } from "@/constants/healthPackages";
 import { prisma } from "@/lib/db";
 
@@ -19,7 +20,7 @@ function mapPackageRow(pkg) {
   };
 }
 
-export async function getHealthPackages() {
+async function getHealthPackagesUncached() {
   try {
     const sections = await prisma.healthPackageSection.findMany({
       orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
@@ -54,7 +55,7 @@ export async function getHealthPackages() {
   return HEALTH_PACKAGES;
 }
 
-export async function getHomepageHealthPackages() {
+async function getHomepageHealthPackagesUncached() {
   try {
     const flagged = await prisma.healthPackage.findMany({
       where: { isActive: true, showOnHomepage: true },
@@ -82,3 +83,16 @@ export async function getHomepageHealthPackages() {
 
   return HOMEPAGE_HEALTH_PACKAGES;
 }
+
+/* Cached across requests; the admin write routes invalidate these tags. */
+export const getHealthPackages = cachedRead(
+  getHealthPackagesUncached,
+  ["getHealthPackages"],
+  CACHE_TAGS.healthPackages,
+);
+
+export const getHomepageHealthPackages = cachedRead(
+  getHomepageHealthPackagesUncached,
+  ["getHomepageHealthPackages"],
+  CACHE_TAGS.healthPackages,
+);

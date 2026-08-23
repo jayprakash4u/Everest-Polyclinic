@@ -17,9 +17,10 @@ import { getAllServices } from "@/lib/data/services";
 import { getCentersOfExcellence } from "@/lib/data/centersOfExcellence";
 import { getWhyChooseUsItems } from "@/lib/data/whyChooseUs";
 import { getFaqs } from "@/lib/data/faqs";
-import { getHeroSlides } from "@/lib/data/heroSlides";
-import { getHomeSettings } from "@/lib/data/homeSettings";
-import { HOME_SETTING_DEFAULTS } from "@/constants/homeSectionDefaults";
+import {
+  getHomeCareTeamImage,
+  getHomeHeroSlides,
+} from "@/lib/data/pageSections";
 
 export const metadata = {
   title: "Everest International Polyclinic — World-Class Healthcare in Nepal",
@@ -34,7 +35,7 @@ export default async function HomePage() {
     whyChooseUs,
     faqs,
     heroSlides,
-    homeSettings,
+    careTeamImage,
   ] = await Promise.all([
     getHomeTestimonials(),
     getHomepageHealthPackages(),
@@ -42,8 +43,8 @@ export default async function HomePage() {
     getCentersOfExcellence(),
     getWhyChooseUsItems(),
     getFaqs(),
-    getHeroSlides(),
-    getHomeSettings(HOME_SETTING_DEFAULTS),
+    getHomeHeroSlides(),
+    getHomeCareTeamImage(),
   ]);
 
   return (
@@ -52,7 +53,11 @@ export default async function HomePage() {
       <CenterOfExcellenceSection items={centers} />
       <DiagnosticCare />
       <LatestDiseases packages={healthPackages} />
-      <DoctorsSection image={homeSettings.careTeamImage} />
+      <DoctorsSection
+        specialists={specialists}
+        sideImage={careTeamImage.image}
+        sideImageAlt={careTeamImage.alt}
+      />
       <ContactBooking />
       <Services services={services} />
       <WhyChooseUs items={whyChooseUs} />

@@ -1,133 +1,87 @@
+"use client";
+
 import Link from "next/link";
-import { ChevronRight, ExternalLink } from "lucide-react";
+import {
+  ArrowRight,
+  ExternalLink,
+  Images,
+  MessageSquareQuote,
+  Users,
+} from "lucide-react";
+import Button from "@/components/ui/Button";
 import { AdminCard, AdminPageHeader } from "@/components/admin/AdminShell";
 
 /**
- * Sections of the homepage, in the order a visitor meets them.
+ * Overview for the home page.
  *
- * An `href` means the section has its own editor under this page. Anything
- * without one is not editable yet — its content still lives in code — and gets
- * an editor here as each is brought across.
+ * The editable parts are listed in the order a visitor scrolls past them, so
+ * an admin who knows what the page looks like can find the right screen
+ * without reading any labels.
  */
 const SECTIONS = [
   {
-    name: "Hero carousel",
-    description: "Rotating images, captions and alt text at the top of the page.",
     href: "/admin/pages/home/hero",
-  },
-  {
-    name: "Centres of Excellence",
-    description: "The six specialty cards below the hero.",
-  },
-  {
-    name: "Diagnostic care",
-    description: "Lab photography, opening hours and the test list.",
-  },
-  {
-    name: "Health packages",
+    icon: Images,
+    title: "Hero Slider",
     description:
-      "Priced checkup packages, and which of them appear on the homepage.",
-    href: "/admin/pages/home/health-packages",
+      "The full-width carousel at the top. Add, replace, reorder or remove slides and edit their captions.",
   },
   {
-    name: "Meet your care team",
-    description: "Section photograph, beside the care-team copy.",
     href: "/admin/pages/home/care-team",
+    icon: Users,
+    title: "Meet Our Care Team",
+    description:
+      "The photograph beside the doctors block, and the alt text that describes it.",
   },
   {
-    name: "Contact & booking",
-    description: "Address, phone, hours and the inline booking form.",
-  },
-  {
-    name: "Our medical services",
-    description: "The eight service cards and their icons.",
-  },
-  {
-    name: "Why Everest",
-    description: "Six reasons, with the side photograph.",
-  },
-  {
-    name: "Patient voices",
-    description: "Patient reviews shown in the testimonials carousel.",
-    href: "/admin/pages/home/testimonials",
-  },
-  {
-    name: "FAQs",
-    description: "Accordion of common questions.",
+    href: "/admin/pages/home/patient-voices",
+    icon: MessageSquareQuote,
+    title: "Patient Voices",
+    description:
+      "The review carousel. Add new reviews, edit or delete existing ones, and attach patient photos.",
   },
 ];
 
-export default function AdminHomePage() {
+export default function HomePageOverview() {
   return (
     <>
       <AdminPageHeader
-        title="Home page"
-        subtitle="Every section a visitor sees, in the order they meet it."
+        title="Home Page"
+        subtitle="Everything on the public home page you can change, in the order a visitor meets it."
         action={
-          <Link
-            href="/"
-            target="_blank"
-            className="inline-flex items-center gap-2 rounded-lg border-2 border-primary-600 px-4 py-2 text-sm font-semibold text-primary-600 transition-colors hover:bg-primary-50"
-          >
-            View page
-            <ExternalLink size={15} />
-          </Link>
+          <Button href="/" target="_blank" variant="outline" size="sm">
+            View home page
+            <ExternalLink size={14} />
+          </Button>
         }
       />
 
-      <AdminCard className="p-0 sm:p-0">
-        <ul className="divide-y divide-slate-100">
-          {SECTIONS.map((section, index) => {
-            const target = section.href;
-
-            const row = (
-              <div className="flex items-center gap-4 px-4 py-4 sm:px-6">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-50 text-xs font-bold text-primary-700">
-                  {index + 1}
+      <div className="grid gap-4 sm:grid-cols-2">
+        {SECTIONS.map(({ href, icon: Icon, title, description }) => (
+          <Link key={href} href={href} className="group">
+            <AdminCard className="h-full transition-all group-hover:border-primary-300 group-hover:shadow-md">
+              <div className="flex items-start gap-4">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600 transition-colors group-hover:bg-primary-600 group-hover:text-white">
+                  <Icon size={20} strokeWidth={1.9} />
                 </span>
 
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-bold text-[#1a3a5c]">{section.name}</p>
-                  <p className="mt-0.5 text-sm text-slate-500">
-                    {section.description}
+                  <h3 className="flex items-center gap-1.5 font-heading text-base font-bold text-primary-900">
+                    {title}
+                    <ArrowRight
+                      size={15}
+                      className="text-primary-400 transition-transform duration-200 group-hover:translate-x-0.5"
+                    />
+                  </h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
+                    {description}
                   </p>
                 </div>
-
-                {section.href ? (
-                  <span className="hidden shrink-0 rounded-full bg-secondary-50 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-secondary-700 sm:inline">
-                    Edit
-                  </span>
-                ) : (
-                  <span className="hidden shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-400 sm:inline">
-                    Not editable yet
-                  </span>
-                )}
-
-                {target ? (
-                  <ChevronRight size={18} className="shrink-0 text-slate-300" />
-                ) : (
-                  <span className="w-[18px] shrink-0" />
-                )}
               </div>
-            );
-
-            return (
-              <li key={section.name}>
-                {target ? (
-                  <Link
-                    href={target}
-                    className="block transition-colors hover:bg-primary-50/50"
-                  >
-                    {row}
-                  </Link>
-                ) : (
-                  row
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </AdminCard>
+            </AdminCard>
+          </Link>
+        ))}
+      </div>
     </>
   );
 }

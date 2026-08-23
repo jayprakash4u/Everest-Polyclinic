@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
@@ -20,11 +21,19 @@ import {
   NAV_LINKS,
   PRIMARY_NAV_LINKS,
   SECONDARY_NAV_LINKS,
-  SITE,
 } from "@/constants";
+import { useSite } from "@/components/providers/SiteProvider";
 import ServicesOptionsMenu from "@/components/layout/ServicesOptionsMenu";
-import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
 import { cn } from "@/lib/utils";
+
+/* Loaded on demand. The booking modal is ~470 lines of form, date handling and
+   scroll-locking that only matters once somebody presses Book, and it pulls in
+   lenis with it — none of which needs to be in the first-load bundle of every
+   page that happens to show the button. */
+const BookAppointmentModal = dynamic(
+  () => import("@/components/modals/BookAppointmentModal"),
+  { ssr: false },
+);
 
 const SERVICES_MENU_WIDTH = 860;
 const VIEWPORT_PADDING = 16;
@@ -99,6 +108,8 @@ function UtilityItem({ icon: Icon, label, value, href, onClick, arrow }) {
  * Not sticky — it scrolls away and the navigation alone follows the reader.
  */
 function UtilityBar({ onBook }) {
+  const SITE = useSite();
+
   return (
     <div className="hidden bg-primary-900 md:block">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-6 gap-y-4 px-4 py-3.5 sm:px-6 lg:grid-cols-4 lg:px-8">
@@ -184,6 +195,7 @@ function BrandLockup({ compact, onClick }) {
 }
 
 export default function Navbar() {
+  const SITE = useSite();
   const pathname = usePathname();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -652,10 +664,11 @@ export default function Navbar() {
         </aside>
       </div>
 
-      <BookAppointmentModal
-        isOpen={bookingOpen}
-        onClose={() => setBookingOpen(false)}
-      />
+      {bookingOpen ? (
+        <BookAppointmentModal isOpen onClose={() => setBookingOpen(false)} />
+
+
+      ) : null}
 
       {/* servicesOpen only flips via a client event, so no mount guard is needed. */}
       {servicesOpen &&

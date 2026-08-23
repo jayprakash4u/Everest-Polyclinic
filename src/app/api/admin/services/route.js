@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/admin-auth";
+import { CACHE_TAGS, revalidatePublic } from "@/lib/cache";
 import { prisma } from "@/lib/db";
 
 function parseContentJson(raw) {
@@ -97,6 +98,9 @@ export async function PUT(request) {
     },
     include: { detail: true },
   });
+
+  // The database changed, so the public site must stop serving its cached copy.
+  revalidatePublic(CACHE_TAGS.services);
 
   return NextResponse.json(updated);
 }

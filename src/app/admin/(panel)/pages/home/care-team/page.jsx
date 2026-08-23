@@ -1,163 +1,123 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
-import { ArrowLeft, ExternalLink, RotateCcw } from "lucide-react";
+import { ExternalLink } from "lucide-react";
+import Button from "@/components/ui/Button";
 import AdminImageUpload from "@/components/admin/AdminImageUpload";
-import { AdminCard, AdminPageHeader } from "@/components/admin/AdminShell";
+import AdminSectionCard from "@/components/admin/AdminSectionCard";
+import {
+  AdminPageHeader,
+  adminInputClass,
+  adminLabelClass,
+} from "@/components/admin/AdminShell";
 
-export default function AdminCareTeamPage() {
-  const [image, setImage] = useState("");
-  const [defaultImage, setDefaultImage] = useState("");
+export default function CareTeamAdminPage() {
+  const [form, setForm] = useState({ image: "", alt: "" });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
-  const [saved, setSaved] = useState(false);
+  const [status, setStatus] = useState(null);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const response = await fetch("/api/admin/home-settings");
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Unable to load.");
-      setImage(data.settings?.careTeamImage ?? "");
-      setDefaultImage(data.defaults?.careTeamImage ?? "");
-    } catch (loadError) {
-      setError(loadError.message);
-    } finally {
-      setLoading(false);
-    }
+  const fetchSection = useCallback(async () => {
+    const response = await fetch("/api/admin/page-sections?page=home");
+    if (!response.ok) return { image: "", alt: "" };
+    const data = await response.json();
+    const [row] = data.sections?.["care-team"] ?? [];
+    return { image: row?.image ?? "", alt: row?.alt ?? "" };
   }, []);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    let cancelled = false;
 
-  const handleSave = async (value) => {
+    fetchSection().then((data) => {
+      if (cancelled) return;
+      setForm(data);
+      setLoading(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [fetchSection]);
+
+  const handleSave = async () => {
     setSaving(true);
-    setError("");
-    setSaved(false);
+    setStatus(null);
+
     try {
-      const response = await fetch("/api/admin/home-settings", {
+      const response = await fetch("/api/admin/page-sections", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ settings: { careTeamImage: value } }),
+        body: JSON.stringify({
+          page: "home",
+          section: "care-team",
+          /* An empty image clears the section, and the public page then falls
+             back to the photograph the site shipped with. */
+          items: form.image ? [form] : [],
+        }),
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Unable to save.");
-      setImage(data.settings?.careTeamImage ?? "");
-      setSaved(true);
-    } catch (saveError) {
-      setError(saveError.message);
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Failed to save.");
+
+      setStatus({
+        ok: true,
+        message: "Saved. Reload the home page to see it.",
+      });
+    } catch (error) {
+      setStatus({ ok: false, message: error.message || "Failed to save." });
     } finally {
       setSaving(false);
     }
   };
 
-  const isDefault = image === defaultImage;
-
   return (
     <>
       <AdminPageHeader
-        title="Meet your care team"
-        subtitle="The photograph beside the care-team block on the homepage."
+        title="Meet Our Care Team"
+        subtitle="The doctors block partway down the home page."
         action={
-          <div className="flex items-center gap-2">
-            <Link
-              href="/admin/pages/home"
-              className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
-            >
-              <ArrowLeft size={15} />
-              Home page
-            </Link>
-            <Link
-              href="/"
-              target="_blank"
-              className="inline-flex items-center gap-2 rounded-lg border-2 border-primary-600 px-4 py-2 text-sm font-semibold text-primary-600 transition-colors hover:bg-primary-50"
-            >
-              View page
-              <ExternalLink size={15} />
-            </Link>
-          </div>
+          <Button href="/" target="_blank" variant="outline" size="sm">
+            View home page
+            <ExternalLink size={14} />
+          </Button>
         }
       />
 
-      <AdminCard>
-        {error ? (
-          <p role="alert" className="mb-4 rounded-lg bg-alert-50 px-4 py-3 text-sm text-alert-700">
-            {error}
-          </p>
-        ) : null}
-        {saved ? (
-          <p role="status" className="mb-4 rounded-lg bg-secondary-50 px-4 py-3 text-sm text-secondary-700">
-            Saved. Refresh the homepage to see the change.
-          </p>
-        ) : null}
-
+      <AdminSectionCard
+        title="Section photograph"
+        description="Holds the right-hand side of the section from laptop width up, and sits above the copy on a phone. Keep the subject toward the centre of the frame so neither crop cuts them off."
+        onSave={handleSave}
+        saving={saving}
+        status={status}
+      >
         {loading ? (
-          <p className="text-sm text-slate-500">Loading…</p>
+          <p className="py-8 text-center text-sm text-slate-400">Loading…</p>
         ) : (
-          <div className="grid gap-6 lg:grid-cols-2">
-            <div>
-              <AdminImageUpload
-                label="Section photograph"
-                value={image}
-                onChange={(url) => {
-                  setSaved(false);
-                  setImage(url);
-                }}
+          <>
+            <AdminImageUpload
+              label="Photograph"
+              value={form.image}
+              onChange={(url) => setForm((prev) => ({ ...prev, image: url }))}
+            />
+
+            <div className="mt-5 max-w-xl">
+              <label className={adminLabelClass}>Alt text</label>
+              <input
+                type="text"
+                value={form.alt}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, alt: e.target.value }))
+                }
+                placeholder="A clinician at Everest International Polyclinic"
+                className={adminInputClass}
               />
-
-              <div className="mt-4 flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleSave(image)}
-                  disabled={saving}
-                  className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {saving ? "Saving…" : "Save image"}
-                </button>
-
-                {/* Clearing the stored value falls back to the shipped photo
-                    rather than leaving the section with no image at all. */}
-                <button
-                  type="button"
-                  onClick={() => handleSave("")}
-                  disabled={saving || isDefault}
-                  className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 disabled:opacity-40"
-                >
-                  <RotateCcw size={15} />
-                  Reset to default
-                </button>
-              </div>
+              <p className="mt-1.5 text-xs text-slate-400">
+                Describes the photograph for screen readers and for anyone whose
+                images fail to load.
+              </p>
             </div>
-
-            <div className="rounded-xl bg-slate-50 p-4 text-sm text-slate-600 ring-1 ring-slate-200">
-              <p className="font-bold text-[#1a3a5c]">How this image is used</p>
-              <ul className="mt-3 space-y-2">
-                <li>
-                  It fills the right-hand side of the section on desktop and sits
-                  above the text on phones, cropped to fill either way.
-                </li>
-                <li>
-                  A <strong>landscape</strong> photo works best — roughly 3:2.
-                  The current artwork carries its own soft background and dot
-                  pattern on the left, which lets it blend into the page.
-                </li>
-                <li>
-                  Nothing important should sit in the far left of the frame; on
-                  desktop that edge is where the photo meets the copy.
-                </li>
-                <li>
-                  Aim for at least 1400px wide so it stays sharp on large
-                  screens.
-                </li>
-              </ul>
-            </div>
-          </div>
+          </>
         )}
-      </AdminCard>
+      </AdminSectionCard>
     </>
   );
 }

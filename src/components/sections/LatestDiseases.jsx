@@ -1,10 +1,10 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import HealthPackageCard from "@/components/sections/HealthPackageCard";
-import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
 import { HOMEPAGE_HEALTH_PACKAGES } from "@/constants/healthPackages";
 import Section from "@/components/ui/Section";
 import SectionHeader from "@/components/ui/SectionHeader";
@@ -13,6 +13,15 @@ import HorizontalSnapCarousel, {
   scrollCarouselPage,
 } from "@/components/ui/HorizontalSnapCarousel";
 import { cn } from "@/lib/utils";
+
+/* Loaded on demand. The booking modal is ~470 lines of form, date handling and
+   scroll-locking that only matters once somebody presses Book, and it pulls in
+   lenis with it — none of which needs to be in the first-load bundle of every
+   page that happens to show the button. */
+const BookAppointmentModal = dynamic(
+  () => import("@/components/modals/BookAppointmentModal"),
+  { ssr: false },
+);
 
 export default function LatestDiseases({
   packages = HOMEPAGE_HEALTH_PACKAGES,
@@ -104,11 +113,13 @@ export default function LatestDiseases({
         ))}
       </HorizontalSnapCarousel>
 
-      <BookAppointmentModal
-        isOpen={bookingOpen}
-        onClose={handleCloseBooking}
-        bookingPackage={selectedPackage}
-      />
+      {bookingOpen ? (
+        <BookAppointmentModal
+          isOpen
+          onClose={handleCloseBooking}
+          bookingPackage={selectedPackage}
+        />
+      ) : null}
     </Section>
   );
 }

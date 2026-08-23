@@ -4,10 +4,7 @@ import { ArrowRight, Baby, Stethoscope, Users, Venus } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import { encodePublicPath } from "@/lib/encode-public-path";
-
-import { HOME_SETTING_DEFAULTS } from "@/constants/homeSectionDefaults";
-
-const SIDE_IMAGE = HOME_SETTING_DEFAULTS.careTeamImage;
+import { HOME_CARE_TEAM_IMAGE } from "@/constants/homepageSections";
 
 /* Three entry points into the specialist list, each a real service route. */
 const DEPARTMENTS = [
@@ -31,7 +28,12 @@ const DEPARTMENTS = [
   },
 ];
 
-export default function DoctorsSection({ image = SIDE_IMAGE }) {
+/* The photograph is admin-managed (Admin → Pages → Home Page).
+   HOME_CARE_TEAM_IMAGE is what the site shipped with and the fallback. */
+export default function DoctorsSection({ sideImage, sideImageAlt }) {
+  const image = sideImage || HOME_CARE_TEAM_IMAGE.image;
+  const alt = sideImageAlt || HOME_CARE_TEAM_IMAGE.alt;
+
   return (
     <section className="relative isolate overflow-hidden bg-gradient-to-br from-primary-50/60 via-white to-white">
       {/*
@@ -44,8 +46,8 @@ export default function DoctorsSection({ image = SIDE_IMAGE }) {
       */}
       <div className="relative aspect-[3/2] w-full overflow-hidden lg:absolute lg:inset-y-0 lg:right-0 lg:aspect-auto lg:w-[56%]">
         <Image
-          src={encodePublicPath(image || SIDE_IMAGE)}
-          alt="A clinician at Everest International Polyclinic"
+          src={encodePublicPath(image)}
+          alt={alt}
           fill
           sizes="(min-width: 1024px) 56vw, 100vw"
           className="object-cover object-[62%_center] lg:object-center"
@@ -60,7 +62,10 @@ export default function DoctorsSection({ image = SIDE_IMAGE }) {
           <p className="text-xs font-bold uppercase tracking-[0.16em] text-secondary-600 sm:text-sm">
             Meet your care team
           </p>
-          <span aria-hidden="true" className="mt-3 block h-0.5 w-10 bg-secondary-500" />
+          <span
+            aria-hidden="true"
+            className="mt-3 block h-0.5 w-10 bg-secondary-500"
+          />
 
           <h2 className="mt-6 font-heading text-[2rem] font-semibold leading-[1.12] tracking-[-0.015em] text-primary-900 sm:text-[2.5rem] lg:text-[3rem]">
             Experienced doctors.
@@ -68,7 +73,10 @@ export default function DoctorsSection({ image = SIDE_IMAGE }) {
             <span className="text-secondary-600">Personal attention.</span>
           </h2>
 
-          <span aria-hidden="true" className="mt-6 block h-0.5 w-10 bg-secondary-500" />
+          <span
+            aria-hidden="true"
+            className="mt-6 block h-0.5 w-10 bg-secondary-500"
+          />
 
           <p className="mt-6 max-w-md text-base leading-relaxed text-slate-600 lg:text-lg">
             From everyday healthcare to specialist treatment, meet the

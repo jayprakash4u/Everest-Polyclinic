@@ -1,7 +1,8 @@
+import { CACHE_TAGS, cachedRead } from "@/lib/cache";
 import { STATS } from "@/constants";
 import { prisma } from "@/lib/db";
 
-export async function getSiteStats() {
+async function getSiteStatsUncached() {
   try {
     const rows = await prisma.statistic.findMany({
       where: { context: "site", isActive: true },
@@ -36,3 +37,10 @@ export async function getSiteStatsAdmin() {
     return [];
   }
 }
+
+/* Cached across requests; the admin write routes invalidate these tags. */
+export const getSiteStats = cachedRead(
+  getSiteStatsUncached,
+  ["getSiteStats"],
+  CACHE_TAGS.stats,
+);

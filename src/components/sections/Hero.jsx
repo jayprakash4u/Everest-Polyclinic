@@ -1,15 +1,24 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import gsap from "gsap";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import { encodePublicPath } from "@/lib/encode-public-path";
+import { loadGsap } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
-import BookAppointmentModal from "@/components/modals/BookAppointmentModal";
-import { HOME_HERO_SLIDES } from "@/constants/homeHero";
+import { HOME_HERO_SLIDES } from "@/constants/homepageSections";
+
+/* Loaded on demand. The booking modal is ~470 lines of form, date handling and
+   scroll-locking that only matters once somebody presses Book, and it pulls in
+   lenis with it — none of which needs to be in the first-load bundle of every
+   page that happens to show the button. */
+const BookAppointmentModal = dynamic(
+  () => import("@/components/modals/BookAppointmentModal"),
+  { ssr: false },
+);
 
 /**
  * Full-bleed carousel: the photography runs the whole viewport width and the
@@ -27,8 +36,8 @@ import { HOME_HERO_SLIDES } from "@/constants/homeHero";
  * photograph worth showing (the people, the theatre, the scanner) stays bright
  * and untouched.
  */
-/* Slides arrive from the database via page.js; the constant is the fallback and
-   the shipped default. Edited under Admin → Pages → Home page. */
+/* The frames are admin-managed (Admin → Pages → Home Page). HOME_HERO_SLIDES
+   is what the site shipped with and what renders if nothing is stored. */
 
 const PROOF = [
   { value: "25,000+", label: "Patients treated" },
@@ -47,8 +56,14 @@ const SLIDE_MS = 3500;
 const SCRIM_DESKTOP =
   "linear-gradient(90deg, rgba(11,41,81,1) 0%, rgba(11,41,81,1) 34%, rgba(11,41,81,0.97) 44%, rgba(11,41,81,0.72) 58%, rgba(11,41,81,0.30) 74%, rgba(11,41,81,0.05) 90%, rgba(11,41,81,0) 100%)";
 
-export default function Hero({ slides = HOME_HERO_SLIDES }) {
-  const SLIDES = slides?.length ? slides : HOME_HERO_SLIDES;
+export default function Hero({ slides }) {
+  /* An admin can delete their way down to nothing. Falling back here rather
+     than rendering an empty carousel keeps the top of the page from collapsing. */
+  const SLIDES = useMemo(
+    () => (slides?.length ? slides : HOME_HERO_SLIDES),
+    [slides],
+  );
+
   const [bookingOpen, setBookingOpen] = useState(false);
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -64,20 +79,21 @@ export default function Hero({ slides = HOME_HERO_SLIDES }) {
   const rootRef = useRef(null);
   const budgetRef = useRef({ slide: 0, ms: SLIDE_MS });
 
-  const go = useCallback((next) => {
-    setActive(next);
-    setMounted((current) => {
-      const upcoming = (next + 1) % SLIDES.length;
-      if (current.has(next) && current.has(upcoming)) return current;
+  const go = useCallback(
+    (next) => {
+      setActive(next);
+      setMounted((current) => {
+        const upcoming = (next + 1) % SLIDES.length;
+        if (current.has(next) && current.has(upcoming)) return current;
 
-      const updated = new Set(current);
-      updated.add(next);
-      updated.add(upcoming);
-      return updated;
-    });
-    // Slide count is data now, so it has to be a dependency — with `[]` this
-    // would keep wrapping against whatever length the first render happened to see.
-  }, [SLIDES.length]);
+        const updated = new Set(current);
+        updated.add(next);
+        updated.add(upcoming);
+        return updated;
+      });
+    },
+    [SLIDES.length],
+  );
 
   /* Reduced motion changes *how* a slide arrives, not whether it does. The
      rotation is the point of the section, so it always runs; what a reduced-
@@ -120,19 +136,33 @@ export default function Hero({ slides = HOME_HERO_SLIDES }) {
     };
   }, [paused, active, go, SLIDES.length]);
 
+  /* GSAP is fetched on first use rather than imported at the top of the file.
+     This is the hero, so its bundle is on the critical path for the LCP — and
+     the first crossfade cannot happen until the slide timer has run for several
+     seconds, which is far longer than the library takes to arrive. */
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      slideRefs.current.forEach((node, i) => {
-        if (!node) return;
-        gsap.to(node, {
-          opacity: i === active ? 1 : 0,
-          duration: reduceMotion ? 0 : 0.6,
-          ease: "power2.inOut",
-        });
-      });
-    }, rootRef);
+    let cancelled = false;
+    let ctx;
 
-    return () => ctx.revert();
+    loadGsap().then(({ gsap }) => {
+      if (cancelled) return;
+
+      ctx = gsap.context(() => {
+        slideRefs.current.forEach((node, i) => {
+          if (!node) return;
+          gsap.to(node, {
+            opacity: i === active ? 1 : 0,
+            duration: reduceMotion ? 0 : 0.6,
+            ease: "power2.inOut",
+          });
+        });
+      }, rootRef);
+    });
+
+    return () => {
+      cancelled = true;
+      ctx?.revert();
+    };
   }, [active, mounted, reduceMotion]);
 
   const activeSlide = SLIDES[active];
@@ -169,11 +199,11 @@ export default function Hero({ slides = HOME_HERO_SLIDES }) {
         {SLIDES.map((slide, i) =>
           mounted.has(i) ? (
             <Image
-              key={slide.src}
+              key={`${slide.image}-${i}`}
               ref={(node) => {
                 slideRefs.current[i] = node;
               }}
-              src={encodePublicPath(slide.src)}
+              src={encodePublicPath(slide.image)}
               alt={i === active ? slide.alt : ""}
               aria-hidden={i !== active}
               fill
@@ -208,7 +238,7 @@ export default function Hero({ slides = HOME_HERO_SLIDES }) {
         <div className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-slate-900/45 px-2 py-1.5 ring-1 ring-inset ring-white/20 backdrop-blur-sm sm:bottom-4 sm:right-4 lg:hidden">
           {SLIDES.map((slide, i) => (
             <button
-              key={slide.src}
+              key={`${slide.image}-${i}`}
               type="button"
               onClick={() => go(i)}
               aria-label={`Show ${slide.label}`}
@@ -245,12 +275,14 @@ export default function Hero({ slides = HOME_HERO_SLIDES }) {
           <h1 className="mt-6 font-heading text-[2.25rem] font-semibold leading-[1.08] tracking-[-0.015em] text-primary-900 sm:text-5xl lg:text-[3.375rem] lg:text-white">
             Care that feels
             <br />
-            <span className="text-primary-600 lg:text-secondary-300">personal.</span>
+            <span className="text-primary-600 lg:text-secondary-300">
+              personal.
+            </span>
           </h1>
 
           <p className="mt-5 max-w-lg text-base leading-relaxed text-slate-600 lg:text-lg lg:text-white/80">
-            Specialist consultation, modern diagnostics and follow-up care —
-            all under one roof, with a team that takes the time to explain.
+            Specialist consultation, modern diagnostics and follow-up care — all
+            under one roof, with a team that takes the time to explain.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
@@ -324,7 +356,7 @@ export default function Hero({ slides = HOME_HERO_SLIDES }) {
 
               return (
                 <button
-                  key={slide.src}
+                  key={`${slide.image}-${i}`}
                   type="button"
                   onClick={() => go(i)}
                   aria-current={isActive}
@@ -357,7 +389,9 @@ export default function Hero({ slides = HOME_HERO_SLIDES }) {
                             ? undefined
                             : {
                                 animationDuration: `${SLIDE_MS}ms`,
-                                animationPlayState: paused ? "paused" : "running",
+                                animationPlayState: paused
+                                  ? "paused"
+                                  : "running",
                               }
                         }
                       />
@@ -370,10 +404,9 @@ export default function Hero({ slides = HOME_HERO_SLIDES }) {
         </Container>
       </div>
 
-      <BookAppointmentModal
-        isOpen={bookingOpen}
-        onClose={() => setBookingOpen(false)}
-      />
+      {bookingOpen ? (
+        <BookAppointmentModal isOpen onClose={() => setBookingOpen(false)} />
+      ) : null}
     </section>
   );
 }

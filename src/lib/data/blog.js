@@ -1,3 +1,4 @@
+import { CACHE_TAGS, cachedRead } from "@/lib/cache";
 import {
   BLOG_POSTS,
   formatBlogDate,
@@ -19,7 +20,7 @@ function mapBlogPost(row) {
   };
 }
 
-export async function getBlogPosts() {
+async function getBlogPostsUncached() {
   try {
     const rows = await prisma.blogPost.findMany({
       where: { isPublished: true },
@@ -66,3 +67,10 @@ export async function getBlogStats(postCount) {
     { value: "Weekly", label: "Fresh Updates" },
   ];
 }
+
+/* Cached across requests; the admin write routes invalidate these tags. */
+export const getBlogPosts = cachedRead(
+  getBlogPostsUncached,
+  ["getBlogPosts"],
+  CACHE_TAGS.blog,
+);

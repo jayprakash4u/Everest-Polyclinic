@@ -1,83 +1,71 @@
-import odbc from "odbc";
-import { sqlServerConfig } from "./env.js";
+import mysql from "mysql2/promise";
+import { mysqlConfig } from "./env.js";
 
-let poolPromise = null;
+/**
+ * The raw-SQL path into MySQL.
+ *
+ * This sits alongside Prisma rather than replacing it: the public read helpers
+ * in lib/data use hand-written SQL (joins and aggregates Prisma would need
+ * several round trips for), while the admin write routes mostly use the Prisma
+ * client. Both talk to the same server.
+ *
+ * A pool, not a single connection. The database is remote, so a TCP round trip
+ * per request is the dominant cost and reconnecting on every query would show
+ * up directly in page latency.
+ */
+let pool;
 
-function buildConnectionStrings() {
-  const configured = sqlServerConfig.connectionString?.trim();
-  const database = sqlServerConfig.database ?? "EverestPolyclinic";
-  const host = sqlServerConfig.host ?? "(local)\\SQLEXPRESS";
-
-  const servers = [
-    host,
-    process.env.SQLSERVER_PIPE ??
-      "np:\\\\.\\pipe\\MSSQL$SQLEXPRESS\\sql\\query",
-    "(local)\\SQLEXPRESS",
-    ".\\SQLEXPRESS",
-    "localhost\\SQLEXPRESS",
-  ].filter(Boolean);
-
-  const uniqueServers = [...new Set(servers)];
-
-  const generated = uniqueServers.map((server) =>
-    server.startsWith("np:")
-      ? `Driver={ODBC Driver 17 for SQL Server};Server=${server};Database=${database};Trusted_Connection=Yes;TrustServerCertificate=Yes;`
-      : `Driver={ODBC Driver 17 for SQL Server};Server=${server};Database=${database};Trusted_Connection=Yes;TrustServerCertificate=Yes;`,
-  );
-
-  if (configured) {
-    return [configured, ...generated.filter((value) => value !== configured)];
-  }
-
-  return generated;
-}
-
-export function getSqlConnectionString() {
-  return buildConnectionStrings()[0];
-}
-
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function connectWithFallback() {
-  const candidates = buildConnectionStrings();
-  let lastError;
-
-  for (const connectionString of candidates) {
-    for (let attempt = 0; attempt < 2; attempt += 1) {
-      try {
-        return await odbc.connect(connectionString);
-      } catch (error) {
-        lastError = error;
-        if (attempt === 0) {
-          await wait(1000);
-        }
-      }
-    }
-  }
-
-  throw lastError;
-}
-
-export async function getSqlConnection() {
-  if (!poolPromise) {
-    poolPromise = connectWithFallback().catch((error) => {
-      poolPromise = null;
-      throw error;
+export function getPool() {
+  if (!pool) {
+    pool = mysql.createPool({
+      host: mysqlConfig.host,
+      port: mysqlConfig.port,
+      user: mysqlConfig.user,
+      password: mysqlConfig.password,
+      database: mysqlConfig.database,
+      waitForConnections: true,
+      connectionLimit: 10,
+      /* Queue rather than reject: a burst of parallel section reads on the
+         homepage should wait for a connection, not fail the render. */
+      queueLimit: 0,
+      enableKeepAlive: true,
+      keepAliveInitialDelay: 10_000,
+      /* DATETIME comes back as a JS Date; DECIMAL/BIGINT as strings unless
+         asked otherwise. Callers already coerce with Number() where it
+         matters, so the defaults are left alone. */
+      timezone: "Z",
+      charset: "utf8mb4_general_ci",
     });
   }
 
-  return poolPromise;
+  return pool;
 }
 
+/**
+ * Runs a parameterised query and returns just the rows.
+ *
+ * Placeholders are `?`, and values must be passed through `params` — never
+ * interpolated into the string — so the driver escapes them.
+ */
 export async function querySql(sql, params = []) {
+  const [rows] = await getPool().query(sql, params);
+  return rows;
+}
+
+/** Runs several statements as one transaction on a single pooled connection. */
+export async function withTransaction(run) {
+  const connection = await getPool().getConnection();
+
   try {
-    const connection = await getSqlConnection();
-    return await connection.query(sql, params);
+    await connection.beginTransaction();
+    const result = await run(connection);
+    await connection.commit();
+    return result;
   } catch (error) {
-    poolPromise = null;
+    await connection.rollback().catch(() => {});
     throw error;
+  } finally {
+    connection.release();
   }
 }
 
@@ -92,24 +80,29 @@ export async function isDatabaseAvailable() {
 
 export async function findAdminByEmail(email) {
   const rows = await querySql(
-    "SELECT TOP 1 id, name, email, passwordHash, role, isActive FROM AdminUser WHERE email = ?",
+    "SELECT id, name, email, passwordHash, role, isActive FROM `AdminUser` WHERE email = ? LIMIT 1",
     [email],
   );
 
   return rows[0] ?? null;
 }
 
+/** True for "the server is unreachable", as opposed to a bad query. */
 export function isSqlConnectionError(error) {
   if (!error) return false;
-  if (Array.isArray(error.odbcErrors) && error.odbcErrors.length > 0) {
-    return true;
-  }
 
-  const message = String(error.message ?? "").toLowerCase();
-  return (
-    message.includes("connect") ||
-    message.includes("timeout") ||
-    message.includes("instance was not available") ||
-    message.includes("server is not found")
-  );
+  const transportCodes = new Set([
+    "ECONNREFUSED",
+    "ETIMEDOUT",
+    "ENOTFOUND",
+    "EHOSTUNREACH",
+    "ENETUNREACH",
+    "ECONNRESET",
+    "EPIPE",
+    "PROTOCOL_CONNECTION_LOST",
+    "PROTOCOL_SEQUENCE_TIMEOUT",
+    "ER_CON_COUNT_ERROR",
+  ]);
+
+  return transportCodes.has(error.code);
 }

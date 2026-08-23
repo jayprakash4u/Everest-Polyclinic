@@ -243,7 +243,9 @@ export default function ContactPage() {
                     {
                       icon: Phone,
                       title: "Phone",
-                      lines: [SITE.phone, SITE.emergencyHotline],
+                      /* The main number and the emergency hotline are the same
+                         value in SITE, so listing both printed it twice. */
+                      lines: [...new Set([SITE.phone, SITE.emergencyHotline])],
                     },
                     {
                       icon: Mail,
@@ -261,8 +263,14 @@ export default function ContactPage() {
                           <h4 className="text-sm font-bold text-text-dark">
                             {item.title}
                           </h4>
-                          {item.lines.map((line) => (
-                            <p key={line} className="text-sm text-slate-500">
+                          {/* Keyed by position, not by value — these lines are
+                              a fixed ordered list, and two of them can hold the
+                              same string. */}
+                          {item.lines.map((line, index) => (
+                            <p
+                              key={`${item.title}-${index}`}
+                              className="text-sm text-slate-500"
+                            >
                               {line}
                             </p>
                           ))}
