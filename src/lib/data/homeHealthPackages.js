@@ -2,11 +2,13 @@ import { querySql } from "@/lib/sql";
 import { HOMEPAGE_HEALTH_PACKAGES } from "@/constants/healthPackages";
 
 /*
- * Raw ODBC rather than Prisma, for the same reason as the hero slides: Prisma's
- * MSSQL layer fails on any parameterised `findMany` here ("The variable name
- * '@P1' has already been declared"), so every Prisma-backed read on this site
- * silently serves its static fallback. Editing packages through the admin would
- * have no visible effect if the public read went through Prisma.
+ * Hand-written SQL through `querySql` rather than Prisma.
+ *
+ * The original reason given here — that Prisma's MSSQL layer failed on
+ * parameterised reads — no longer applies: this project runs on MySQL, where
+ * the Prisma loaders alongside this file read correctly. What remains is a
+ * duplicate read path. Prefer the Prisma loader in lib/data for new work, and
+ * fold these back into it when the admin write routes are next touched.
  */
 
 /** `testsJson` holds a mix of plain strings and `{ label, items[] }` groups. */
@@ -34,10 +36,11 @@ function toPackage(row) {
 export async function getHomepageHealthPackages() {
   try {
     const flagged = await querySql(
-      `SELECT TOP 12 id, legacyId, name, price, originalPrice, badge, testsJson
-       FROM [dbo].[HealthPackage]
+      `SELECT id, legacyId, name, price, originalPrice, badge, testsJson
+       FROM HealthPackage
        WHERE isActive = 1 AND showOnHomepage = 1
-       ORDER BY sortOrder ASC, id ASC`,
+       ORDER BY sortOrder ASC, id ASC
+       LIMIT 12`,
     );
 
     if (flagged.length) return flagged.map(toPackage);
@@ -46,7 +49,7 @@ export async function getHomepageHealthPackages() {
        so the section is never empty just because no one has curated it. */
     const all = await querySql(
       `SELECT id, legacyId, name, price, originalPrice, badge, testsJson
-       FROM [dbo].[HealthPackage]
+       FROM HealthPackage
        WHERE isActive = 1
        ORDER BY sortOrder ASC, id ASC`,
     );
@@ -65,7 +68,7 @@ export async function getHomepageHealthPackages() {
 
 export async function getHealthPackageSections() {
   const rows = await querySql(
-    `SELECT id, section, icon, sortOrder FROM [dbo].[HealthPackageSection]
+    `SELECT id, section, icon, sortOrder FROM HealthPackageSection
      ORDER BY sortOrder ASC, id ASC`,
   );
   return rows;
@@ -77,8 +80,8 @@ export async function getHealthPackagesForAdmin() {
     `SELECT p.id, p.sectionId, p.name, p.price, p.originalPrice, p.badge,
             p.testsJson, p.showOnHomepage, p.sortOrder, p.isActive,
             s.section AS sectionName
-     FROM [dbo].[HealthPackage] p
-     LEFT JOIN [dbo].[HealthPackageSection] s ON s.id = p.sectionId
+     FROM HealthPackage p
+     LEFT JOIN HealthPackageSection s ON s.id = p.sectionId
      ORDER BY p.sortOrder ASC, p.id ASC`,
   );
 
@@ -108,13 +111,13 @@ export async function saveHealthPackages(packages) {
 
   if (keptIds.length > 0) {
     await querySql(
-      `DELETE FROM [dbo].[HealthPackage] WHERE id NOT IN (${keptIds
+      `DELETE FROM HealthPackage WHERE id NOT IN (${keptIds
         .map(() => "?")
         .join(",")})`,
       keptIds,
     );
   } else {
-    await querySql(`DELETE FROM [dbo].[HealthPackage]`);
+    await querySql(`DELETE FROM HealthPackage`);
   }
 
   for (const [index, pkg] of packages.entries()) {
@@ -132,7 +135,7 @@ export async function saveHealthPackages(packages) {
 
     if (pkg.id) {
       await querySql(
-        `UPDATE [dbo].[HealthPackage]
+        `UPDATE HealthPackage
          SET sectionId = ?, name = ?, price = ?, originalPrice = ?, badge = ?,
              testsJson = ?, showOnHomepage = ?, sortOrder = ?, isActive = ?
          WHERE id = ?`,
@@ -140,7 +143,7 @@ export async function saveHealthPackages(packages) {
       );
     } else {
       await querySql(
-        `INSERT INTO [dbo].[HealthPackage]
+        `INSERT INTO HealthPackage
            (sectionId, name, price, originalPrice, badge, testsJson,
             showOnHomepage, sortOrder, isActive)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,

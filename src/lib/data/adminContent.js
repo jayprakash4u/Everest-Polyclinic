@@ -3,9 +3,13 @@ import { querySql } from "@/lib/sql";
 /*
  * Doctors, gallery images and blog posts for the page editors.
  *
- * Raw ODBC rather than Prisma, for the same reason as the homepage editors:
- * Prisma's MSSQL layer fails on parameterised reads here, so anything saved
- * through a Prisma-backed route would never appear on the public page.
+ * Hand-written SQL through `querySql` rather than Prisma.
+ *
+ * The original reason given here — that Prisma's MSSQL layer failed on
+ * parameterised reads — no longer applies: this project runs on MySQL, where
+ * the Prisma loaders alongside this file read correctly. What remains is a
+ * duplicate read path. Prefer the Prisma loader in lib/data for new work, and
+ * fold these back into it when the admin write routes are next touched.
  *
  * Columns are always listed explicitly — the driver has thrown "Error
  * retrieving the result set" on `SELECT *` against some of these tables.
@@ -15,13 +19,13 @@ import { querySql } from "@/lib/sql";
 async function pruneMissing(table, keptIds) {
   if (keptIds.length > 0) {
     await querySql(
-      `DELETE FROM [dbo].[${table}] WHERE id NOT IN (${keptIds
+      `DELETE FROM ${table} WHERE id NOT IN (${keptIds
         .map(() => "?")
         .join(",")})`,
       keptIds,
     );
   } else {
-    await querySql(`DELETE FROM [dbo].[${table}]`);
+    await querySql(`DELETE FROM ${table}`);
   }
 }
 
@@ -32,14 +36,14 @@ const DOCTOR_COLUMNS =
 
 export async function getDoctorCategories() {
   return querySql(
-    `SELECT id, name, slug, sortOrder FROM [dbo].[DoctorCategory]
+    `SELECT id, name, slug, sortOrder FROM DoctorCategory
      WHERE isActive = 1 ORDER BY sortOrder ASC, id ASC`,
   );
 }
 
 export async function getDoctorsForAdmin() {
   const rows = await querySql(
-    `SELECT ${DOCTOR_COLUMNS} FROM [dbo].[Doctor] ORDER BY sortOrder ASC, id ASC`,
+    `SELECT ${DOCTOR_COLUMNS} FROM Doctor ORDER BY sortOrder ASC, id ASC`,
   );
 
   return rows.map((row) => ({
@@ -75,16 +79,16 @@ export async function saveDoctors(doctors) {
 
     if (doctor.id) {
       await querySql(
-        `UPDATE [dbo].[Doctor]
+        `UPDATE Doctor
          SET categoryId = ?, name = ?, education = ?, experience = ?, image = ?,
              phone = ?, timing = ?, showOnHomepage = ?, sortOrder = ?,
-             isActive = ?, updatedAt = SYSUTCDATETIME()
+             isActive = ?, updatedAt = UTC_TIMESTAMP()
          WHERE id = ?`,
         [...values, doctor.id],
       );
     } else {
       await querySql(
-        `INSERT INTO [dbo].[Doctor]
+        `INSERT INTO Doctor
            (categoryId, name, education, experience, image, phone, timing,
             showOnHomepage, sortOrder, isActive)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -100,7 +104,7 @@ export async function saveDoctors(doctors) {
 
 export async function getGalleryForAdmin() {
   const rows = await querySql(
-    `SELECT id, src, alt, caption, sortOrder, isActive FROM [dbo].[GalleryImage]
+    `SELECT id, src, alt, caption, sortOrder, isActive FROM GalleryImage
      ORDER BY sortOrder ASC, id ASC`,
   );
 
@@ -127,14 +131,14 @@ export async function saveGallery(images) {
 
     if (image.id) {
       await querySql(
-        `UPDATE [dbo].[GalleryImage]
+        `UPDATE GalleryImage
          SET src = ?, alt = ?, caption = ?, sortOrder = ?, isActive = ?
          WHERE id = ?`,
         [...values, image.id],
       );
     } else {
       await querySql(
-        `INSERT INTO [dbo].[GalleryImage] (src, alt, caption, sortOrder, isActive)
+        `INSERT INTO GalleryImage (src, alt, caption, sortOrder, isActive)
          VALUES (?, ?, ?, ?, ?)`,
         values,
       );
@@ -151,13 +155,13 @@ const BLOG_COLUMNS =
 
 export async function getBlogCategories() {
   return querySql(
-    `SELECT id, name, slug FROM [dbo].[BlogCategory] ORDER BY name ASC`,
+    `SELECT id, name, slug FROM BlogCategory ORDER BY name ASC`,
   );
 }
 
 export async function getBlogPostsForAdmin() {
   const rows = await querySql(
-    `SELECT ${BLOG_COLUMNS} FROM [dbo].[BlogPost] ORDER BY publishedAt DESC, id DESC`,
+    `SELECT ${BLOG_COLUMNS} FROM BlogPost ORDER BY publishedAt DESC, id DESC`,
   );
 
   return rows.map((row) => ({
@@ -197,16 +201,16 @@ export async function saveBlogPosts(posts) {
 
     if (post.id) {
       await querySql(
-        `UPDATE [dbo].[BlogPost]
+        `UPDATE BlogPost
          SET title = ?, slug = ?, excerpt = ?, body = ?, image = ?,
              categoryId = ?, readTimeMinutes = ?, featured = ?, isPublished = ?,
-             publishedAt = ?, updatedAt = SYSUTCDATETIME()
+             publishedAt = ?, updatedAt = UTC_TIMESTAMP()
          WHERE id = ?`,
         [...values, post.id],
       );
     } else {
       await querySql(
-        `INSERT INTO [dbo].[BlogPost]
+        `INSERT INTO BlogPost
            (title, slug, excerpt, body, image, categoryId, readTimeMinutes,
             featured, isPublished, publishedAt)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -233,7 +237,7 @@ export async function saveBlogPosts(posts) {
 export async function getPublicGalleryImages(fallback = []) {
   try {
     const rows = await querySql(
-      `SELECT id, src, alt, caption FROM [dbo].[GalleryImage]
+      `SELECT id, src, alt, caption FROM GalleryImage
        WHERE isActive = 1 ORDER BY sortOrder ASC, id ASC`,
     );
 
@@ -257,8 +261,8 @@ export async function getPublicBlogPosts(fallback = []) {
     const rows = await querySql(
       `SELECT p.id, p.title, p.slug, p.excerpt, p.image, p.readTimeMinutes,
               p.featured, p.publishedAt, c.name AS categoryName
-       FROM [dbo].[BlogPost] p
-       LEFT JOIN [dbo].[BlogCategory] c ON c.id = p.categoryId
+       FROM BlogPost p
+       LEFT JOIN BlogCategory c ON c.id = p.categoryId
        WHERE p.isPublished = 1
        ORDER BY p.publishedAt DESC, p.id DESC`,
     );
@@ -276,8 +280,8 @@ export async function getPublicDoctors() {
     const rows = await querySql(
       `SELECT d.id, d.name, d.education, d.experience, d.image, d.phone,
               d.timing, d.showOnHomepage, c.name AS categoryName, c.slug AS categorySlug
-       FROM [dbo].[Doctor] d
-       LEFT JOIN [dbo].[DoctorCategory] c ON c.id = d.categoryId
+       FROM Doctor d
+       LEFT JOIN DoctorCategory c ON c.id = d.categoryId
        WHERE d.isActive = 1
        ORDER BY d.sortOrder ASC, d.id ASC`,
     );

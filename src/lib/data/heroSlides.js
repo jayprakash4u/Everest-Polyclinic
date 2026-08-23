@@ -2,13 +2,13 @@ import { querySql } from "@/lib/sql";
 import { HOME_HERO_SLIDES } from "@/constants/homeHero";
 
 /*
- * Reads and writes through `querySql` (raw ODBC) rather than Prisma.
+ * Hand-written SQL through `querySql` rather than Prisma.
  *
- * Prisma's MSSQL layer is currently broken on this project: `count()` works but
- * any parameterised `findMany` fails with "The variable name '@P1' has already
- * been declared", which is why every section on the site is being served from
- * its static fallback. The ODBC path in lib/sql.js is unaffected, so the hero
- * editor works today. Move this to Prisma once that fault is fixed.
+ * The original reason given here — that Prisma's MSSQL layer failed on
+ * parameterised reads — no longer applies: this project runs on MySQL, where
+ * the Prisma loaders alongside this file read correctly. What remains is a
+ * duplicate read path. Prefer the Prisma loader in lib/data for new work, and
+ * fold these back into it when the admin write routes are next touched.
  */
 
 const TABLE = "HomeHeroSlide";
@@ -16,16 +16,15 @@ const TABLE = "HomeHeroSlide";
 /** Idempotent — safe to call on every read, costs one cheap metadata check. */
 async function ensureTable() {
   await querySql(`
-    IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = '${TABLE}')
-    CREATE TABLE [dbo].[${TABLE}] (
-      [id]        INT IDENTITY(1,1) PRIMARY KEY,
-      [src]       NVARCHAR(500)  NOT NULL,
-      [label]     NVARCHAR(200)  NOT NULL,
-      [alt]       NVARCHAR(500)  NOT NULL,
-      [sortOrder] INT            NOT NULL DEFAULT 0,
-      [isActive]  BIT            NOT NULL DEFAULT 1,
-      [updatedAt] DATETIME2      NOT NULL DEFAULT SYSUTCDATETIME()
-    )
+    CREATE TABLE IF NOT EXISTS ${TABLE} (
+      id        INT AUTO_INCREMENT PRIMARY KEY,
+      src       VARCHAR(500) NOT NULL,
+      label     VARCHAR(200) NOT NULL,
+      alt       VARCHAR(500) NOT NULL,
+      sortOrder INT NOT NULL DEFAULT 0,
+      isActive  TINYINT(1) NOT NULL DEFAULT 1,
+      updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
   `);
 }
 
@@ -46,7 +45,7 @@ export async function getHeroSlides() {
   try {
     await ensureTable();
     const rows = await querySql(
-      `SELECT id, src, label, alt FROM [dbo].[${TABLE}]
+      `SELECT id, src, label, alt FROM ${TABLE}
        WHERE isActive = 1 ORDER BY sortOrder ASC, id ASC`,
     );
 
@@ -62,7 +61,7 @@ export async function getHeroSlides() {
 export async function getHeroSlidesForAdmin() {
   await ensureTable();
   const rows = await querySql(
-    `SELECT id, src, label, alt, sortOrder, isActive FROM [dbo].[${TABLE}]
+    `SELECT id, src, label, alt, sortOrder, isActive FROM ${TABLE}
      ORDER BY sortOrder ASC, id ASC`,
   );
 
@@ -89,11 +88,11 @@ export async function getHeroSlidesForAdmin() {
  */
 export async function replaceHeroSlides(slides) {
   await ensureTable();
-  await querySql(`DELETE FROM [dbo].[${TABLE}]`);
+  await querySql(`DELETE FROM ${TABLE}`);
 
   for (const [index, slide] of slides.entries()) {
     await querySql(
-      `INSERT INTO [dbo].[${TABLE}] (src, label, alt, sortOrder, isActive)
+      `INSERT INTO ${TABLE} (src, label, alt, sortOrder, isActive)
        VALUES (?, ?, ?, ?, ?)`,
       [
         String(slide.src ?? "").trim(),

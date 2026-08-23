@@ -2,10 +2,13 @@ import { querySql } from "@/lib/sql";
 import { TESTIMONIALS } from "@/constants";
 
 /*
- * Raw ODBC, for the same reason as the other homepage editors: Prisma's MSSQL
- * layer fails on parameterised reads here, so the Prisma copy in
- * lib/data/testimonials.js always falls through to the static list and admin
- * edits would never reach the page.
+ * Hand-written SQL through `querySql` rather than Prisma.
+ *
+ * The original reason given here — that Prisma's MSSQL layer failed on
+ * parameterised reads — no longer applies: this project runs on MySQL, where
+ * the Prisma loaders alongside this file read correctly. What remains is a
+ * duplicate read path. Prefer the Prisma loader in lib/data for new work, and
+ * fold these back into it when the admin write routes are next touched.
  *
  * Columns are listed explicitly rather than `SELECT *` — the driver has thrown
  * "Error retrieving the result set" on the wildcard against this table.
@@ -36,7 +39,7 @@ function toTestimonial(row) {
 export async function getHomeTestimonials() {
   try {
     const rows = await querySql(
-      `SELECT ${COLUMNS} FROM [dbo].[Testimonial]
+      `SELECT ${COLUMNS} FROM Testimonial
        WHERE isActive = 1 ORDER BY sortOrder ASC, id ASC`,
     );
 
@@ -51,7 +54,7 @@ export async function getHomeTestimonials() {
 /** Every review, published or not, for the admin editor. */
 export async function getTestimonialsForAdmin() {
   const rows = await querySql(
-    `SELECT ${COLUMNS} FROM [dbo].[Testimonial] ORDER BY sortOrder ASC, id ASC`,
+    `SELECT ${COLUMNS} FROM Testimonial ORDER BY sortOrder ASC, id ASC`,
   );
 
   return rows.map((row) => ({
@@ -71,13 +74,13 @@ export async function saveTestimonials(testimonials) {
 
   if (keptIds.length > 0) {
     await querySql(
-      `DELETE FROM [dbo].[Testimonial] WHERE id NOT IN (${keptIds
+      `DELETE FROM Testimonial WHERE id NOT IN (${keptIds
         .map(() => "?")
         .join(",")})`,
       keptIds,
     );
   } else {
-    await querySql(`DELETE FROM [dbo].[Testimonial]`);
+    await querySql(`DELETE FROM Testimonial`);
   }
 
   for (const [index, item] of testimonials.entries()) {
@@ -93,7 +96,7 @@ export async function saveTestimonials(testimonials) {
 
     if (item.id) {
       await querySql(
-        `UPDATE [dbo].[Testimonial]
+        `UPDATE Testimonial
          SET name = ?, location = ?, rating = ?, review = ?, avatar = ?,
              sortOrder = ?, isActive = ?
          WHERE id = ?`,
@@ -101,7 +104,7 @@ export async function saveTestimonials(testimonials) {
       );
     } else {
       await querySql(
-        `INSERT INTO [dbo].[Testimonial]
+        `INSERT INTO Testimonial
            (name, location, rating, review, avatar, sortOrder, isActive)
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
         values,

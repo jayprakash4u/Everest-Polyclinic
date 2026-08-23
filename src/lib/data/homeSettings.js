@@ -5,10 +5,9 @@ import { querySql } from "@/lib/sql";
  * photograph, a headline, a toggle. Anything that is a single value rather than
  * a list, and so does not warrant a table of its own.
  *
- * Raw ODBC for the same reason as the other homepage editors: Prisma's MSSQL
- * layer fails on parameterised reads here, so a Prisma-backed value would
- * always fall through to its hard-coded default and admin edits would never
- * reach the site.
+ * Raw SQL rather than Prisma because this table is created on demand and is
+ * deliberately not part of the Prisma schema, so there is no generated client
+ * for it. `key` is a reserved word in MySQL, hence the backquoting.
  */
 
 const TABLE = "HomePageSetting";
@@ -16,12 +15,12 @@ const TABLE = "HomePageSetting";
 /** Idempotent — safe to call on every read. */
 async function ensureTable() {
   await querySql(`
-    IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = '${TABLE}')
-    CREATE TABLE [dbo].[${TABLE}] (
-      [key]       NVARCHAR(100) NOT NULL PRIMARY KEY,
-      [value]     NVARCHAR(Max) NOT NULL,
-      [updatedAt] DATETIME2     NOT NULL DEFAULT SYSUTCDATETIME()
-    )
+    CREATE TABLE IF NOT EXISTS ${TABLE} (
+      \`key\`   VARCHAR(100) NOT NULL PRIMARY KEY,
+      \`value\` LONGTEXT NOT NULL,
+      updatedAt DATETIME NOT NULL
+                DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
   `);
 }
 
@@ -37,8 +36,8 @@ export async function getHomeSettings(defaults = {}) {
   try {
     await ensureTable();
     const rows = await querySql(
-      `SELECT [key], [value] FROM [dbo].[${TABLE}]
-       WHERE [key] IN (${keys.map(() => "?").join(",")})`,
+      `SELECT \`key\`, \`value\` FROM ${TABLE}
+       WHERE \`key\` IN (${keys.map(() => "?").join(",")})`,
       keys,
     );
 
@@ -62,18 +61,14 @@ export async function saveHomeSettings(values) {
     /* An empty value means "go back to the shipped default", which is a delete
        rather than storing a blank that would render nothing. */
     if (!text) {
-      await querySql(`DELETE FROM [dbo].[${TABLE}] WHERE [key] = ?`, [key]);
+      await querySql(`DELETE FROM ${TABLE} WHERE \`key\` = ?`, [key]);
       continue;
     }
 
+    /* Row alias rather than VALUES(), which MySQL deprecated in 8.0.20. */
     await querySql(
-      `MERGE [dbo].[${TABLE}] AS target
-       USING (SELECT ? AS [key], ? AS [value]) AS source
-       ON target.[key] = source.[key]
-       WHEN MATCHED THEN
-         UPDATE SET [value] = source.[value], [updatedAt] = SYSUTCDATETIME()
-       WHEN NOT MATCHED THEN
-         INSERT ([key], [value]) VALUES (source.[key], source.[value]);`,
+      `INSERT INTO ${TABLE} (\`key\`, \`value\`) VALUES (?, ?) AS incoming
+       ON DUPLICATE KEY UPDATE \`value\` = incoming.\`value\``,
       [key, text],
     );
   }
