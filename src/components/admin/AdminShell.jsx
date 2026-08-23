@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState, useEffect } from "react";
 import {
+  Award,
+  BarChart3,
   BookOpen,
   CalendarCheck,
   ChevronDown,
@@ -21,6 +23,7 @@ import {
   Settings,
   Star,
   Stethoscope,
+  Users,
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";

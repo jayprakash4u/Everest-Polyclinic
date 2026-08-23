@@ -54,7 +54,6 @@ export default async function HomePage() {
       <DiagnosticCare />
       <LatestDiseases packages={healthPackages} />
       <DoctorsSection
-        specialists={specialists}
         sideImage={careTeamImage.image}
         sideImageAlt={careTeamImage.alt}
       />
