@@ -39,7 +39,12 @@ export default function SectionHeader({
   return (
     <Reveal
       className={cn(
-        "mb-10 sm:mb-12",
+        // Was mb-10 (40px) at every width. On a phone that reads as a big
+        // dead gap between the subtitle and whatever comes next — the eyebrow
+        // + title + subtitle stack already used most of the fold's height, so
+        // 40px more on top felt like empty scrolling. Unchanged from sm up,
+        // where the section has room to spare.
+        "mb-6 sm:mb-12",
         centered
           ? "flex flex-col items-center text-center"
           : "flex flex-col gap-6 md:flex-row md:items-end md:justify-between",

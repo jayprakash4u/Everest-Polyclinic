@@ -207,7 +207,14 @@ export default function WhyChooseUs({ items = WHY_CHOOSE_US }) {
           <Reveal
             as="ul"
             stagger
-            className="grid gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-2 lg:grid-cols-3"
+            // Below sm this is six separate cards, each with its own border,
+            // radius and shadow, stacked with a gap — matching the tile
+            // treatment used everywhere else on the site at this width. The
+            // hairline matrix (one bordered block, gap-px dividers instead of
+            // per-cell borders) only reads as "one considered block" once
+            // there are at least two columns to make a grid of; single file
+            // it was just a flat, undifferentiated list.
+            className="flex flex-col gap-3 sm:grid sm:grid-cols-2 sm:gap-px sm:overflow-hidden sm:rounded-2xl sm:border sm:border-slate-200 sm:bg-slate-200 lg:grid-cols-3"
           >
             {list.map((item) => {
               const Icon = ICONS[item.icon];
@@ -218,7 +225,7 @@ export default function WhyChooseUs({ items = WHY_CHOOSE_US }) {
               return (
                 <li
                   key={item.title}
-                  className="group flex gap-4 bg-white p-5 transition-colors hover:bg-slate-50/70 sm:flex-col sm:gap-0 sm:p-6"
+                  className="group flex gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-e1 transition-colors hover:border-primary-200 hover:bg-slate-50/70 sm:flex-col sm:gap-0 sm:rounded-none sm:border-0 sm:p-6 sm:shadow-none"
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center [&_svg]:h-10 [&_svg]:w-10 sm:h-12 sm:w-12 sm:[&_svg]:h-12 sm:[&_svg]:w-12">
                     {Icon ? <Icon /> : null}

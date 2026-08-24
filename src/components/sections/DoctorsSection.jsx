@@ -97,9 +97,19 @@ export default function DoctorsSection({ sideImage, sideImageAlt }) {
           copy, so from lg the row runs across the foot and over the artwork
           behind it — no negative-margin overlap to keep in sync.
         */}
-        <ul className="grid gap-px overflow-hidden rounded-2xl border border-slate-200/70 bg-slate-200/70 pb-px shadow-e1 sm:grid-cols-3 lg:mb-16 xl:mb-20">
+        {/*
+          Below sm this is three separate cards with a gap between them,
+          rather than one hairline-divided block — the same treatment as the
+          "Why Everest" matrix. A single column of rows sharing one border
+          reads as a plain list; the hairline block only earns its keep once
+          there are columns to make a grid of.
+        */}
+        <ul className="flex flex-col gap-3 sm:grid sm:grid-cols-3 sm:gap-px sm:overflow-hidden sm:rounded-2xl sm:border sm:border-slate-200/70 sm:bg-slate-200/70 sm:pb-px sm:shadow-e1 lg:mb-16 xl:mb-20">
           {DEPARTMENTS.map(({ icon: Icon, title, description, href }) => (
-            <li key={title}>
+            <li
+              key={title}
+              className="overflow-hidden rounded-2xl border border-slate-200/70 shadow-e1 sm:rounded-none sm:border-0 sm:shadow-none"
+            >
               <Link
                 href={href}
                 className="group flex h-full items-center gap-4 bg-white p-5 transition-colors hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 sm:p-6"
