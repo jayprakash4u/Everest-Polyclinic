@@ -3,9 +3,9 @@ import { SITE } from "@/constants";
 import { CACHE_TAGS, cachedRead } from "@/lib/cache";
 import { querySql } from "@/lib/sql";
 
-/* Reads over ODBC rather than Prisma — see lib/data/whyChooseUs.js. This one
-   runs on every page through the root layout, so it was the loudest of the
-   failing calls. */
+/* Hand-written SQL via lib/sql.js rather than Prisma — see lib/data/whyChooseUs.js
+   for why. This one runs on every page through the root layout, so it's the
+   hottest of those calls. */
 
 const getSiteSettingsUncached = cachedRead(
   async () => {

@@ -2,9 +2,9 @@ import { CACHE_TAGS, cachedRead } from "@/lib/cache";
 import { WHY_CHOOSE_US } from "@/constants";
 import { querySql } from "@/lib/sql";
 
-/* Reads over ODBC rather than Prisma. Prisma's MSSQL adapter cannot run a
-   parameterised query against this database — see lib/db-native.cjs — so every
-   call threw and dumped a stack trace on each request. */
+/* Hand-written SQL via lib/sql.js rather than Prisma: this query needs a
+   filter + order-by that's simpler to express directly than through Prisma's
+   query builder. See lib/sql.js for the shared pool. */
 
 function mapItem(row) {
   return {
