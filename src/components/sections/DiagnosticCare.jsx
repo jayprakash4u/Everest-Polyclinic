@@ -155,16 +155,22 @@ export default function DiagnosticCare() {
                 <span aria-hidden="true" className="h-px flex-1 bg-slate-200" />
               </p>
 
-              <ul className="mt-4 grid gap-2.5 sm:grid-cols-2 sm:gap-x-4">
+              {/*
+                Two columns from the smallest breakpoint up: eight full-width
+                rows stacked on a phone was half the section's height spent on
+                a plain gray list. A grid halves that and reads as a set of
+                tags rather than a scroll of near-identical lines.
+              */}
+              <ul className="mt-4 grid grid-cols-2 gap-2 sm:gap-3">
                 {TESTS.map((test) => (
                   <li
                     key={test}
-                    className="flex items-center gap-3 rounded-xl border border-slate-200/80 bg-slate-50/70 px-3.5 py-3 transition-colors hover:border-secondary-200 hover:bg-secondary-50/60"
+                    className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/70 px-2.5 py-2.5 transition-colors hover:border-secondary-200 hover:bg-secondary-50/60 sm:gap-3 sm:px-3.5 sm:py-3"
                   >
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-secondary-100 text-secondary-700">
-                      <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-secondary-100 text-secondary-700 sm:h-6 sm:w-6">
+                      <Check className="h-3 w-3 sm:h-3.5 sm:w-3.5" strokeWidth={3} />
                     </span>
-                    <span className="text-[13px] font-medium leading-snug text-slate-700 sm:text-sm">
+                    <span className="text-[12px] font-medium leading-snug text-slate-700 sm:text-sm">
                       {test}
                     </span>
                   </li>
