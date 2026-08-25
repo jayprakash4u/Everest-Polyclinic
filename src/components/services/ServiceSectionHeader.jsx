@@ -26,7 +26,9 @@ export default function ServiceSectionHeader({
       <h2
         className={cn(
           "font-heading text-2xl font-bold leading-tight tracking-tight sm:text-3xl md:text-4xl",
-          light ? "text-white" : "text-slate-900",
+          // Was text-slate-900 — see the identical fix and rationale in the
+          // site-wide SectionHeader.jsx. Same bug, same shared-component fix.
+          light ? "text-white" : "text-primary-900",
         )}
       >
         {title}

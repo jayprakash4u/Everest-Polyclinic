@@ -4,8 +4,7 @@ import { SERVICES } from "@/constants/services/catalog";
 import { HOMEPAGE_SERVICE_SLUGS } from "@/constants/services/homepageServiceImages";
 import Section from "@/components/ui/Section";
 import SectionHeader from "@/components/ui/SectionHeader";
-import Reveal from "@/components/ui/Reveal";
-import ServiceCard from "./ServiceCard";
+import ServiceGrid from "./ServiceGrid";
 
 export default function Services({ services = SERVICES }) {
   const catalog = services?.length ? services : SERVICES;
@@ -39,16 +38,12 @@ export default function Services({ services = SERVICES }) {
         4×2 on a desktop with room to spare, and a carousel hides half of them
         behind a scroll gesture for no gain — the whole point of the section is
         that the range is visible at a glance.
+
+        Split into its own client component because it owns the "which card
+        looks hovered" state — see ServiceGrid.jsx — which this file, a
+        server component, has no business holding.
       */}
-      <Reveal
-        as="div"
-        stagger
-        className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4 lg:gap-6"
-      >
-        {items.map((service) => (
-          <ServiceCard key={service.slug} service={service} />
-        ))}
-      </Reveal>
+      <ServiceGrid items={items} />
 
       {/* Rules either side keep the button from floating loose under the grid
           and close the section deliberately. */}

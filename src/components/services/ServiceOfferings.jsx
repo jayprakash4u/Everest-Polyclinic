@@ -17,7 +17,7 @@ function PackageOfferingCard({ offering }) {
     <article className="flex h-full flex-col rounded-xl border border-slate-200/80 bg-white p-2.5 sm:rounded-2xl sm:p-6 md:p-7">
       <div className="flex items-start justify-between gap-1.5 sm:gap-3">
         <div className="min-w-0">
-          <h3 className="font-heading text-[12px] font-bold leading-snug text-slate-900 sm:text-lg md:text-xl">
+          <h3 className="font-heading text-[12px] font-bold leading-snug text-primary-900 sm:text-lg md:text-xl">
             <span className="line-clamp-2">{offering.title}</span>
           </h3>
           {offering.price ? (
@@ -137,7 +137,7 @@ export default function ServiceOfferings({ page }) {
                   </div>
                 ) : null}
 
-                <h3 className="font-heading text-[12px] font-bold leading-snug text-slate-900 sm:text-lg">
+                <h3 className="font-heading text-[12px] font-bold leading-snug text-primary-900 sm:text-lg">
                   <span className="line-clamp-2">{offering.title}</span>
                 </h3>
 

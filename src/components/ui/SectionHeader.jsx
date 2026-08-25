@@ -86,7 +86,13 @@ export default function SectionHeader({
           className={cn(
             "font-heading text-[1.875rem] font-semibold leading-[1.15] tracking-[-0.01em] sm:text-[2.125rem] lg:text-[2.625rem]",
             eyebrow && "mt-4",
-            light ? "text-white" : "text-slate-900",
+            // Was text-slate-900 — plain gray, and every section that cared
+            // about matching the brand had to remember to override it with
+            // titleClassName="text-primary-900" by hand. Four did; the ones
+            // that forgot (Testimonials, Health packages, Centers of
+            // Excellence) quietly rendered off-brand. Navy is now the
+            // default, so getting it right no longer depends on remembering.
+            light ? "text-white" : "text-primary-900",
             titleClassName,
           )}
         >

@@ -36,18 +36,23 @@ function buildCategoryOptions(specialists) {
   ];
 }
 
+/*
+ * Was uppercase sans-serif in a shade of navy (`text-text-dark`, #1a3a5c)
+ * that doesn't match the `primary-900` (#0B2951) the rest of the site's
+ * headers use — its own thing rather than the eyebrow-then-serif-title
+ * pattern `SectionHeader` establishes elsewhere. Same slot in the layout,
+ * rebuilt to match: eyebrow first, `font-heading` title in the brand navy.
+ */
 function PageSectionHeader({ title, subtitle, description, className }) {
   return (
     <div className={cn("mb-5 max-w-2xl sm:mb-8", className)}>
-      <h2 className="text-base font-bold uppercase tracking-tight text-text-dark sm:text-xl">
+      <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-secondary-600 sm:text-[11px]">
+        <span className="h-px w-6 bg-secondary-500" />
+        {subtitle}
+      </p>
+      <h2 className="mt-2 font-heading text-xl font-semibold tracking-[-0.01em] text-primary-900 sm:text-2xl">
         {title}
       </h2>
-      <div className="mt-1 flex items-center gap-2">
-        <div className="h-0.5 w-8 bg-secondary-500" />
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-400 sm:text-[11px]">
-          {subtitle}
-        </p>
-      </div>
       {description ? (
         <p className="mt-2.5 text-sm leading-relaxed text-slate-500 sm:mt-3 sm:text-base">
           {description}
@@ -86,7 +91,7 @@ function DoctorCard({ doctor }) {
         <p className="hidden text-[10px] font-bold uppercase tracking-widest text-secondary-600 sm:block">
           {doctor.category}
         </p>
-        <h3 className="font-heading text-[12px] font-bold leading-snug text-text-dark transition-colors group-hover:text-primary-700 sm:mt-1 sm:text-lg">
+        <h3 className="font-heading text-[12px] font-bold leading-snug text-primary-900 transition-colors group-hover:text-primary-700 sm:mt-1 sm:text-lg">
           <span className="line-clamp-2">{doctor.name}</span>
         </h3>
 
@@ -243,7 +248,7 @@ export default function DoctorsClientView({
                 className="mx-auto h-8 w-8 text-slate-300 sm:h-10 sm:w-10"
                 strokeWidth={1.5}
               />
-              <h3 className="mt-3 font-heading text-base font-bold text-text-dark sm:mt-4 sm:text-lg">
+              <h3 className="mt-3 font-heading text-base font-bold text-primary-900 sm:mt-4 sm:text-lg">
                 No doctors found
               </h3>
               <p className="mt-1.5 text-sm text-slate-500 sm:mt-2">
@@ -278,15 +283,15 @@ export default function DoctorsClientView({
             />
             <div className="relative flex flex-col items-center gap-4 text-center sm:gap-6 md:flex-row md:justify-between md:text-left">
               <div className="max-w-xl">
-                <h2 className="text-base font-bold uppercase tracking-tight text-white sm:text-xl">
-                  Find a Specialist
-                </h2>
-                <div className="mt-1.5 flex items-center justify-center gap-2 sm:mt-2 md:justify-start">
+                <div className="flex items-center justify-center gap-2 md:justify-start">
                   <div className="h-0.5 w-8 bg-secondary-400" />
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-100 sm:text-[11px]">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-secondary-300 sm:text-[11px]">
                     Need help choosing?
                   </p>
                 </div>
+                <h2 className="mt-1.5 font-heading text-xl font-semibold tracking-[-0.01em] text-white sm:mt-2 sm:text-2xl">
+                  Find a Specialist
+                </h2>
                 <p className="mt-2.5 text-sm text-primary-100 sm:mt-3 sm:text-base">
                   Our reception team will guide you to the best doctor for your
                   condition and schedule your visit.

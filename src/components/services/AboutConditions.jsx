@@ -54,7 +54,7 @@ export default function AboutConditions({ page }) {
                     {String(index + 1).padStart(2, "0")}
                   </span>
                 </div>
-                <h3 className="font-heading text-[12px] font-bold leading-snug text-slate-900 sm:text-base">
+                <h3 className="font-heading text-[12px] font-bold leading-snug text-primary-900 sm:text-base">
                   <span className="line-clamp-2">{benefit.title}</span>
                 </h3>
                 {benefit.description ? (

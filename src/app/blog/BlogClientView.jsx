@@ -19,18 +19,18 @@ import { BLOG_POSTS } from "@/constants/blogPosts";
 import { SITE } from "@/constants";
 import { cn } from "@/lib/utils";
 
+/* Same fix as the identical PageSectionHeader in DoctorsClientView.jsx — see
+   the comment there. */
 function PageSectionHeader({ title, subtitle, description, className }) {
   return (
     <div className={cn("mb-6 max-w-2xl sm:mb-8", className)}>
-      <h2 className="text-lg font-bold uppercase tracking-tight text-text-dark sm:text-xl">
+      <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-secondary-600">
+        <span className="h-px w-6 bg-secondary-500" />
+        {subtitle}
+      </p>
+      <h2 className="mt-2 font-heading text-xl font-semibold tracking-[-0.01em] text-primary-900 sm:text-2xl">
         {title}
       </h2>
-      <div className="mt-1 flex items-center gap-2">
-        <div className="h-0.5 w-8 bg-secondary-500" />
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-primary-400">
-          {subtitle}
-        </p>
-      </div>
       {description ? (
         <p className="mt-3 text-sm leading-relaxed text-slate-500 sm:text-base">
           {description}
@@ -86,7 +86,7 @@ function FeaturedArticleCard({ post }) {
             {post.category}
           </span>
 
-          <h3 className="mt-4 font-heading text-xl font-bold leading-snug text-text-dark transition-colors group-hover:text-primary-700 sm:text-2xl">
+          <h3 className="mt-4 font-heading text-xl font-bold leading-snug text-primary-900 transition-colors group-hover:text-primary-700 sm:text-2xl">
             {post.title}
           </h3>
 
@@ -135,7 +135,7 @@ function BlogPostCard({ post }) {
           className="gap-1.5 text-[10px] sm:gap-3 sm:text-xs [&_svg]:h-3 [&_svg]:w-3"
         />
 
-        <h3 className="mt-2 font-heading text-[13px] font-bold leading-snug text-text-dark transition-colors group-hover:text-primary-700 sm:mt-3 sm:text-lg">
+        <h3 className="mt-2 font-heading text-[13px] font-bold leading-snug text-primary-900 transition-colors group-hover:text-primary-700 sm:mt-3 sm:text-lg">
           {post.title}
         </h3>
 
@@ -193,7 +193,7 @@ export default function BlogClientView({
   return (
     <main className="min-h-screen bg-background-light">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#061d2e] via-[#0c3347] to-primary-700 px-4 py-8 sm:py-16 md:py-20 lg:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 px-4 py-8 sm:py-16 md:py-20 lg:py-24">
         <div
           className="pointer-events-none absolute inset-0 opacity-40"
           style={{
@@ -212,15 +212,15 @@ export default function BlogClientView({
           </nav>
 
           <div className="max-w-3xl">
-            <h1 className="text-lg font-bold uppercase tracking-tight text-white sm:text-2xl md:text-3xl">
-              Health Blog
-            </h1>
-            <div className="mt-1.5 flex items-center gap-2 sm:mt-2">
+            <div className="flex items-center gap-2">
               <div className="h-0.5 w-8 bg-secondary-400" />
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-200 sm:text-[11px]">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-secondary-300 sm:text-[11px]">
                 Expert insights & wellness tips
               </p>
             </div>
+            <h1 className="mt-2 font-heading text-2xl font-semibold tracking-[-0.01em] text-white sm:mt-3 sm:text-4xl md:text-5xl">
+              Health Blog
+            </h1>
             <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-primary-100 sm:mt-4 sm:text-base md:text-lg">
               Evidence-based articles from {SITE.shortName} specialists — covering
               prevention, treatment, and everyday health decisions.
@@ -313,7 +313,7 @@ export default function BlogClientView({
                 className="mx-auto text-slate-300"
                 strokeWidth={1.5}
               />
-              <h3 className="mt-4 font-heading text-lg font-bold text-text-dark">
+              <h3 className="mt-4 font-heading text-lg font-bold text-primary-900">
                 No articles in this category
               </h3>
               <p className="mt-2 text-sm text-slate-500">
@@ -345,15 +345,15 @@ export default function BlogClientView({
             />
             <div className="relative grid gap-8 lg:grid-cols-2 lg:items-center">
               <div>
-                <h2 className="text-lg font-bold uppercase tracking-tight text-white sm:text-xl">
-                  Health Newsletter
-                </h2>
-                <div className="mt-2 flex items-center gap-2">
+                <div className="flex items-center gap-2">
                   <div className="h-0.5 w-8 bg-secondary-400" />
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-primary-100">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-secondary-300">
                     Stay informed
                   </p>
                 </div>
+                <h2 className="mt-2 font-heading text-xl font-semibold tracking-[-0.01em] text-white sm:text-2xl">
+                  Health Newsletter
+                </h2>
                 <p className="mt-3 max-w-md text-sm text-primary-100 sm:text-base">
                   Get practical wellness tips and clinic updates from our medical
                   team — no spam, just useful health guidance.

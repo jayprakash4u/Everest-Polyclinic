@@ -175,7 +175,7 @@ function useCardTilt() {
   return { nodeRef, onPointerMove, onPointerLeave };
 }
 
-export default function ServiceCard({ service }) {
+export default function ServiceCard({ service, isActive = false, onActivate }) {
   const image = service.homepageImage || getHomepageServiceImage(service.slug);
   const summary =
     service.shortDescription ||
@@ -196,6 +196,8 @@ export default function ServiceCard({ service }) {
         href={`/services/${service.slug}`}
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
+        onPointerEnter={onActivate}
+        data-active={isActive}
         style={{ transformStyle: "preserve-3d" }}
         className="group relative block h-full rounded-[26px] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2"
       >
@@ -210,13 +212,13 @@ export default function ServiceCard({ service }) {
           }
         `}</style>
 
-        <div className="tab-clip relative flex h-full flex-col rounded-[26px] border border-slate-200/70 bg-white p-4 pb-[72px] shadow-e1 transition-[background-color,border-color,box-shadow,transform] duration-500 group-hover:-translate-y-1 group-hover:border-primary-900 group-hover:bg-primary-900 group-hover:shadow-e2 sm:p-6 sm:pb-[92px]">
+        <div className="tab-clip relative flex h-full flex-col rounded-[26px] border border-slate-200/70 bg-white p-4 pb-[72px] shadow-e1 transition-[background-color,border-color,box-shadow,transform] duration-500 group-active-or-hover:-translate-y-1 group-active-or-hover:border-primary-900 group-active-or-hover:bg-primary-900 group-active-or-hover:shadow-e2 sm:p-6 sm:pb-[92px]">
           {/* The light. A radial highlight parked at the cursor position,
               only switched on once the hover fill is dark enough for a
               white glow to read against it. */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-300 group-active-or-hover:opacity-100"
             style={{
               background:
                 "radial-gradient(220px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(255,255,255,0.14), transparent 65%)",
@@ -232,7 +234,7 @@ export default function ServiceCard({ service }) {
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"
             >
-              <span className="absolute -right-5 top-2 block h-32 w-32 opacity-[0.07] transition-opacity duration-300 group-hover:opacity-[0.13] sm:h-40 sm:w-40">
+              <span className="absolute -right-5 top-2 block h-32 w-32 opacity-[0.07] transition-opacity duration-300 group-active-or-hover:opacity-[0.13] sm:h-40 sm:w-40">
                 {/* The artwork is navy line-art, so it would vanish against
                     the navy hover fill. `brightness-0 invert` forces it to
                     flat white. */}
@@ -241,7 +243,7 @@ export default function ServiceCard({ service }) {
                   alt=""
                   fill
                   sizes="160px"
-                  className="object-contain transition duration-300 group-hover:brightness-0 group-hover:invert"
+                  className="object-contain transition duration-300 group-active-or-hover:brightness-0 group-active-or-hover:invert"
                 />
               </span>
             </span>
@@ -249,7 +251,7 @@ export default function ServiceCard({ service }) {
 
           {/* Icon badge: a soft squircle rather than a bare glyph, so the
               mark has a surface of its own to lift and glow from on hover. */}
-          <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-secondary-50 to-primary-50 shadow-e1 transition-all duration-500 group-hover:-translate-y-0.5 group-hover:rotate-3 group-hover:from-white/15 group-hover:to-white/5 group-hover:shadow-[0_0_0_6px_rgba(255,255,255,0.08)] sm:h-14 sm:w-14">
+          <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-secondary-50 to-primary-50 shadow-e1 transition-all duration-500 group-active-or-hover:-translate-y-0.5 group-active-or-hover:rotate-3 group-active-or-hover:from-white/15 group-active-or-hover:to-white/5 group-active-or-hover:shadow-[0_0_0_6px_rgba(255,255,255,0.08)] sm:h-14 sm:w-14">
             {image ? (
               <span className="relative block h-6 w-6 sm:h-8 sm:w-8">
                 <Image
@@ -257,22 +259,22 @@ export default function ServiceCard({ service }) {
                   alt=""
                   fill
                   sizes="32px"
-                  className="object-contain transition duration-300 group-hover:brightness-0 group-hover:invert"
+                  className="object-contain transition duration-300 group-active-or-hover:brightness-0 group-active-or-hover:invert"
                 />
               </span>
             ) : (
               <ServiceIcon
                 iconKey={service.icon}
-                className="h-6 w-6 text-primary-800 transition-colors duration-300 group-hover:text-white sm:h-7 sm:w-7"
+                className="h-6 w-6 text-primary-800 transition-colors duration-300 group-active-or-hover:text-white sm:h-7 sm:w-7"
               />
             )}
           </span>
 
-          <h3 className="relative mt-4 font-heading text-sm font-semibold leading-snug tracking-[-0.01em] text-primary-900 transition-colors duration-300 group-hover:text-white sm:mt-5 sm:text-lg">
+          <h3 className="relative mt-4 font-heading text-sm font-semibold leading-snug tracking-[-0.01em] text-primary-900 transition-colors duration-300 group-active-or-hover:text-white sm:mt-5 sm:text-lg">
             <span className="line-clamp-2">{service.title}</span>
           </h3>
 
-          <p className="relative mt-2 line-clamp-2 text-xs leading-relaxed text-slate-500 transition-colors duration-300 group-hover:text-white/75 sm:mt-2.5 sm:text-sm">
+          <p className="relative mt-2 line-clamp-2 text-xs leading-relaxed text-slate-500 transition-colors duration-300 group-active-or-hover:text-white/75 sm:mt-2.5 sm:text-sm">
             {summary}
           </p>
 
@@ -282,12 +284,12 @@ export default function ServiceCard({ service }) {
               invented number. */}
           <span
             aria-hidden="true"
-            className="relative mt-auto block border-t border-dashed border-slate-300 pt-3.5 transition-colors duration-300 group-hover:border-white/30"
+            className="relative mt-auto block border-t border-dashed border-slate-300 pt-3.5 transition-colors duration-300 group-active-or-hover:border-white/30"
           />
-          <span className="relative flex items-center gap-2 pr-8 text-[11px] font-semibold text-secondary-700 transition-colors duration-300 group-hover:text-secondary-300 sm:pr-10 sm:text-xs">
+          <span className="relative flex items-center gap-2 pr-8 text-[11px] font-semibold text-secondary-700 transition-colors duration-300 group-active-or-hover:text-secondary-300 sm:pr-10 sm:text-xs">
             <span
               aria-hidden="true"
-              className="h-1.5 w-1.5 shrink-0 rounded-full bg-secondary-500 transition-colors duration-300 group-hover:bg-secondary-400"
+              className="h-1.5 w-1.5 shrink-0 rounded-full bg-secondary-500 transition-colors duration-300 group-active-or-hover:bg-secondary-400"
             />
             Explore service
           </span>
@@ -300,7 +302,7 @@ export default function ServiceCard({ service }) {
         */}
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute bottom-1.5 right-2 z-10 flex h-8 w-8 items-center justify-center rounded-xl bg-secondary-600 text-white shadow-e1 transition-all duration-300 group-hover:scale-110 group-hover:bg-secondary-700 sm:bottom-2 sm:right-2.5 sm:h-10 sm:w-10 sm:rounded-2xl"
+          className="pointer-events-none absolute bottom-1.5 right-2 z-10 flex h-8 w-8 items-center justify-center rounded-xl bg-secondary-600 text-white shadow-e1 transition-all duration-300 group-active-or-hover:scale-110 group-active-or-hover:bg-secondary-700 sm:bottom-2 sm:right-2.5 sm:h-10 sm:w-10 sm:rounded-2xl"
         >
           <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2.25} />
         </span>

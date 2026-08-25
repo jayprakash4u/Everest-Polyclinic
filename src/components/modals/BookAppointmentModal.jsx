@@ -220,7 +220,7 @@ export default function BookAppointmentModal({
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-secondary-100">
                 <Calendar className="text-secondary-600" size={28} />
               </div>
-              <h3 className="font-heading text-xl font-bold text-text-dark">
+              <h3 className="font-heading text-xl font-bold text-primary-900">
                 Request Received!
               </h3>
               <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-slate-500">
@@ -255,7 +255,7 @@ export default function BookAppointmentModal({
                   <p className="text-[10px] font-bold uppercase tracking-wider text-secondary-700">
                     Selected Package
                   </p>
-                  <p className="mt-1 font-heading text-base font-bold text-text-dark">
+                  <p className="mt-1 font-heading text-base font-bold text-primary-900">
                     {bookingPackage.name}
                   </p>
                   <p className="mt-0.5 text-sm font-semibold text-primary-600">

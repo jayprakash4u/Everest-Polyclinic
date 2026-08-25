@@ -85,13 +85,13 @@ export default function HealthPackagesClientView({ packages = [] }) {
       >
         <div className="mb-4 sm:mb-8">
           <div className="mb-1.5 flex items-center gap-2 sm:mb-2">
-            <span className="h-[2px] w-6 bg-primary-500" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-primary-600">
+            <span className="h-[2px] w-6 bg-secondary-500" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-secondary-600">
               Browse by Category
             </span>
           </div>
-          <h2 className="font-heading text-lg font-bold text-text-dark sm:text-3xl">
-            Select a <span className="text-primary-600">Package Type</span>
+          <h2 className="font-heading text-lg font-bold text-primary-900 sm:text-3xl">
+            Select a <span className="text-secondary-600">Package Type</span>
           </h2>
           <p className="mt-1.5 max-w-xl text-sm text-slate-500 sm:mt-2 sm:text-base">
             Filter packages by category to find the health screen that fits your
@@ -151,7 +151,7 @@ export default function HealthPackagesClientView({ packages = [] }) {
               className="mx-auto h-8 w-8 text-slate-300 sm:h-10 sm:w-10"
               strokeWidth={1.5}
             />
-            <h3 className="mt-3 font-heading text-base font-bold text-text-dark sm:mt-4 sm:text-lg">
+            <h3 className="mt-3 font-heading text-base font-bold text-primary-900 sm:mt-4 sm:text-lg">
               No packages found
             </h3>
             <p className="mt-1.5 text-sm text-slate-500">

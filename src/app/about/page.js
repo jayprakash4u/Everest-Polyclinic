@@ -1,5 +1,7 @@
-import VisionMissionGoals from "@/components/sections/VisionMissionGoals";
+import VisionMissionIntro from "@/components/sections/VisionMissionIntro";
+import OurValues from "@/components/sections/OurValues";
 import AboutUsSection from "@/components/sections/AboutUsSection";
+import AboutOverview from "@/components/sections/AboutOverview";
 import OurStory from "@/components/sections/OurStory";
 import OurAchievements from "@/components/sections/OurAchievements";
 
@@ -13,11 +15,11 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white">
       <AboutUsSection />
+      <VisionMissionIntro />
+      <OurValues />
+      <AboutOverview />
       <OurStory />
-      <div className="space-y-0">
-        <VisionMissionGoals />
-        <OurAchievements />
-      </div>
+      <OurAchievements />
     </div>
   );
 }

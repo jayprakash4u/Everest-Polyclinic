@@ -117,7 +117,10 @@ export default function ContactPage() {
   return (
     <main className="min-h-screen bg-background-light">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#061d2e] via-[#0c3347] to-primary-700 px-4 py-8 text-center sm:py-16 md:py-20 lg:py-24">
+      {/* Was a one-off gradient built from raw hex (#061d2e / #0c3347) instead
+          of the brand's primary ramp — the only dark hero on the site not
+          drawn from primary-900. */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 px-4 py-8 text-center sm:py-16 md:py-20 lg:py-24">
         <div
           className="pointer-events-none absolute inset-0 opacity-40"
           style={{
@@ -173,7 +176,7 @@ export default function ContactPage() {
                     <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400 sm:text-[10px]">
                       {item.title}
                     </p>
-                    <p className="mt-0.5 font-heading text-[13px] font-bold leading-snug text-text-dark sm:mt-1 sm:text-base md:text-lg">
+                    <p className="mt-0.5 font-heading text-[13px] font-bold leading-snug text-primary-900 sm:mt-1 sm:text-base md:text-lg">
                       {item.value}
                     </p>
                     <p className="mt-0.5 text-[11px] text-slate-500 sm:text-sm">
@@ -226,7 +229,7 @@ export default function ContactPage() {
             {/* Sidebar */}
             <div className="space-y-5 lg:col-span-5">
               <div className="rounded-[1.5rem] border border-primary-100 bg-white p-6 shadow-card sm:rounded-[2rem] sm:p-8">
-                <h2 className="font-heading text-xl font-bold text-text-dark sm:text-2xl">
+                <h2 className="font-heading text-xl font-bold text-primary-900 sm:text-2xl">
                   Visit Our Clinic
                 </h2>
                 <p className="mt-1 text-sm text-slate-500">
@@ -260,7 +263,7 @@ export default function ContactPage() {
                           <Icon size={20} />
                         </div>
                         <div>
-                          <h4 className="text-sm font-bold text-text-dark">
+                          <h4 className="text-sm font-bold text-primary-900">
                             {item.title}
                           </h4>
                           {/* Keyed by position, not by value — these lines are
@@ -310,8 +313,8 @@ export default function ContactPage() {
             <span className="text-[10px] font-bold uppercase tracking-widest text-secondary-600">
               Support
             </span>
-            <h2 className="mt-2 font-heading text-2xl font-bold text-text-dark sm:text-3xl">
-              Frequently Asked Questions
+            <h2 className="mt-2 font-heading text-2xl font-bold text-primary-900 sm:text-3xl">
+              Frequently Asked <span className="text-secondary-600">Questions</span>
             </h2>
             <p className="mt-2 text-sm text-slate-500">
               Quick answers to common questions about our services.
@@ -331,7 +334,7 @@ export default function ContactPage() {
                     onClick={() => setExpandedFaq(isOpen ? null : index)}
                     className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left sm:px-6"
                   >
-                    <span className="font-semibold text-text-dark">
+                    <span className="font-semibold text-primary-900">
                       {faq.question}
                     </span>
                     <ChevronDown

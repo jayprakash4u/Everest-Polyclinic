@@ -116,7 +116,7 @@ export default function WhyChooseUs({ page }) {
                     )}
                   </div>
 
-                  <h3 className="font-heading text-[12px] font-bold leading-snug text-slate-900 sm:text-lg md:text-xl">
+                  <h3 className="font-heading text-[12px] font-bold leading-snug text-primary-900 sm:text-lg md:text-xl">
                     <span className="line-clamp-2">{item.title}</span>
                   </h3>
 

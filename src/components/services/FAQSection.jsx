@@ -20,7 +20,7 @@ function FAQItem({ faq, isOpen, onToggle }) {
         aria-expanded={isOpen}
         className="flex w-full items-start justify-between gap-3 px-3.5 py-3.5 text-left sm:gap-4 sm:px-5 sm:py-5 md:px-6"
       >
-        <span className="font-heading text-sm font-semibold leading-snug text-slate-900 sm:text-base md:text-lg">
+        <span className="font-heading text-sm font-semibold leading-snug text-primary-900 sm:text-base md:text-lg">
           {faq.question}
         </span>
         <span

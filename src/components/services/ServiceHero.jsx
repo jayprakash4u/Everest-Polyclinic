@@ -49,7 +49,7 @@ export default function ServiceHero({ page }) {
               </Badge>
             ) : null}
 
-            <h1 className="font-heading text-[1.55rem] font-bold leading-[1.15] tracking-tight text-slate-900 sm:text-4xl md:text-5xl lg:text-[3.15rem]">
+            <h1 className="font-heading text-[1.55rem] font-bold leading-[1.15] tracking-tight text-primary-900 sm:text-4xl md:text-5xl lg:text-[3.15rem]">
               {displayTitle}
             </h1>
 

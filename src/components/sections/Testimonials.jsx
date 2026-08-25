@@ -116,14 +116,23 @@ export default function Testimonials({ testimonials = TESTIMONIALS }) {
   return (
     <Section
       tone="muted"
+      // Overrides the shared "muted" tone's blue tint with the brand green
+      // ramp instead — patient reviews get their own colour rather than
+      // reading as the same tint as every other alternating section.
       // Trimmed on mobile: py-16 (64px top+bottom) plus the header/card/dots
       // stack made this the tallest section to scroll past on a phone.
       // Unchanged from sm up.
-      className="py-10 sm:py-20 lg:py-24"
+      className="border-secondary-100/70 bg-secondary-50 py-10 sm:py-20 lg:py-24"
     >
       <SectionHeader
+        accent="secondary"
         eyebrow="Patient voices"
-        title="Trusted by families across Nepalgunj"
+        title={
+          <>
+            Trusted by families across{" "}
+            <span className="text-secondary-600">Nepalgunj</span>
+          </>
+        }
         subtitle="What patients say after visiting Everest International Polyclinic."
         action={
           <div className="hidden gap-2 md:flex">

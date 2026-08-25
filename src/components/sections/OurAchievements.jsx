@@ -266,14 +266,15 @@ export default function OurAchievements() {
   return (
     <section className="w-full bg-slate-50 py-12 sm:py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-4">
-        <div className="mb-8 space-y-2 text-center sm:mb-12 sm:space-y-4 md:mb-16">
-          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-600 sm:text-xs">
+        <div className="mb-8 text-center sm:mb-12 md:mb-16">
+          <span className="flex items-center justify-center gap-2.5 text-[10px] font-black uppercase tracking-[0.3em] text-secondary-600 sm:text-xs">
+            <span className="h-px w-6 bg-secondary-400" />
             Accreditations
+            <span className="h-px w-6 bg-secondary-400" />
           </span>
-          <h2 className="font-heading text-2xl font-black text-slate-900 sm:text-3xl md:text-4xl">
-            Certified Excellence
+          <h2 className="mt-4 font-heading text-2xl font-black text-primary-900 sm:text-3xl md:text-4xl">
+            Certified <span className="text-secondary-600">Excellence</span>
           </h2>
-          <div className="mx-auto h-1 w-14 rounded-full bg-primary-600 sm:w-20" />
         </div>
 
         <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3 md:gap-8">
@@ -290,7 +291,7 @@ export default function OurAchievements() {
                   {cert.icon}
                 </div>
               </div>
-              <h3 className="mb-1 text-[13px] font-black text-slate-900 sm:mb-2 sm:text-lg md:text-xl">
+              <h3 className="mb-1 text-[13px] font-black text-primary-900 sm:mb-2 sm:text-lg md:text-xl">
                 {cert.title}
               </h3>
               <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 sm:text-xs">

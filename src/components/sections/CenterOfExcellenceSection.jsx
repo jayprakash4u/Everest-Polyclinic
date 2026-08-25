@@ -62,8 +62,13 @@ export default function CenterOfExcellenceSection({
       <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-16">
         <div className="lg:sticky lg:top-28">
           <SectionHeader
+            accent="secondary"
             eyebrow="Specialist departments"
-            title="Centers of Excellence"
+            title={
+              <>
+                Centers of <span className="text-secondary-600">Excellence</span>
+              </>
+            }
             subtitle="Focused specialty care with experienced clinicians, modern diagnostics and coordinated treatment under one roof."
             className="mb-0 md:flex-col md:items-start"
           />

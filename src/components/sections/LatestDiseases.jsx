@@ -67,8 +67,13 @@ export default function LatestDiseases({
   return (
     <Section tone="white">
       <SectionHeader
+        accent="secondary"
         eyebrow="Diagnostic solutions"
-        title="Health packages"
+        title={
+          <>
+            Health <span className="text-secondary-600">packages</span>
+          </>
+        }
         subtitle="Comprehensive checkup packages with transparent pricing and detailed test lists."
         action={
           <div className="flex items-center gap-3">

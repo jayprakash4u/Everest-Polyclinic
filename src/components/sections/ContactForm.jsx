@@ -80,7 +80,7 @@ export default function ContactForm() {
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-secondary-100">
           <MessageSquare className="text-secondary-600" size={28} />
         </div>
-        <h3 className="font-heading text-xl font-bold text-text-dark">
+        <h3 className="font-heading text-xl font-bold text-primary-900">
           Message Sent!
         </h3>
         <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-slate-500">

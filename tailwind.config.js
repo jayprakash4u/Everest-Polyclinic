@@ -1,3 +1,5 @@
+const plugin = require("tailwindcss/plugin");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
@@ -116,5 +118,18 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // `group-active-or-hover:` — same as the built-in `group-hover:`, except
+    // it also fires when the nearest `.group` ancestor carries
+    // `data-active="true"`. Lets a component force its own "hovered" look
+    // (e.g. ServiceCard's programmatic active-card highlight) without
+    // maintaining a second, hand-duplicated set of utilities alongside every
+    // `group-hover:` one — both states drive the exact same styles.
+    plugin(function ({ addVariant }) {
+      addVariant(
+        "group-active-or-hover",
+        ':merge(.group):is(:hover,[data-active="true"]) &',
+      );
+    }),
+  ],
 };
